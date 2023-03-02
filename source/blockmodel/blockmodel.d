@@ -26,29 +26,22 @@ class BlockModel {
         this.size.z = length;
 
         this.constructVertexPositions();
+        this.constructIndices();
     }
 
     void constructVertexPositions() {
         
         // 8 Vertex Positions - written extremely verbosely
+
         // Wall 1 (FRONT)
-        vertexPositions ~= -size.x;
-        vertexPositions ~= -size.y;
-        vertexPositions ~= size.z;
-
-        vertexPositions ~= -size.x;
+        vertexPositions ~= size.x;
         vertexPositions ~= size.y;
-        vertexPositions ~= size.z;
+        vertexPositions ~= -size.z;
 
         vertexPositions ~= size.x;
         vertexPositions ~= -size.y;
-        vertexPositions ~= size.z;
+        vertexPositions ~= -size.z;
 
-        vertexPositions ~= size.x;
-        vertexPositions ~= size.y;
-        vertexPositions ~= size.z;
-
-        // Wall 2 (BACK)
         vertexPositions ~= -size.x;
         vertexPositions ~= -size.y;
         vertexPositions ~= -size.z;
@@ -56,25 +49,60 @@ class BlockModel {
         vertexPositions ~= -size.x;
         vertexPositions ~= size.y;
         vertexPositions ~= -size.z;
+        
+
+        // Wall 2 (BACK)
+        vertexPositions ~= -size.x;
+        vertexPositions ~= size.y;
+        vertexPositions ~= size.z;
+
+        vertexPositions ~= -size.x;
+        vertexPositions ~= -size.y;
+        vertexPositions ~= size.z;
 
         vertexPositions ~= size.x;
         vertexPositions ~= -size.y;
-        vertexPositions ~= -size.z;
+        vertexPositions ~= size.z;
 
         vertexPositions ~= size.x;
         vertexPositions ~= size.y;
-        vertexPositions ~= -size.z;
+        vertexPositions ~= size.z;
+
+        
     }
 
     void constructIndices() {
-        const currentCount = indices.length;
+        const int currentCount = cast(int)indices.length;
         foreach (int key; indiceOrder) {
             indices ~= currentCount + key;
         }
+
+        writeln(this.indices);
     }
 
     float[] getVertexPositions() {
         return this.vertexPositions;
+    }
+
+    int[] getIndices() {
+        return this.indices;
+    }
+
+    float[] getTextureCoordinates() {
+        return [
+            // Top left
+            0.0,0.0,
+            // Bottom left
+            0.0,1.0,
+            // Top right
+            1.0,1.0,
+            // Bottom right
+            1.0,0.0,
+        ];
+    }
+
+    int[] getBones() {
+        return [0,0,0,0,0,0,0,0];
     }
     
 }
