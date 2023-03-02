@@ -6,8 +6,7 @@ import shader.shader;
 import texture.texture;
 import window.window;
 import vector_3d;
-import easygltf.easygltf;
-import matrix_4d;
+import blockmodel.blockmodel;
 import math;
 
 void main()
