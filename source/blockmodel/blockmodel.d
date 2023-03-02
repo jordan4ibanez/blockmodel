@@ -9,13 +9,16 @@ import vector_3i;
 
 class BlockModel {
 
+    //! Turn this into an auto iterator distributor
     private immutable int[] indiceOrder = [
         // Front
         0,1,2,2,3,0,
         // Back
         4,5,6,6,7,4,
         // Left
-        3,2,5,5,4,3,
+        8,9,10,10,11,8,
+        // Right
+        12,13,14,14,15,12
     ];
 
     Vector3d size = Vector3d(1,1,1);
@@ -54,6 +57,11 @@ class BlockModel {
         assembleQuad(v0,v1,v2,v3);
         //Back face
         assembleQuad(v4,v5,v6,v7);
+
+        //Left face
+        assembleQuad(v3,v2,v5,v4);
+        //Right face
+        assembleQuad(v7,v6,v1,v0);
 
         
     }
@@ -113,6 +121,16 @@ class BlockModel {
             xMax,yMin,
 
             //* Left face
+            // Top left
+            xMin,yMin,
+            // Bottom left
+            xMin,yMax,
+            // Top right
+            xMax,yMax,
+            // Bottom right
+            xMax,yMin,
+
+            //* Right face
             // Top left
             xMin,yMin,
             // Bottom left
