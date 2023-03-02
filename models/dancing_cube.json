@@ -1,0 +1,13 @@
+{
+    "name": "dancing_cube",
+    "block1": {
+        "height": 1,
+        "length": 1,
+        "width": 1,
+        "static_position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    }
+}
