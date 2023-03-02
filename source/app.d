@@ -9,6 +9,7 @@ import vector_3d;
 import matrix_4d;
 import blockmodel.blockmodel;
 import math;
+import delta_time;
 
 void main()
 {
@@ -71,9 +72,14 @@ void main()
         Vector3d(1,1,1),
     ];
 
+    const int maxFrame = 4;
+    double frameTime = 0.0;
+
     while (!window.shouldClose()) {
         
         window.pollEvents();
+
+        calculateDelta();
 
         glUseProgram(shader.getShaderProgram);
 
@@ -84,9 +90,7 @@ void main()
 
         //! Begin first iteration of animation prototyping
 
-        const int maxFrame = 4;
-        double frameTime = 0.0;
-
+        frameTime += getDelta();
 
 
         Vector3d translation;
