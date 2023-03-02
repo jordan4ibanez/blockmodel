@@ -57,10 +57,13 @@ class Camera {
     3. glsl will multiply this matrix by the camera's matrix, giving a usable position
     */
     void setObjectMatrix(Vector3d offset, Vector3d rotation, Vector3d scale) {
-        objectMatrix.identity()
+
+        // The primary usecase for this is mobs. So Y X Z to do moblike animations.
+        objectMatrix
+            .identity()
             .translate(-position.x + offset.x, -position.y + offset.y, -position.z + offset.z)
-            .rotateX(math.toRadians(-rotation.x))
             .rotateY(math.toRadians(-rotation.y))
+            .rotateX(math.toRadians(-rotation.x))
             .rotateZ(math.toRadians(-rotation.z))
             .scale(scale);
         float[16] floatBuffer = objectMatrix.getFloatArray();
