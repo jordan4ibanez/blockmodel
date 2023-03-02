@@ -33,12 +33,17 @@ class BlockModel {
     float[] vertexPositions;
     int[] indices;
 
-    this(float width, float height, float length) {
+    this(string fileLocation) {
+
+        // Todo: load this
+        FPS = 24;
+    }
+
+    void constructCube(double width, double height, double length) {
+
         this.size.x = width;
         this.size.y = height;
         this.size.z = length;
-
-        FPS = 24;
 
         this.constructVertexPositions();
         this.constructIndices();
