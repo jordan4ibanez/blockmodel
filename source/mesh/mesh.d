@@ -55,7 +55,7 @@ class Mesh {
         // Existence lock
         this.exists = true;
 
-        // Don't bother if not divisible by 3 (x,y,z)
+        // Don't bother if not divisible by 3 TRI from cube vertex positions
         assert(indices.length % 3 == 0 && indices.length >= 3);
         this.indexCount = cast(GLuint)(indices.length);
 
