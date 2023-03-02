@@ -36,3 +36,4 @@ The minimum supported version of OpenGL is 4.1. This can probably be set further
 
 1. Models MUST be texture mapped AS IS to the image texture. No X or Y flipping.
 2. Models MUST NOT contain multiple material (texture) buffers. ONLY one.
+3. Texture coordinates are integrated as part of JSON object inside cuboid.
