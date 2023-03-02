@@ -7,9 +7,8 @@
     
     "block0": {
         "bone": 0,
-        "height": 1,
-        "length": 1,
-        "width": 1,
+        
+        "size": [1,1,1],
         
         "Debug note": "this is a test for element 0 of animation integration",
         "static_position": [0,0,0],
