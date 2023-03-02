@@ -1,13 +1,14 @@
 {
     "name": "dancing_cube",
 
-    "Implementation Note": "If model is FPS 0, model is static",
+    "Implementation Note": "If model is FPS 0 or total_frame 0, model is static",
     "FPS": 4,
-    "max_frame": 4,
+    "total_frame": 4,
+    "total_blocks": 1,
     
     "block0": {
         "bone": 0,
-        
+
         "size": [1,1,1],
         
         "Debug note": "this is a test for element 0 of animation integration",
