@@ -21,6 +21,8 @@ class BlockModel {
         12,13,14,14,15,12,
         // Top
         16,17,18,18,19,16,
+        // Bottom
+        20,21,22,22,23,20
     ];
 
     Vector3d size = Vector3d(1,1,1);
@@ -67,6 +69,8 @@ class BlockModel {
 
         // Top face (up is -Z)
         assembleQuad(v3,v4,v7,v0);
+        // Bottom face (up is -Z)
+        assembleQuad(v1,v6,v5,v2);
 
         
     }
@@ -146,6 +150,16 @@ class BlockModel {
             xMax,yMin,
 
             //* Top face
+            // Top left
+            xMin,yMin,
+            // Bottom left
+            xMin,yMax,
+            // Top right
+            xMax,yMax,
+            // Bottom right
+            xMax,yMin,
+
+            //* Bottom face
             // Top left
             xMin,yMin,
             // Bottom left
