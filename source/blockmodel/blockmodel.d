@@ -12,9 +12,16 @@ import tinygltf;
 import vector_3d;
 import vector_3i;
 
+class Block {
+    Vector3d size;
+    Vector3d[] translation;
+    Vector3d[] rotation;
+    Vector3d[] scale;
+}
+
 class BlockModel {
     
-    private immutable int[] indiceOrder = [
+    private static immutable int[] indiceOrder = [
         // Front
         0,1,2,2,3,0,
         // Back
@@ -29,7 +36,9 @@ class BlockModel {
         20,21,22,22,23,20
     ];
 
-    Vector3d size = Vector3d(1,1,1);
+    /// This is basically a worker array
+    /// Indexed 0 - NO skipping
+    Block[] blocks;
 
     const int FPS;
 
