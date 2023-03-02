@@ -1,5 +1,7 @@
 {
     "name": "dancing_cube",
+
+    "Implementation Note": "If model is FPS 0, model is static",
     "FPS": 4,
     
     "block0": {
@@ -9,18 +11,14 @@
         "width": 1,
         
         "Debug note": "this is a test for element 0 of animation integration",
-        "static_position": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        
+        "static_position": [0,0,0],
+
         "Implementation note 1": "IF a model has static_position, then this will throw an error!",
-        "Implementation note 2": "This is a raw OpenGL array, so it's (1,2,3), (4,5,6) etc",
+        "Implementation note 2": "This is a raw OpenGL array, so it's (1,2,3), (4,5,3) etc",
         "animation": {
             "T": [0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0],
-            "R": [0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0]
-
+            "R": [0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0],
+            "S": [0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0]
         }
     }
 }
