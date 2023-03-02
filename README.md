@@ -5,6 +5,10 @@
 
 # Spec:
 
+## Spec notes
+
+This is a rolling spec. I am literally bootstrapping it as I go. This might change until version 1.0.0 is released. Thank you for your understanding.
+
 ## Goal
 
 Simple modeling format for voxel games.
@@ -39,7 +43,7 @@ The minimum supported version of OpenGL is 4.1. This can probably be set further
 
 1. LINEAR interpolation ONLY.
 2. Animation runs at 60FPS ONLY.
-3. Animation keyframes MUST be 0.0166 seconds apart from eachother.
+3. Animation keyframes MUST be 0.0166 seconds apart from eachother. Each keyframe is 1/60th of a second.
 4. Each keyframe MUST be included as part of the model. This is to avoid desync and implementation guessing. IF there is a 1 second gap between keyframes, model MUST be LINEAR interpolated between these frames on export.
 
 ## Texturing
