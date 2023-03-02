@@ -15,7 +15,7 @@ void main()
 {
 
     // Window controls OpenGL and GLFW
-	Window window = new Window("easygltf prototyping").initialize;
+	Window window = new Window("BlockModel prototyping").initialize;
 
     //* Allow direct message passing through reference pointers. Reduces verbosity.
     Mesh.createWindowContext(window);
@@ -40,7 +40,7 @@ void main()
     Mesh.createShaderContext(shader);
 
 
-    BlockModel model = new BlockModel(1,1,1);
+    BlockModel model = new BlockModel("models/dancing_cube.json");
 
     Mesh debugMesh = new Mesh(
         model.getVertexPositions,
