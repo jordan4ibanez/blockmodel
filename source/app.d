@@ -42,13 +42,13 @@ void main()
 
     BlockModel model = new BlockModel("models/dancing_cube.json");
 
-    Mesh debugMesh = new Mesh(
-        model.getVertexPositions,
-        model.getIndices,
-        model.getTextureCoordinates,
-        model.getBones,
-        "textures/debug.png"
-    );
+    // Mesh debugMesh = new Mesh(
+    //     model.getVertexPositions,
+    //     model.getIndices,
+    //     model.getTextureCoordinates,
+    //     model.getBones,
+    //     "textures/debug.png"
+    // );
 
     // Initialize shader program early to dump in uniforms
     glUseProgram(shader.getShaderProgram);
@@ -61,7 +61,7 @@ void main()
     // double frameTime = 0.0;
     // int currentFrame = 0;
 
-    while (!window.shouldClose()) {
+    while (window.shouldClose()) {
         
         window.pollEvents();
 
@@ -126,11 +126,11 @@ void main()
         shader.setUniformMatrix4f("boneTRS", testMatrix.getFloatArray);
         
 
-        debugMesh.render(
-            Vector3d(0,0,-8), // Translation
-            Vector3d(0,0,0), // Rotation
-            Vector3d(1), // Scale
-        1);
+        // debugMesh.render(
+        //     Vector3d(0,0,-8), // Translation
+        //     Vector3d(0,0,0), // Rotation
+        //     Vector3d(1), // Scale
+        // 1);
 
         window.swapBuffers();
     }
