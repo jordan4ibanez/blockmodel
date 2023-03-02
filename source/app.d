@@ -41,7 +41,7 @@ void main()
     Mesh.createShaderContext(shader);
 
 
-    BlockModel model = new BlockModel(1,1,1);
+    BlockModel model = new BlockModel(1,3,1);
 
     Mesh debugMesh = new Mesh(
         model.getVertexPositions,
@@ -77,7 +77,7 @@ void main()
 
         debugMesh.render(
             Vector3d(0,0,-4), // Translation
-            Vector3d(0,rotation,45), // Rotation
+            Vector3d(rotation,12,0), // Rotation
             Vector3d(0.25), // Scale
         1);
 
