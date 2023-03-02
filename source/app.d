@@ -74,7 +74,9 @@ void main()
 
         Matrix4d testMatrix = Matrix4d()
             .identity()
-            .setRotationXYZ(0,(rotation / 360.0) * PI2,0);
+            .setTranslation(0,0,0)
+            .setRotationXYZ(0,(rotation / 360.0) * PI2,0)
+            .scaleLocal(1,1,1);
 
         shader.setUniformMatrix4f("boneTRS", testMatrix.getFloatArray);
         
