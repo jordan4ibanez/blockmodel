@@ -92,23 +92,42 @@ void main()
         camera.setRotation(Vector3d(0,0,0));
         camera.updateCameraMatrix();
 
-        //! Begin first iteration of animation prototyping
+        //! Begin first iteration of animation prototyping, this is doing the ENTIRE animation
+        //! In future implementation: Containerization will allow LERP portions of the animation
 
         frameTime += getDelta();
 
+        // Tick up integral frame
         if (frameTime >= frameTick) {
             frameTime -= frameTick;
             currentFrame++;
-
+            // Loop integral frame - Remember: 0 count
             if (currentFrame >= maxFrame) {
                 currentFrame = 0;
             }
         }
 
+        const double frameProgress = frameTime / frameTick;
+        
+        int startFrame;
+        int endFrame;
+        // LERP back to frame 0 - Remember 0 count
+        if (currentFrame == maxFrame - 1) {
+            startFrame = currentFrame;
+            endFrame   = 0;
+        } 
+        // LERP to next frame
+        else {
+            startFrame = currentFrame;
+            endFrame   = currentFrame + 1;
+        }
+
+        Vector3d translation = Vector3d(t[startFrame]).lerp(t[endFrame], frameProgress);
+        Vector3d rotation    = Vector3d(r[startFrame]).lerp(r[endFrame], frameProgress);
+        Vector3d scale       = Vector3d(s[startFrame]).lerp(s[endFrame], frameProgress);
+
+        
         writeln(currentFrame);
-
-
-        Vector3d translation;
 
 
 
@@ -118,8 +137,8 @@ void main()
 
         Matrix4d testMatrix = Matrix4d()
             .identity()
-            .setTranslation(0,0,0)
-            .setRotationXYZ(0,(1 / 360.0) * PI2,0)
+            .setTranslation(translation)
+            .setRotationXYZ(rotation.x, rotation.y, rotation.z)
             .scaleLocal(1,1,1);
 
         shader.setUniformMatrix4f("boneTRS", testMatrix.getFloatArray);
