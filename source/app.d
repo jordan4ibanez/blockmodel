@@ -53,31 +53,13 @@ void main()
     // Initialize shader program early to dump in uniforms
     glUseProgram(shader.getShaderProgram);
 
-    Vector3d[] t = [
-        Vector3d(0,0,0),
-        Vector3d(1,0,0),
-        Vector3d(2,0,0),
-        Vector3d(3,0,0),
-    ];
-    Vector3d[] r = [
-        Vector3d(0,0,0),
-        Vector3d(0,0,0),
-        Vector3d(0,0,0),
-        Vector3d(0,0,0),
-    ];
-    Vector3d[] s = [
-        Vector3d(1,1,1),
-        Vector3d(1,1,1),
-        Vector3d(1,1,1),
-        Vector3d(1,1,1),
-    ];
 
-    const int maxFrame = 4;
-    const double FPS = 4;
-    // Framerate is constant LINEAR interpolation
-    const double frameTick = 1/FPS;
-    double frameTime = 0.0;
-    int currentFrame = 0;
+    // const int maxFrame = 1;
+    // const double FPS = 1;
+    // // Framerate is constant LINEAR interpolation
+    // const double frameTick = 1/FPS;
+    // double frameTime = 0.0;
+    // int currentFrame = 0;
 
     while (!window.shouldClose()) {
         
@@ -95,39 +77,39 @@ void main()
         //! Begin first iteration of animation prototyping, this is doing the ENTIRE animation
         //! In future implementation: Containerization will allow LERP portions of the animation
 
-        frameTime += getDelta();
+        // frameTime += getDelta();
 
-        // Tick up integral frame
-        if (frameTime >= frameTick) {
-            frameTime -= frameTick;
-            currentFrame++;
-            // Loop integral frame - Remember: 0 count
-            if (currentFrame >= maxFrame) {
-                currentFrame = 0;
-            }
-        }
+        // // Tick up integral frame
+        // if (frameTime >= frameTick) {
+        //     frameTime -= frameTick;
+        //     currentFrame++;
+        //     // Loop integral frame - Remember: 0 count
+        //     if (currentFrame >= maxFrame) {
+        //         currentFrame = 0;
+        //     }
+        // }
 
-        const double frameProgress = frameTime / frameTick;
+        // const double frameProgress = frameTime / frameTick;
         
-        int startFrame;
-        int endFrame;
-        // LERP back to frame 0 - Remember 0 count
-        if (currentFrame == maxFrame - 1) {
-            startFrame = currentFrame;
-            endFrame   = 0;
-        } 
-        // LERP to next frame
-        else {
-            startFrame = currentFrame;
-            endFrame   = currentFrame + 1;
-        }
+        // int startFrame;
+        // int endFrame;
+        // // LERP back to frame 0 - Remember 0 count
+        // if (currentFrame == maxFrame - 1) {
+        //     startFrame = currentFrame;
+        //     endFrame   = 0;
+        // } 
+        // // LERP to next frame
+        // else {
+        //     startFrame = currentFrame;
+        //     endFrame   = currentFrame + 1;
+        // }
 
-        Vector3d translation = Vector3d(t[startFrame]).lerp(t[endFrame], frameProgress);
-        Vector3d rotation    = Vector3d(r[startFrame]).lerp(r[endFrame], frameProgress);
-        Vector3d scale       = Vector3d(s[startFrame]).lerp(s[endFrame], frameProgress);
+        // Vector3d translation = Vector3d(t[startFrame]).lerp(t[endFrame], frameProgress);
+        // Vector3d rotation    = Vector3d(r[startFrame]).lerp(r[endFrame], frameProgress);
+        // Vector3d scale       = Vector3d(s[startFrame]).lerp(s[endFrame], frameProgress);
 
         
-        writeln(currentFrame);
+        // writeln(currentFrame);
 
 
 
@@ -136,10 +118,10 @@ void main()
 
 
         Matrix4d testMatrix = Matrix4d()
-            .identity()
-            .setTranslation(translation)
-            .setRotationXYZ(rotation.x, rotation.y, rotation.z)
-            .scaleLocal(1,1,1);
+            .identity();
+            // .setTranslation(translation)
+            // .setRotationXYZ(rotation.x, rotation.y, rotation.z)
+            // .scaleLocal(scale.x,scale.y,scale.z);
 
         shader.setUniformMatrix4f("boneTRS", testMatrix.getFloatArray);
         
