@@ -1,9 +1,13 @@
 {
     "name": "dancing_cube",
-    "block1": {
+    
+    "block0": {
+        "bone": 0,
         "height": 1,
         "length": 1,
         "width": 1,
+        
+        "debug note: this is a test for element 0 of animation integration": 0,
         "static_position": {
             "x": 0,
             "y": 0,
