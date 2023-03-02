@@ -49,6 +49,12 @@ class BlockModel {
         const auto v5 = Vector3d(-size.x, -size.y, size.z);
         const auto v6 = Vector3d(size.x, -size.y, size.z);
         const auto v7 = Vector3d(size.x, size.y, size.z);
+
+        // Front face
+        assembleQuad(v0,v1,v2,v3);
+        //Back face
+        assembleQuad(v4,v5,v6,v7);
+
         
     }
 
@@ -108,9 +114,9 @@ class BlockModel {
 
             //* Left face
             // Top left
-            xMax,yMin,
+            xMin,yMin,
             // Bottom left
-            xMax,yMax,
+            xMin,yMax,
             // Top right
             xMax,yMax,
             // Bottom right
