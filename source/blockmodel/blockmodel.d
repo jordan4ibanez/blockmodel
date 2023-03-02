@@ -10,7 +10,11 @@ import vector_3i;
 class BlockModel {
 
     private immutable int[] indiceOrder = [
-        0,1,3,3,1,2
+        // Front
+        0,1,2,2,3,0,
+        // Back
+        4,5,6,6,7,4
+        // Left
     ];
 
     Vector3d size = Vector3d(1,1,1);
@@ -52,6 +56,13 @@ class BlockModel {
         
 
         // Wall 2 (BACK)
+
+        
+
+        
+
+        
+
         vertexPositions ~= -size.x;
         vertexPositions ~= size.y;
         vertexPositions ~= size.z;
@@ -67,12 +78,16 @@ class BlockModel {
         vertexPositions ~= size.x;
         vertexPositions ~= size.y;
         vertexPositions ~= size.z;
+        
+
+        
 
         
     }
 
     void constructIndices() {
         const int currentCount = cast(int)indices.length;
+
         foreach (int key; indiceOrder) {
             indices ~= currentCount + key;
         }
@@ -90,6 +105,17 @@ class BlockModel {
 
     float[] getTextureCoordinates() {
         return [
+            //* Front face
+            // Top left
+            0.0,0.0,
+            // Bottom left
+            0.0,1.0,
+            // Top right
+            1.0,1.0,
+            // Bottom right
+            1.0,0.0,
+
+            //* Back face
             // Top left
             0.0,0.0,
             // Bottom left
