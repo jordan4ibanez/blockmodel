@@ -1,5 +1,6 @@
 {
     "name": "dancing_cube",
+    "FPS": 4,
     
     "block0": {
         "bone": 0,
@@ -17,7 +18,8 @@
         "Implementation note 1": "IF a model has static_position, then this will throw an error!",
         "Implementation note 2": "This is a raw OpenGL array, so it's (1,2,3), (4,5,6) etc",
         "animation": {
-            "T": [1,2,3,4],
+            "T": [0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0],
+            "R": [0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0]
 
         }
     }
