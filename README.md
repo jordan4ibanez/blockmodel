@@ -25,6 +25,7 @@ The minimum supported version of OpenGL is 4.1. This can probably be set further
 6. Each cuboid is represented by a length, width, height variable in it's section of the JSON.
 7. There is NO parent child hierachy. Each cuboid exists as itself.
 8. ONLY one bone can affect a cuboid.
+9. ALL bones are relative to position (0,0,0) of the model.
 
 ## Animation
 
