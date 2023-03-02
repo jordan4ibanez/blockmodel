@@ -5,6 +5,10 @@
 
 # Spec:
 
+## Goal
+
+Simple modeling format for voxel games.
+
 ## Minimum OpenGL Version
 
 The minimum supported version of OpenGL is 4.1. This can probably be set further back, but it is not guaranteed to work in older versions.
