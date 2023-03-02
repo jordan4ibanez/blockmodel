@@ -44,16 +44,16 @@ class BlockModel {
         // 8 Vertex Positions
 
         // Wall 1 (FRONT)
-        const auto v0 = Vector3d(size.x, size.y, -size.z);
-        const auto v1 = Vector3d(size.x, -size.y, -size.z);
-        const auto v2 = Vector3d(-size.x, -size.y, -size.z);
-        const auto v3 = Vector3d(-size.x, size.y, -size.z);
+        const auto v0 = Vector3d(size.x, size.y * 2, -size.z);
+        const auto v1 = Vector3d(size.x, 0, -size.z);
+        const auto v2 = Vector3d(-size.x, 0, -size.z);
+        const auto v3 = Vector3d(-size.x, size.y * 2, -size.z);
 
         // Wall 2 (BACK)
-        const auto v4 = Vector3d(-size.x, size.y, size.z);
-        const auto v5 = Vector3d(-size.x, -size.y, size.z);
-        const auto v6 = Vector3d(size.x, -size.y, size.z);
-        const auto v7 = Vector3d(size.x, size.y, size.z);
+        const auto v4 = Vector3d(-size.x, size.y * 2, size.z);
+        const auto v5 = Vector3d(-size.x, 0, size.z);
+        const auto v6 = Vector3d(size.x, 0, size.z);
+        const auto v7 = Vector3d(size.x, size.y * 2, size.z);
 
         // Front face
         assembleQuad(v0,v1,v2,v3);
