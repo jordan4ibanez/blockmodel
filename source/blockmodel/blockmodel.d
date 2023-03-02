@@ -8,8 +8,7 @@ import vector_3d;
 import vector_3i;
 
 class BlockModel {
-
-    //! Turn this into an auto iterator distributor
+    
     private immutable int[] indiceOrder = [
         // Front
         0,1,2,2,3,0,
@@ -27,6 +26,8 @@ class BlockModel {
 
     Vector3d size = Vector3d(1,1,1);
 
+    const int FPS;
+
     int count = 0;
     
     float[] vertexPositions;
@@ -36,6 +37,8 @@ class BlockModel {
         this.size.x = width;
         this.size.y = height;
         this.size.z = length;
+
+        FPS = 24;
 
         this.constructVertexPositions();
         this.constructIndices();
@@ -67,9 +70,9 @@ class BlockModel {
         //Right face
         assembleQuad(v7,v6,v1,v0);
 
-        // Top face (up is -Z)
+        // Top face (up is -Z, points to front face)
         assembleQuad(v3,v4,v7,v0);
-        // Bottom face (up is -Z)
+        // Bottom face (up is -Z, points to front face)
         assembleQuad(v1,v6,v5,v2);
 
         
@@ -84,7 +87,9 @@ class BlockModel {
         }
     }
 
+    // Assembles the indices of the block
     void constructIndices() {
+
         const int currentCount = cast(int)indices.length;
 
         foreach (int key; indiceOrder) {
