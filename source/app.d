@@ -52,17 +52,27 @@ void main()
     // Initialize shader program early to dump in uniforms
     glUseProgram(shader.getShaderProgram);
 
-
-
-    float rotation = 180.0;
+    Vector3d[] t = [
+        Vector3d(0,0,0),
+        Vector3d(1,0,0),
+        Vector3d(2,0,0),
+        Vector3d(3,0,0),
+    ];
+    Vector3d[] r = [
+        Vector3d(0,0,0),
+        Vector3d(0,0,0),
+        Vector3d(0,0,0),
+        Vector3d(0,0,0),
+    ];
+    Vector3d[] s = [
+        Vector3d(1,1,1),
+        Vector3d(1,1,1),
+        Vector3d(1,1,1),
+        Vector3d(1,1,1),
+    ];
 
     while (!window.shouldClose()) {
-
-        rotation += 1;
-        if (rotation > 360.0) {
-            rotation = rotation - 360.0;
-        }
-
+        
         window.pollEvents();
 
         glUseProgram(shader.getShaderProgram);
@@ -71,6 +81,21 @@ void main()
         camera.clearDepthBuffer();
         camera.setRotation(Vector3d(0,0,0));
         camera.updateCameraMatrix();
+
+        //! Begin first iteration of animation prototyping
+
+        const int maxFrame = 4;
+        double frameTime = 0.0;
+
+
+
+        Vector3d translation;
+
+
+
+        //! End first iteration of animation prototyping
+
+
 
         Matrix4d testMatrix = Matrix4d()
             .identity()
