@@ -33,33 +33,25 @@ void main()
     shader.createUniform("cameraMatrix");
     shader.createUniform("objectMatrix");
     shader.createUniform("textureSampler");
-    shader.createUniform("boneMatrices");
-    shader.createUniform("testMatrix");
-    shader.createUniform("ibm");
+    shader.createUniform("bonePosition");
+    // shader.createUniform("boneRotation");
+    // shader.createUniform("boneScale");
 
     Camera.createShaderContext(shader);
     Mesh.createShaderContext(shader);
 
-    EasyGLTF gltf = new EasyGLTF("models/debug_character.gltf");
 
-    const GLMesh meshData = gltf.glMeshes[0];
+    
 
-    Mesh debugMesh = new Mesh(
-        meshData.getVertexPositions(),
-        meshData.getIndices(),
-        meshData.getTextureCoordinates(),
-        meshData.getJoints(),
-        meshData.getWeights(),
-        "textures/debug_character.png"
-    );
+    // Mesh debugMesh = new Mesh(
+
+    //     "textures/debug_character.png"
+    // );
 
     // Initialize shader program early to dump in uniforms
     glUseProgram(shader.getShaderProgram);
 
-    shader.setUniformMatrix4f("boneMatrices", meshData.getBonesArrayProccessedFloat, meshData.getBoneCount);
 
-    Matrix4d ibmTest = meshData.getInverseBindMatrices[3];
-    shader.setUniformMatrix4f("ibm", ibmTest.getFloatArray);
 
     float rotation = 180.0;
 
@@ -79,21 +71,13 @@ void main()
         camera.clearDepthBuffer();
         camera.setRotation(Vector3d(0,0,0));
         camera.updateCameraMatrix();
+        
 
-        Matrix4d test = Matrix4d()
-            .identity()
-            .translation(0,10,0)
-            // .mul(meshData.getInverseBindMatrices[3])
-                        
-            .setRotationXYZ((rotation / 360.0) * PI2,0,0);
-
-        shader.setUniformMatrix4f("testMatrix", test.getFloatArray);
-
-        debugMesh.render(
-            Vector3d(0,-2,-4), // Translation
-            Vector3d(0,rotation,0), // Rotation
-            Vector3d(0.25), // Scale
-        1);
+        // debugMesh.render(
+        //     Vector3d(0,-2,-4), // Translation
+        //     Vector3d(0,rotation,0), // Rotation
+        //     Vector3d(0.25), // Scale
+        // 1);
 
         window.swapBuffers();
     }
