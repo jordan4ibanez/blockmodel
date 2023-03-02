@@ -12,7 +12,9 @@ import tinygltf;
 import vector_3d;
 import vector_3i;
 
+/// Container class for constructing the model
 class Block {
+    int id;
     Vector3d size;
     Vector3d[] translation;
     Vector3d[] rotation;
@@ -40,7 +42,10 @@ class BlockModel {
     /// Indexed 0 - NO skipping
     Block[] blocks;
 
-    const int FPS;
+    string name;
+    int FPS;
+    int total_frame;
+    int total_blocks;
 
     int count = 0;
     
@@ -51,152 +56,195 @@ class BlockModel {
 
         // Todo: load this
         FPS = 24;
+
+        this.loadBlocks(fileLocation);
     }
 
-    void constructCube(double width, double height, double length) {
+    void loadBlocks(string fileLocation) {
+        if (!exists(fileLocation)) {
+            throw new Exception(fileLocation ~ " does not exist!");
+        }
 
-        this.size.x = width;
-        this.size.y = height;
-        this.size.z = length;
+        void[] rawData;
+        string jsonString;
+        rawData = read(fileLocation);
+        jsonString = cast(string)rawData;
+        JSONValue jsonData = parseJSON(jsonString);
 
-        this.constructVertexPositions();
-        this.constructIndices();
-    }
+        // Get REQUIRED baseline info
+        foreach (string key,JSONValue value; jsonData.objectNoRef) {
 
-    void constructVertexPositions() {
-        
-        // 8 Vertex Positions
+            switch (key) {
+                case "name": {
+                    assert(value.type == JSONType.string);
+                    this.name = value.str;
+                    break;
+                }
+                case "FPS": {
+                    assert(value.type == JSONType.integer);
+                    this.FPS = cast(int)value.integer;
+                    break;
+                }
+                case "total_frame": {
+                    assert(value.type == JSONType.integer);
+                    this.total_frame = cast(int)value.integer;
+                    break;
+                }
+                case "total_blocks": {
+                    assert(value.type == JSONType.integer);
+                    this.total_blocks = cast(int)value.integer;
+                    break;
+                }
+                default:
+            }
 
-        // Wall 1 (FRONT)
-        const auto v0 = Vector3d(size.x, size.y * 2, -size.z);
-        const auto v1 = Vector3d(size.x, 0, -size.z);
-        const auto v2 = Vector3d(-size.x, 0, -size.z);
-        const auto v3 = Vector3d(-size.x, size.y * 2, -size.z);
-
-        // Wall 2 (BACK)
-        const auto v4 = Vector3d(-size.x, size.y * 2, size.z);
-        const auto v5 = Vector3d(-size.x, 0, size.z);
-        const auto v6 = Vector3d(size.x, 0, size.z);
-        const auto v7 = Vector3d(size.x, size.y * 2, size.z);
-
-        // Front face
-        assembleQuad(v0,v1,v2,v3);
-        //Back face
-        assembleQuad(v4,v5,v6,v7);
-
-        //Left face
-        assembleQuad(v3,v2,v5,v4);
-        //Right face
-        assembleQuad(v7,v6,v1,v0);
-
-        // Top face (up is -Z, points to front face)
-        assembleQuad(v3,v4,v7,v0);
-        // Bottom face (up is -Z, points to front face)
-        assembleQuad(v1,v6,v5,v2);
-
-        
-    }
-
-    // Builds a plane of 2 tris out of 4 vertex positions
-    void assembleQuad(Vector3d pos1, Vector3d pos2, Vector3d pos3, Vector3d pos4) {
-        foreach (thisVertexPos; [pos1, pos2, pos3, pos4]) {
-            vertexPositions ~= thisVertexPos.x;
-            vertexPositions ~= thisVertexPos.y;
-            vertexPositions ~= thisVertexPos.z;
         }
     }
 
-    // Assembles the indices of the block
-    void constructIndices() {
+    // void constructCube(double width, double height, double length) {
 
-        const int currentCount = cast(int)indices.length;
+    //     this.size.x = width;
+    //     this.size.y = height;
+    //     this.size.z = length;
 
-        foreach (int key; indiceOrder) {
-            indices ~= currentCount + key;
-        }
+    //     this.constructVertexPositions();
+    //     this.constructIndices();
+    // }
 
-        writeln(this.indices);
-    }
+    // void constructVertexPositions() {
+        
+    //     // 8 Vertex Positions
 
-    float[] getVertexPositions() {
-        return this.vertexPositions;
-    }
+    //     // Wall 1 (FRONT)
+    //     const auto v0 = Vector3d(size.x, size.y * 2, -size.z);
+    //     const auto v1 = Vector3d(size.x, 0, -size.z);
+    //     const auto v2 = Vector3d(-size.x, 0, -size.z);
+    //     const auto v3 = Vector3d(-size.x, size.y * 2, -size.z);
 
-    int[] getIndices() {
-        return this.indices;
-    }
+    //     // Wall 2 (BACK)
+    //     const auto v4 = Vector3d(-size.x, size.y * 2, size.z);
+    //     const auto v5 = Vector3d(-size.x, 0, size.z);
+    //     const auto v6 = Vector3d(size.x, 0, size.z);
+    //     const auto v7 = Vector3d(size.x, size.y * 2, size.z);
 
-    float[] getTextureCoordinates() {
-        // These are place holders for future modeling implementation
-        const float xMin = 0.0;
-        const float xMax = 1.0;
-        const float yMin = 0.0;
-        const float yMax = 1.0;
-        return [
-            //* Front face
-            // Top left
-            xMin,yMin,
-            // Bottom left
-            xMin,yMax,
-            // Top right
-            xMax,yMax,
-            // Bottom right
-            xMax,yMin,
+    //     // Front face
+    //     assembleQuad(v0,v1,v2,v3);
+    //     //Back face
+    //     assembleQuad(v4,v5,v6,v7);
 
-            //* Back face
-            // Top left
-            xMin,yMin,
-            // Bottom left
-            xMin,yMax,
-            // Top right
-            xMax,yMax,
-            // Bottom right
-            xMax,yMin,
+    //     //Left face
+    //     assembleQuad(v3,v2,v5,v4);
+    //     //Right face
+    //     assembleQuad(v7,v6,v1,v0);
 
-            //* Left face
-            // Top left
-            xMin,yMin,
-            // Bottom left
-            xMin,yMax,
-            // Top right
-            xMax,yMax,
-            // Bottom right
-            xMax,yMin,
+    //     // Top face (up is -Z, points to front face)
+    //     assembleQuad(v3,v4,v7,v0);
+    //     // Bottom face (up is -Z, points to front face)
+    //     assembleQuad(v1,v6,v5,v2);
 
-            //* Right face
-            // Top left
-            xMin,yMin,
-            // Bottom left
-            xMin,yMax,
-            // Top right
-            xMax,yMax,
-            // Bottom right
-            xMax,yMin,
+        
+    // }
 
-            //* Top face
-            // Top left
-            xMin,yMin,
-            // Bottom left
-            xMin,yMax,
-            // Top right
-            xMax,yMax,
-            // Bottom right
-            xMax,yMin,
+    // // Builds a plane of 2 tris out of 4 vertex positions
+    // void assembleQuad(Vector3d pos1, Vector3d pos2, Vector3d pos3, Vector3d pos4) {
+    //     foreach (thisVertexPos; [pos1, pos2, pos3, pos4]) {
+    //         vertexPositions ~= thisVertexPos.x;
+    //         vertexPositions ~= thisVertexPos.y;
+    //         vertexPositions ~= thisVertexPos.z;
+    //     }
+    // }
 
-            //* Bottom face
-            // Top left
-            xMin,yMin,
-            // Bottom left
-            xMin,yMax,
-            // Top right
-            xMax,yMax,
-            // Bottom right
-            xMax,yMin,
-        ];
-    }
+    // // Assembles the indices of the block
+    // void constructIndices() {
 
-    int[] getBones() {
-        return [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-    }
+    //     const int currentCount = cast(int)indices.length;
+
+    //     foreach (int key; indiceOrder) {
+    //         indices ~= currentCount + key;
+    //     }
+
+    //     writeln(this.indices);
+    // }
+
+    // float[] getVertexPositions() {
+    //     return this.vertexPositions;
+    // }
+
+    // int[] getIndices() {
+    //     return this.indices;
+    // }
+
+    // float[] getTextureCoordinates() {
+    //     // These are place holders for future modeling implementation
+    //     const float xMin = 0.0;
+    //     const float xMax = 1.0;
+    //     const float yMin = 0.0;
+    //     const float yMax = 1.0;
+    //     return [
+    //         //* Front face
+    //         // Top left
+    //         xMin,yMin,
+    //         // Bottom left
+    //         xMin,yMax,
+    //         // Top right
+    //         xMax,yMax,
+    //         // Bottom right
+    //         xMax,yMin,
+
+    //         //* Back face
+    //         // Top left
+    //         xMin,yMin,
+    //         // Bottom left
+    //         xMin,yMax,
+    //         // Top right
+    //         xMax,yMax,
+    //         // Bottom right
+    //         xMax,yMin,
+
+    //         //* Left face
+    //         // Top left
+    //         xMin,yMin,
+    //         // Bottom left
+    //         xMin,yMax,
+    //         // Top right
+    //         xMax,yMax,
+    //         // Bottom right
+    //         xMax,yMin,
+
+    //         //* Right face
+    //         // Top left
+    //         xMin,yMin,
+    //         // Bottom left
+    //         xMin,yMax,
+    //         // Top right
+    //         xMax,yMax,
+    //         // Bottom right
+    //         xMax,yMin,
+
+    //         //* Top face
+    //         // Top left
+    //         xMin,yMin,
+    //         // Bottom left
+    //         xMin,yMax,
+    //         // Top right
+    //         xMax,yMax,
+    //         // Bottom right
+    //         xMax,yMin,
+
+    //         //* Bottom face
+    //         // Top left
+    //         xMin,yMin,
+    //         // Bottom left
+    //         xMin,yMax,
+    //         // Top right
+    //         xMax,yMax,
+    //         // Bottom right
+    //         xMax,yMin,
+    //     ];
+    // }
+
+    // int[] getBones() {
+    //     return [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    // }
     
 }
