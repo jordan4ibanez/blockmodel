@@ -29,6 +29,7 @@ The minimum supported version of OpenGL is 4.1. This can probably be set further
 10. ALL cuboids are to be 0 counted. Index gaps are NOT allowed.
 11. ALL bones are REQUIRED to apply 1.0 weight to indices.
 12. -Z is facing forward.
+13. IF a model utilizes static position for one block, ALL block must utilize static position in the model.
 
 ## Animation
 
