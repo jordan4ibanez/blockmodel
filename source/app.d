@@ -73,7 +73,11 @@ void main()
     ];
 
     const int maxFrame = 4;
+    const double FPS = 4;
+    // Framerate is constant LINEAR interpolation
+    const double frameTick = 1/FPS;
     double frameTime = 0.0;
+    int currentFrame = 0;
 
     while (!window.shouldClose()) {
         
@@ -92,6 +96,17 @@ void main()
 
         frameTime += getDelta();
 
+        if (frameTime >= frameTick) {
+            frameTime -= frameTick;
+            currentFrame++;
+
+            if (currentFrame >= maxFrame) {
+                currentFrame = 0;
+            }
+        }
+
+        writeln(currentFrame);
+
 
         Vector3d translation;
 
@@ -104,7 +119,7 @@ void main()
         Matrix4d testMatrix = Matrix4d()
             .identity()
             .setTranslation(0,0,0)
-            .setRotationXYZ(0,(rotation / 360.0) * PI2,0)
+            .setRotationXYZ(0,(1 / 360.0) * PI2,0)
             .scaleLocal(1,1,1);
 
         shader.setUniformMatrix4f("boneTRS", testMatrix.getFloatArray);
