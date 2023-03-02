@@ -7,11 +7,18 @@
         "length": 1,
         "width": 1,
         
-        "debug note: this is a test for element 0 of animation integration": 0,
+        "Debug note": "this is a test for element 0 of animation integration",
         "static_position": {
             "x": 0,
             "y": 0,
             "z": 0
+        },
+        
+        "Implementation note 1": "IF a model has static_position, then this will throw an error!",
+        "Implementation note 2": "This is a raw OpenGL array, so it's (1,2,3), (4,5,6) etc",
+        "animation": {
+            "T": [1,2,3,4],
+
         }
     }
 }
