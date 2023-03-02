@@ -6,6 +6,7 @@ import shader.shader;
 import texture.texture;
 import window.window;
 import vector_3d;
+import matrix_4d;
 import blockmodel.blockmodel;
 import math;
 
@@ -32,9 +33,7 @@ void main()
     shader.createUniform("cameraMatrix");
     shader.createUniform("objectMatrix");
     shader.createUniform("textureSampler");
-    // shader.createUniform("bonePosition");
-    // shader.createUniform("boneRotation");
-    // shader.createUniform("boneScale");
+    shader.createUniform("boneTRS");
 
     Camera.createShaderContext(shader);
     Mesh.createShaderContext(shader);
@@ -72,6 +71,12 @@ void main()
         camera.clearDepthBuffer();
         camera.setRotation(Vector3d(0,0,0));
         camera.updateCameraMatrix();
+
+        Matrix4d testMatrix = Matrix4d()
+            .identity()
+            .setRotationXYZ(0,(rotation / 360.0) * PI2,0);
+
+        shader.setUniformMatrix4f("boneTRS", testMatrix.getFloatArray);
         
 
         debugMesh.render(
