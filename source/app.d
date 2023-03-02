@@ -41,12 +41,14 @@ void main()
     Mesh.createShaderContext(shader);
 
 
-    
+    BlockModel model = new BlockModel(1,1,1);
 
-    // Mesh debugMesh = new Mesh(
+    Mesh debugMesh = new Mesh(
+        model.getVertexPositions,
 
-    //     "textures/debug_character.png"
-    // );
+
+        "textures/debug_character.png"
+    );
 
     // Initialize shader program early to dump in uniforms
     glUseProgram(shader.getShaderProgram);
