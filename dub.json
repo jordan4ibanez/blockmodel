@@ -3,7 +3,19 @@
 		"jordan4ibanez"
 	],
 	"copyright": "Copyright © 2023, jordan4ibanez",
+    "dependencies": {
+		"arsd-official:png": "~>10.9.8",
+		"bindbc-glfw": "~>1.0.1",
+		"bindbc-opengl": "~>1.0.4",
+		"delta_time": "~>1.0.5",
+		"doml": "~>0.0.5",
+		"tinygltf": "~>1.1.0"
+	},
 	"description": "A model format for voxel games.",
 	"license": "MIT",
-	"name": "blockmodel"
+	"name": "blockmodel",
+    "versions": [
+		"GLFW_33",
+		"GL_41"
+	]
 }
