@@ -39,40 +39,18 @@ class BlockModel {
         // 8 Vertex Positions - written extremely verbosely
 
         // Wall 1 (FRONT)
-        vertexPositions ~= size.x;
-        vertexPositions ~= size.y;
-        vertexPositions ~= -size.z;
 
-        vertexPositions ~= size.x;
-        vertexPositions ~= -size.y;
-        vertexPositions ~= -size.z;
-
-        vertexPositions ~= -size.x;
-        vertexPositions ~= -size.y;
-        vertexPositions ~= -size.z;
-        
-        vertexPositions ~= -size.x;
-        vertexPositions ~= size.y;
-        vertexPositions ~= -size.z;
-        
+        const auto v0 = Vector3d(size.x, size.y, -size.z);
+        const auto v1 = Vector3d(size.x, -size.y, -size.z);
+        const auto v2 = Vector3d(-size.x, -size.y, -size.z);
+        const auto v3 = Vector3d(-size.x, size.y, -size.z);
 
         // Wall 2 (BACK)
 
-        vertexPositions ~= -size.x;
-        vertexPositions ~= size.y;
-        vertexPositions ~= size.z;
-
-        vertexPositions ~= -size.x;
-        vertexPositions ~= -size.y;
-        vertexPositions ~= size.z;
-
-        vertexPositions ~= size.x;
-        vertexPositions ~= -size.y;
-        vertexPositions ~= size.z;
-
-        vertexPositions ~= size.x;
-        vertexPositions ~= size.y;
-        vertexPositions ~= size.z;
+        const auto v4 = Vector3d(-size.x, size.y, size.z);
+        const auto v5 = Vector3d(-size.x, -size.y, size.z);
+        const auto v6 = Vector3d(size.x, -size.y, size.z);
+        const auto v7 = Vector3d(size.x, size.y, size.z);
         
     }
 
@@ -123,7 +101,7 @@ class BlockModel {
 
             //* Left face
             // Top left
-            xMin,yMin,
+            xMax,yMin,
             // Bottom left
             xMax,yMax,
             // Top right
