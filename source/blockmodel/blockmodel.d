@@ -36,17 +36,15 @@ class BlockModel {
 
     void constructVertexPositions() {
         
-        // 8 Vertex Positions - written extremely verbosely
+        // 8 Vertex Positions
 
         // Wall 1 (FRONT)
-
         const auto v0 = Vector3d(size.x, size.y, -size.z);
         const auto v1 = Vector3d(size.x, -size.y, -size.z);
         const auto v2 = Vector3d(-size.x, -size.y, -size.z);
         const auto v3 = Vector3d(-size.x, size.y, -size.z);
 
         // Wall 2 (BACK)
-
         const auto v4 = Vector3d(-size.x, size.y, size.z);
         const auto v5 = Vector3d(-size.x, -size.y, size.z);
         const auto v6 = Vector3d(size.x, -size.y, size.z);
@@ -54,6 +52,7 @@ class BlockModel {
         
     }
 
+    // Builds a plane of 2 tris out of 4 vertex positions
     void assembleQuad(Vector3d pos1, Vector3d pos2, Vector3d pos3, Vector3d pos4) {
         foreach (thisVertexPos; [pos1, pos2, pos3, pos4]) {
             vertexPositions ~= thisVertexPos.x;
