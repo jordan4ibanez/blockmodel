@@ -3,8 +3,9 @@
 // Frag is for tri positions and whatnot
 
 // This can always be made bigger in the future
-const int MAX_BONES = 6;
+const int MAX_BONES = 256;
 
+// Joint is synced with 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 textureCoordinate;
 layout (location = 2) in int joint;
