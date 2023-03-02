@@ -13,8 +13,9 @@ class BlockModel {
         // Front
         0,1,2,2,3,0,
         // Back
-        4,5,6,6,7,4
+        4,5,6,6,7,4,
         // Left
+        3,2,5,5,4,3,
     ];
 
     Vector3d size = Vector3d(1,1,1);
@@ -57,12 +58,6 @@ class BlockModel {
 
         // Wall 2 (BACK)
 
-        
-
-        
-
-        
-
         vertexPositions ~= -size.x;
         vertexPositions ~= size.y;
         vertexPositions ~= size.z;
@@ -78,10 +73,6 @@ class BlockModel {
         vertexPositions ~= size.x;
         vertexPositions ~= size.y;
         vertexPositions ~= size.z;
-        
-
-        
-
         
     }
 
@@ -104,26 +95,41 @@ class BlockModel {
     }
 
     float[] getTextureCoordinates() {
+        // These are place holders for future modeling implementation
+        const float xMin = 0.0;
+        const float xMax = 1.0;
+        const float yMin = 0.0;
+        const float yMax = 1.0;
         return [
             //* Front face
             // Top left
-            0.0,0.0,
+            xMin,yMin,
             // Bottom left
-            0.0,1.0,
+            xMin,yMax,
             // Top right
-            1.0,1.0,
+            xMax,yMax,
             // Bottom right
-            1.0,0.0,
+            xMax,yMin,
 
             //* Back face
             // Top left
-            0.0,0.0,
+            xMin,yMin,
             // Bottom left
-            0.0,1.0,
+            xMin,yMax,
             // Top right
-            1.0,1.0,
+            xMax,yMax,
             // Bottom right
-            1.0,0.0,
+            xMax,yMin,
+
+            //* Left face
+            // Top left
+            xMin,yMin,
+            // Bottom left
+            xMax,yMax,
+            // Top right
+            xMax,yMax,
+            // Bottom right
+            xMax,yMin,
         ];
     }
 
