@@ -22,7 +22,6 @@ The minimum supported version of OpenGL is 4.1. This can probably be set further
 1. Blockmodels are ONLY to be stored as JSON encoded files.
 2. Block models SHOULD be stored as a ``.bm`` file extension.
 
-
 ## Mesh/Bone
 
 1. Each section of the model is made up of cuboids.
