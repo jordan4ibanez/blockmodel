@@ -56,7 +56,7 @@ void main()
 
 
 
-    float rotation = -90.0;
+    float rotation = 180.0;
 
     while (!window.shouldClose()) {
 
@@ -64,7 +64,6 @@ void main()
         if (rotation > 360.0) {
             rotation = rotation - 360.0;
         }
-
 
         window.pollEvents();
 
@@ -78,7 +77,7 @@ void main()
 
         debugMesh.render(
             Vector3d(0,0,-4), // Translation
-            Vector3d(0,rotation,0), // Rotation
+            Vector3d(0,rotation,45), // Rotation
             Vector3d(0.25), // Scale
         1);
 
