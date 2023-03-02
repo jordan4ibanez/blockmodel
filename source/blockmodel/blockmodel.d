@@ -1,6 +1,11 @@
 module blockmodel.blockmodel;
 
 import std.stdio;
+import std.string;
+import std.file;
+import std.json;
+import std.conv;
+import std.algorithm.iteration;
 import std.algorithm.sorting;
 import std.conv;
 import tinygltf;
