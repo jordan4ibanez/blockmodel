@@ -22,7 +22,8 @@ uniform vec3 boneScale[MAX_BONES];
 void main() {
 
     // Position in world without camera matrix application
-    vec4 objectPosition = vec4(bonePosition[0], 1) * vec4(position,1.0);
+    // vec4(bonePosition[0], 1) *
+    vec4 objectPosition =  vec4(position,1.0);
 
     // Position in world relative to camera
     vec4 cameraPosition = objectMatrix * objectPosition;
