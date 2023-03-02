@@ -60,10 +60,10 @@ void main()
 
     while (!window.shouldClose()) {
 
-        // rotation += 1;
-        // if (rotation > 360.0) {
-        //     rotation = rotation - 360.0;
-        // }
+        rotation += 1;
+        if (rotation > 360.0) {
+            rotation = rotation - 360.0;
+        }
 
 
         window.pollEvents();
