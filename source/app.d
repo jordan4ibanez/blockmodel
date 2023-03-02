@@ -33,7 +33,7 @@ void main()
     shader.createUniform("cameraMatrix");
     shader.createUniform("objectMatrix");
     shader.createUniform("textureSampler");
-    shader.createUniform("bonePosition");
+    // shader.createUniform("bonePosition");
     // shader.createUniform("boneRotation");
     // shader.createUniform("boneScale");
 
@@ -45,9 +45,10 @@ void main()
 
     Mesh debugMesh = new Mesh(
         model.getVertexPositions,
-
-
-        "textures/debug_character.png"
+        model.getIndices,
+        model.getTextureCoordinates,
+        model.getBones,
+        "textures/debug.png"
     );
 
     // Initialize shader program early to dump in uniforms
@@ -75,11 +76,11 @@ void main()
         camera.updateCameraMatrix();
         
 
-        // debugMesh.render(
-        //     Vector3d(0,-2,-4), // Translation
-        //     Vector3d(0,rotation,0), // Rotation
-        //     Vector3d(0.25), // Scale
-        // 1);
+        debugMesh.render(
+            Vector3d(0,0,-4), // Translation
+            Vector3d(0,rotation,0), // Rotation
+            Vector3d(0.25), // Scale
+        1);
 
         window.swapBuffers();
     }
