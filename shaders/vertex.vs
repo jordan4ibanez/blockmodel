@@ -21,16 +21,13 @@ uniform vec3 boneScale[MAX_BONES];
 
 void main() {
 
-    vec4 worldPosition;
+    // Position in world without camera matrix application
+    vec4 objectPosition = vec4(position,1.0);
 
-    if (found) {
-        worldPosition = skinMat * testMatrix * ibm * vec4(position,1.0);
-    } else {
-        worldPosition = vec4(position,1.0);
-    }
-
+    // Position in world relative to camera
     vec4 cameraPosition = objectMatrix * worldPosition;
 
+    // Output real coordinates into gpu
     gl_Position = cameraMatrix * cameraPosition;
 
     outputTextureCoordinate = textureCoordinate;
