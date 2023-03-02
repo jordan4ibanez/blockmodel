@@ -54,6 +54,14 @@ class BlockModel {
         
     }
 
+    void assembleQuad(Vector3d pos1, Vector3d pos2, Vector3d pos3, Vector3d pos4) {
+        foreach (thisVertexPos; [pos1, pos2, pos3, pos4]) {
+            vertexPositions ~= thisVertexPos.x;
+            vertexPositions ~= thisVertexPos.y;
+            vertexPositions ~= thisVertexPos.z;
+        }
+    }
+
     void constructIndices() {
         const int currentCount = cast(int)indices.length;
 
