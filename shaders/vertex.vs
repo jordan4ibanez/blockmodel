@@ -7,8 +7,7 @@ const int MAX_BONES = 6;
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 textureCoordinate;
-layout (location = 2) in vec4 joint;
-layout (location = 3) in vec4 weight;
+layout (location = 2) in int joint;
 
 out vec2 outputTextureCoordinate;
 
