@@ -78,10 +78,6 @@ void main()
         //! Begin first iteration of animation prototyping, this is doing the ENTIRE animation
         //! In future implementation: Containerization will allow LERP portions of the animation
 
-        Vector3d translation;
-        Vector3d rotation;
-        Vector3d scale;
-
         float[] animationAccumulator;
 
         if (isStatic) {
@@ -119,9 +115,9 @@ void main()
                 Vector3d[] r = block.rotation;
                 Vector3d[] s = block.scale;
 
-                translation = Vector3d(t[startFrame]).lerp(t[endFrame], frameProgress);
-                rotation    = Vector3d(r[startFrame]).lerp(r[endFrame], frameProgress);
-                scale       = Vector3d(s[startFrame]).lerp(s[endFrame], frameProgress);
+                Vector3d translation = Vector3d(t[startFrame]).lerp(t[endFrame], frameProgress);
+                Vector3d rotation    = Vector3d(r[startFrame]).lerp(r[endFrame], frameProgress);
+                Vector3d scale       = Vector3d(s[startFrame]).lerp(s[endFrame], frameProgress);
                 Matrix4d testMatrix = Matrix4d()
                     .identity()
                     .setTranslation(translation)
