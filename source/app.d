@@ -62,7 +62,14 @@ void main()
     int currentFrame = 0;
     bool isStatic = model.isStatic;
 
+    float fancyRotation = 0;
+
     while (!window.shouldClose()) {
+
+        fancyRotation += 1.0;
+        if (fancyRotation >= 360.0) {
+            fancyRotation -= 360.0;
+        }
         
         window.pollEvents();
 
@@ -148,7 +155,7 @@ void main()
 
         debugMesh.render(
             Vector3d(0,-3,-10), // Translation
-            Vector3d(0,0,0), // Rotation
+            Vector3d(0,fancyRotation,0), // Rotation
             Vector3d(1), // Scale
         1);
 
