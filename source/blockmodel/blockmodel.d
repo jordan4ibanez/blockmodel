@@ -73,7 +73,6 @@ class BlockModel {
 
         // Get REQUIRED baseline info
         foreach (string key,JSONValue value; jsonData.objectNoRef) {
-
             switch (key) {
                 case "name": {
                     assert(value.type == JSONType.string);
@@ -97,7 +96,14 @@ class BlockModel {
                 }
                 default:
             }
+        }
 
+        // Now get the blocks and animation
+        foreach (i; 0..total_blocks) {
+            Block block = new Block();
+            const auto test = jsonData.objectNoRef["block0"];
+
+            writeln(test);
         }
     }
 
