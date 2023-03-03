@@ -120,7 +120,6 @@ class Shader {
     }
 
     void setUniformMatrix4f(string uniformName, float[] matrix, GLint count = 1) {
-
         glUniformMatrix4fv(
             uniforms[uniformName], // Location
             count, // Count
