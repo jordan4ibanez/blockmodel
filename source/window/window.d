@@ -450,7 +450,7 @@ class Window {
 
         glViewport(0, 0, windowSize.x, windowSize.y);
 
-        bool cull = true;
+        bool cull = false;
         
         if (cull) {
             // Enable backface culling
