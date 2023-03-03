@@ -117,16 +117,15 @@ class Mesh {
 
         glBufferData(
             GL_ARRAY_BUFFER,            // Target object
-            bones.length * int.sizeof, // How big the object is
-            bones.ptr,                 // The pointer to the data for the object
+            bones.length * int.sizeof,  // How big the object is
+            bones.ptr,                  // The pointer to the data for the object
             GL_STATIC_DRAW              // Which draw mode OpenGL will use
         );
 
-        glVertexAttribPointer(
+        glVertexAttribIPointer(
             2,           // Attribute 0 (matches the attribute in the glsl shader)
             1,           // Size (literal like 3 points)  
-            GL_INT,    // Type
-            GL_FALSE,    // Normalized?
+            GL_INT,      // Type
             0,           // Stride
             cast(void*)0 // Array buffer offset
         );
@@ -146,7 +145,7 @@ class Mesh {
         );
 
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);        
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
         
         // Unbind vao just in case
         glBindVertexArray(0);
