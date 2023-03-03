@@ -139,8 +139,9 @@ class BlockModel {
                     }
                     default:
                 }
-                
             }
+
+            blocks ~= block;
         }
     }
 
