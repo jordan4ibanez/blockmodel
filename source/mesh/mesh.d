@@ -124,7 +124,7 @@ class Mesh {
 
         glVertexAttribPointer(
             2,           // Attribute 0 (matches the attribute in the glsl shader)
-            4,           // Size (literal like 3 points)  
+            1,           // Size (literal like 3 points)  
             GL_INT,    // Type
             GL_FALSE,    // Normalized?
             0,           // Stride
