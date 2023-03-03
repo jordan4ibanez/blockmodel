@@ -12,6 +12,7 @@ import tinygltf;
 import vector_3d;
 import vector_3i;
 import vector_2d;
+import math;
 
 /// Container class for constructing the model
 class Block {
@@ -26,6 +27,8 @@ class Block {
 }
 
 class BlockModel {
+
+    private static immutable double RADIANS = PI/180.0;
     
     private static immutable int[] indiceOrder = [
         // Front
@@ -246,9 +249,9 @@ class BlockModel {
                         JSONValue[3] temp = value.array;
                         
                         block.staticRotation = Vector3d(
-                            getDouble(temp[0]),
-                            getDouble(temp[1]),
-                            getDouble(temp[2])
+                            getDouble(temp[0]) * RADIANS,
+                            getDouble(temp[1]) * RADIANS,
+                            getDouble(temp[2]) * RADIANS
                         );
                         break;
                     }
@@ -304,9 +307,9 @@ class BlockModel {
                     foreach (i; 0..total_frames){
                         const int baseIndex = i * 3;
                         block.rotation ~= Vector3d(
-                            getDouble(value[baseIndex]),
-                            getDouble(value[baseIndex + 1]),
-                            getDouble(value[baseIndex + 2]),
+                            getDouble(value[baseIndex])     * RADIANS,
+                            getDouble(value[baseIndex + 1]) * RADIANS,
+                            getDouble(value[baseIndex + 2]) * RADIANS,
                         );
                     }
                     break;
