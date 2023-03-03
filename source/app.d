@@ -42,8 +42,6 @@ void main()
 
     BlockModel model = new BlockModel("models/2_cube.json");
 
-    writeln(model.bones.length);
-
     Mesh debugMesh = new Mesh(
         model.getVertexPositions,
         model.getIndices,
@@ -152,7 +150,7 @@ void main()
 
         debugMesh.render(
             Vector3d(0,0,-8), // Translation
-            Vector3d(0,45,0), // Rotation
+            Vector3d(0,35,0), // Rotation
             Vector3d(1), // Scale
         1);
 
