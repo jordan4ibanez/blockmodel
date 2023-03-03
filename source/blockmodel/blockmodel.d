@@ -47,11 +47,10 @@ class BlockModel {
     int FPS;
     int total_frames;
     int total_blocks;
-
-    int count = 0;
     
     float[] vertexPositions;
     int[] indices;
+    int[] bones;
 
     this(string fileLocation) {
 
@@ -65,37 +64,40 @@ class BlockModel {
     //*========================= BEGIN OPENGL METHODS =====================================
 
     void constructGLModel() {
-        foreach (int i; 0..total_blocks) {
+        foreach (block; blocks) {
+            // Construct each cube
+
+            this.constructVertexPositions(block);
+            this.constructIndices();
+            this.constructBones(block);
             
+        }
+    }
+
+    void constructBones(Block block) {
+
+        const int boneCache = block.id;
+        foreach (int i; 0..24) {
+            bones ~= boneCache;
         }
     }
     
 
-    void constructCube(double width, double height, double length) {
-
-        this.size.x = width;
-        this.size.y = height;
-        this.size.z = length;
-
-        this.constructVertexPositions();
-        this.constructIndices();
-    }
-
-    void constructVertexPositions() {
+    void constructVertexPositions(Block block) {
         
         // 8 Vertex Positions
 
         // Wall 1 (FRONT)
-        const auto v0 = Vector3d(size.x, size.y * 2, -size.z);
-        const auto v1 = Vector3d(size.x, 0, -size.z);
-        const auto v2 = Vector3d(-size.x, 0, -size.z);
-        const auto v3 = Vector3d(-size.x, size.y * 2, -size.z);
+        const auto v0 = Vector3d(block.size.x, block.size.y * 2, -block.size.z);
+        const auto v1 = Vector3d(block.size.x, 0, -block.size.z);
+        const auto v2 = Vector3d(-block.size.x, 0, -block.size.z);
+        const auto v3 = Vector3d(-block.size.x, block.size.y * 2, -block.size.z);
 
         // Wall 2 (BACK)
-        const auto v4 = Vector3d(-size.x, size.y * 2, size.z);
-        const auto v5 = Vector3d(-size.x, 0, size.z);
-        const auto v6 = Vector3d(size.x, 0, size.z);
-        const auto v7 = Vector3d(size.x, size.y * 2, size.z);
+        const auto v4 = Vector3d(-block.size.x, block.size.y * 2, block.size.z);
+        const auto v5 = Vector3d(-block.size.x, 0, block.size.z);
+        const auto v6 = Vector3d(block.size.x, 0, block.size.z);
+        const auto v7 = Vector3d(block.size.x, block.size.y * 2, block.size.z);
 
         // Front face
         assembleQuad(v0,v1,v2,v3);
@@ -214,7 +216,7 @@ class BlockModel {
     }
 
     int[] getBones() {
-        return [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        return bones;
     }
 
     //!====================== END OPENGL METHODS =================================
