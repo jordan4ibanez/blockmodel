@@ -15,6 +15,19 @@
         "Debug note": "this is a test for element 0 of animation integration",
         "static_position": [0,0,0],
 
+        "Implementation note:": {
+            "Faces ordered as": [
+                "front",
+                "back",
+                "left",
+                "right",
+                "top",
+                "bottom",
+                "No real reason for this, this is just how I did it"
+            ]
+        },
+
+
         "Implementation note 1": "IF a model has static_position, then this will throw an error!",
         "Implementation note 2": "This is a raw OpenGL array, so it's (1,2,3), (4,5,3) etc",
         "animation": {
@@ -25,7 +38,7 @@
                 3,0,0
             ],
             "R": [
-                0,0,    0,
+                0,3.14,    0,
                 0,3.14, 0,
                 0,-3.14,0,
                 0,0,    0
