@@ -11,6 +11,7 @@ import std.conv;
 import tinygltf;
 import vector_3d;
 import vector_3i;
+import vector_2d;
 
 /// Container class for constructing the model
 class Block {
@@ -20,6 +21,7 @@ class Block {
     Vector3d[] translation;
     Vector3d[] rotation;
     Vector3d[] scale;
+    Vector2d[] textureCoordinates;
 }
 
 class BlockModel {
@@ -241,6 +243,20 @@ class BlockModel {
                             throw new Exception("A static model cannot have animation!");
                         }
                         extractAnimation(block, value);
+                        break;
+                    }
+                    case "texture_coordinates": {
+                        assert(value.type == JSONType.array);
+                        // Stride is 2
+                        // 48 texture points (vertex positions)
+                        // 48 / 2 is 24 because the stride is 2
+                        foreach (i; 0..24) {
+                            const int currentStride = i * 2;
+                            block.textureCoordinates ~= Vector2d(
+                                getDouble(value[currentStride]),
+                                getDouble(value[currentStride + 1])
+                            );
+                        }
                         break;
                     }
                     default:
