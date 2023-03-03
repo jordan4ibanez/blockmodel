@@ -82,6 +82,8 @@ void main()
         Vector3d rotation;
         Vector3d scale;
 
+        float[] animationAccumulator;
+
         if (isStatic) {
 
         } else {
@@ -112,28 +114,27 @@ void main()
                 endFrame   = currentFrame + 1;
             }
 
-            Vector3d[] t = model.blocks[0].translation;
-            Vector3d[] r = model.blocks[0].rotation;
-            Vector3d[] s = model.blocks[0].scale;
+            foreach (Block block; model.blocks) {
+                Vector3d[] t = block.translation;
+                Vector3d[] r = block.rotation;
+                Vector3d[] s = block.scale;
 
-            translation = Vector3d(t[startFrame]).lerp(t[endFrame], frameProgress);
-            rotation    = Vector3d(r[startFrame]).lerp(r[endFrame], frameProgress);
-            scale       = Vector3d(s[startFrame]).lerp(s[endFrame], frameProgress);
+                translation = Vector3d(t[startFrame]).lerp(t[endFrame], frameProgress);
+                rotation    = Vector3d(r[startFrame]).lerp(r[endFrame], frameProgress);
+                scale       = Vector3d(s[startFrame]).lerp(s[endFrame], frameProgress);
+                Matrix4d testMatrix = Matrix4d()
+                    .identity()
+                    .setTranslation(translation)
+                    .setRotationXYZ(rotation.x, rotation.y, rotation.z)
+                    .scaleLocal(scale.x,scale.y,scale.z);
+                    
+                animationAccumulator ~= testMatrix.getFloatArray;
+            }
         }
-
-
 
         //! End first iteration of animation prototyping
 
-
-
-        Matrix4d testMatrix = Matrix4d()
-            .identity()
-            .setTranslation(translation)
-            .setRotationXYZ(rotation.x, rotation.y, rotation.z)
-            .scaleLocal(scale.x,scale.y,scale.z);
-
-        shader.setUniformMatrix4f("boneTRS", testMatrix.getFloatArray);
+        shader.setUniformMatrix4f("boneTRS", animationAccumulator, model.total_blocks);
         
 
         debugMesh.render(
