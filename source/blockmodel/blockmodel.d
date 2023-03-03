@@ -146,15 +146,43 @@ class BlockModel {
 
     void extractAnimation(ref Block block, JSONValue animationData) {
         foreach (string key, JSONValue value; animationData.objectNoRef) {
+
+            // Stride is 3
             switch (key) {
                 case "T": {
-                    writeln(value.type);
+                    assert(value.type == JSONType.array);
+                    foreach (i; 0..total_frames){
+                        const int baseIndex = i * 3;
+                        block.translation ~= Vector3d(
+                            getDouble(value[baseIndex]),
+                            getDouble(value[baseIndex + 1]),
+                            getDouble(value[baseIndex + 2]),
+                        );
+                    }
                     break;
                 }
                 case "R": {
+                    assert(value.type == JSONType.array);
+                    foreach (i; 0..total_frames){
+                        const int baseIndex = i * 3;
+                        block.rotation ~= Vector3d(
+                            getDouble(value[baseIndex]),
+                            getDouble(value[baseIndex + 1]),
+                            getDouble(value[baseIndex + 2]),
+                        );
+                    }
                     break;
                 }
                 case "S": {
+                    assert(value.type == JSONType.array);
+                    foreach (i; 0..total_frames){
+                        const int baseIndex = i * 3;
+                        block.scale ~= Vector3d(
+                            getDouble(value[baseIndex]),
+                            getDouble(value[baseIndex + 1]),
+                            getDouble(value[baseIndex + 2]),
+                        );
+                    }
                     break;
                 }
                 default:
