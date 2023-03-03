@@ -45,8 +45,9 @@ class BlockModel {
 
     string name;
     int FPS;
-    int total_frames;
-    int total_blocks;
+    int total_frames = 0;
+    int total_blocks = 0;
+    bool is_static;
     
     float[] vertexPositions;
     int[] indices;
@@ -261,6 +262,12 @@ class BlockModel {
             }
         }
 
+        // Now store if it's a static model
+        if (total_frames == 0 || FPS == 0) {
+            //! Re-enable this for export testing
+            // is_static = true;
+        }
+
         // Now get the blocks and animation
         foreach (i; 0..total_blocks) {
 
@@ -298,6 +305,9 @@ class BlockModel {
                     }
                     case "animation": {
                         assert(value.type == JSONType.object);
+                        if (is_static) {
+                            throw new Exception("A static model cannot have animation!");
+                        }
                         extractAnimation(block, value);
                         break;
                     }
