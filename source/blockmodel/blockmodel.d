@@ -59,9 +59,16 @@ class BlockModel {
         FPS = 24;
 
         this.loadBlocks(fileLocation);
+        this.constructGLModel();
     }
 
     //*========================= BEGIN OPENGL METHODS =====================================
+
+    void constructGLModel() {
+        foreach (int i; 0..total_blocks) {
+            
+        }
+    }
     
 
     void constructCube(double width, double height, double length) {
@@ -256,6 +263,8 @@ class BlockModel {
         foreach (i; 0..total_blocks) {
 
             Block block = new Block();
+
+            block.id = i;
 
             JSONValue blockData = jsonData.objectNoRef["block" ~ to!string(i)];
 
