@@ -200,7 +200,7 @@ class BlockModel {
         }
 
         // Now store if it's a static model
-        if (total_frames == 0 || FPS == 0) {
+        if (total_frames <= 1 || FPS == 0) {
             //! Re-enable this for export testing
             isStatic = true;
         }
