@@ -40,14 +40,14 @@ void main()
     Mesh.createShaderContext(shader);
 
 
-    BlockModel model = new BlockModel("models/2_cube_tango.json");
+    BlockModel model = new BlockModel("models/minetest_sam.json");
 
     Mesh debugMesh = new Mesh(
         model.getVertexPositions,
         model.getIndices,
         model.getTextureCoordinates,
         model.getBones,
-        "textures/debug.png"
+        "textures/debug_character.png"
     );
 
     // Initialize shader program early to dump in uniforms
