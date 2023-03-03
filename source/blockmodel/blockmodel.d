@@ -58,10 +58,6 @@ class BlockModel {
     float[] textureCoordinates;
 
     this(string fileLocation) {
-
-        // Todo: load this
-        FPS = 24;
-
         this.loadBlocks(fileLocation);
         this.constructGLModel();
     }
@@ -86,7 +82,6 @@ class BlockModel {
     }
 
     void constructBones(Block block) {
-
         const int boneCache = block.id;
         foreach (int i; 0..24) {
             bones ~= boneCache;
