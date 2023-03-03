@@ -40,7 +40,7 @@ void main()
     Mesh.createShaderContext(shader);
 
 
-    BlockModel model = new BlockModel("models/minetest_sam.json");
+    BlockModel model = new BlockModel("models/minetest_sam.bm");
 
     Mesh debugMesh = new Mesh(
         model.getVertexPositions,
