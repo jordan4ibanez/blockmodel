@@ -62,8 +62,6 @@ void main()
     int currentFrame = 0;
     bool isStatic = model.isStatic;
 
-    writeln("am I static?", model.isStatic);
-
     while (!window.shouldClose()) {
         
         window.pollEvents();
@@ -143,14 +141,14 @@ void main()
             }
         }
 
-        //! End first iteration of animation prototyping
-
         shader.setUniformMatrix4f("boneTRS", animationAccumulator, model.total_blocks);
+
+        //! End first iteration of animation prototyping
         
 
         debugMesh.render(
             Vector3d(0,0,-8), // Translation
-            Vector3d(0,35,0), // Rotation
+            Vector3d(0,0,0), // Rotation
             Vector3d(1), // Scale
         1);
 
