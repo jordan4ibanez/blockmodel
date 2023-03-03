@@ -24,7 +24,6 @@ The minimum supported version of OpenGL is 4.1. This can probably be set further
 
 ## Mesh/Bone
 
-0. Each cuboid is represented by a scale Vector3.
 1. Each section of the model is made up of cuboids.
 2. Each cuboid is outer facing.
 3. Each cuboid is it's own bone
