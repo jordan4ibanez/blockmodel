@@ -40,7 +40,9 @@ void main()
     Mesh.createShaderContext(shader);
 
 
-    BlockModel model = new BlockModel("models/dancing_cube.json");
+    BlockModel model = new BlockModel("models/2_cube.json");
+
+    writeln(model.bones.length);
 
     Mesh debugMesh = new Mesh(
         model.getVertexPositions,
@@ -62,6 +64,8 @@ void main()
     int currentFrame = 0;
     bool isStatic = model.isStatic;
 
+    writeln("am I static?", model.isStatic);
+
     while (!window.shouldClose()) {
         
         window.pollEvents();
@@ -79,8 +83,21 @@ void main()
         //! In future implementation: Containerization will allow LERP portions of the animation
 
         float[] animationAccumulator;
-
+        
         if (isStatic) {
+            foreach (Block block; model.blocks) {
+                Vector3d translation = block.staticPosition;
+                Vector3d rotation = block.staticRotation;
+                Vector3d scale = Vector3d(1,1,1);
+
+                Matrix4d animationMatrix = Matrix4d()
+                    .identity()
+                    .setTranslation(translation)
+                    .setRotationXYZ(rotation.x, rotation.y, rotation.z)
+                    .scaleLocal(scale.x,scale.y,scale.z);
+                    
+                animationAccumulator ~= animationMatrix.getFloatArray;
+            }
 
         } else {
             frameTime += getDelta();
@@ -118,13 +135,13 @@ void main()
                 Vector3d translation = Vector3d(t[startFrame]).lerp(t[endFrame], frameProgress);
                 Vector3d rotation    = Vector3d(r[startFrame]).lerp(r[endFrame], frameProgress);
                 Vector3d scale       = Vector3d(s[startFrame]).lerp(s[endFrame], frameProgress);
-                Matrix4d testMatrix = Matrix4d()
+                Matrix4d animationMatrix = Matrix4d()
                     .identity()
                     .setTranslation(translation)
                     .setRotationXYZ(rotation.x, rotation.y, rotation.z)
                     .scaleLocal(scale.x,scale.y,scale.z);
                     
-                animationAccumulator ~= testMatrix.getFloatArray;
+                animationAccumulator ~= animationMatrix.getFloatArray;
             }
         }
 
@@ -135,7 +152,7 @@ void main()
 
         debugMesh.render(
             Vector3d(0,0,-8), // Translation
-            Vector3d(0,0,0), // Rotation
+            Vector3d(0,45,0), // Rotation
             Vector3d(1), // Scale
         1);
 
