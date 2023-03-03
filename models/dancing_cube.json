@@ -40,6 +40,15 @@
                 "xMax,yMin"
             ]
         },
+        "Laid out how you expect": "then turned into a straight array so this file isn't gigantic",
+        "texture_coordinates": [
+            0,0,
+            0,1,
+            1,1,
+            1,0,
+
+            0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0
+        ],
 
 
 
