@@ -16,6 +16,7 @@ import vector_3i;
 class Block {
     int id;
     Vector3d size;
+    Vector3d static_position;
     Vector3d[] translation;
     Vector3d[] rotation;
     Vector3d[] scale;
@@ -44,7 +45,7 @@ class BlockModel {
 
     string name;
     int FPS;
-    int total_frame;
+    int total_frames;
     int total_blocks;
 
     int count = 0;
@@ -84,9 +85,9 @@ class BlockModel {
                     this.FPS = cast(int)value.integer;
                     break;
                 }
-                case "total_frame": {
+                case "total_frames": {
                     assert(value.type == JSONType.integer);
-                    this.total_frame = cast(int)value.integer;
+                    this.total_frames = cast(int)value.integer;
                     break;
                 }
                 case "total_blocks": {
@@ -100,10 +101,72 @@ class BlockModel {
 
         // Now get the blocks and animation
         foreach (i; 0..total_blocks) {
-            Block block = new Block();
-            const auto test = jsonData.objectNoRef["block0"];
 
-            writeln(test);
+            Block block = new Block();
+
+            JSONValue blockData = jsonData.objectNoRef["block" ~ to!string(i)];
+
+            foreach (string key, JSONValue value; blockData.objectNoRef) {
+                switch (key) {
+                    case "size": {
+                        assert(value.type == JSONType.array);
+
+                        JSONValue[3] temp = value.array;
+                        
+                        block.size = Vector3d(
+                            getDouble(temp[0]),
+                            getDouble(temp[1]),
+                            getDouble(temp[2])
+                        );
+                        break;
+                    }
+                    case "static_position": {
+                        assert(value.type == JSONType.array);
+
+                        JSONValue[3] temp = value.array;
+                        
+                        block.static_position = Vector3d(
+                            getDouble(temp[0]),
+                            getDouble(temp[1]),
+                            getDouble(temp[2])
+                        );
+                        break;
+                    }
+                    case "animation": {
+                        assert(value.type == JSONType.object);
+                        extractAnimation(block, value);
+                        break;
+                    }
+                    default:
+                }
+                
+            }
+        }
+    }
+
+    void extractAnimation(ref Block block, JSONValue animationData) {
+        foreach (string key, JSONValue value; animationData.objectNoRef) {
+            switch (key) {
+                case "T": {
+                    writeln(value.type);
+                    break;
+                }
+                case "R": {
+                    break;
+                }
+                case "S": {
+                    break;
+                }
+                default:
+            }
+        }
+    }
+
+    double getDouble(JSONValue input) {
+        if (input.type == JSONType.integer) {
+            return cast(double)input.integer;
+        } else {
+            return input.floating;
         }
     }
 
