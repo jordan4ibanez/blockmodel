@@ -24,8 +24,23 @@
                 "top",
                 "bottom",
                 "No real reason for this, this is just how I did it"
+            ],
+            "Coordinates ordered as": [
+                "(An example using the entire texture as a face)",
+                "Top left",
+                "xMin,yMin",
+
+                "Bottom left",
+                "xMin,yMax",
+
+                "Top right",
+                "xMax,yMax",
+
+                "Bottom right",
+                "xMax,yMin"
             ]
         },
+
 
 
         "Implementation note 1": "IF a model has static_position, then this will throw an error!",
