@@ -42,26 +42,26 @@ void main()
 
     BlockModel model = new BlockModel("models/dancing_cube.json");
 
-    // Mesh debugMesh = new Mesh(
-    //     model.getVertexPositions,
-    //     model.getIndices,
-    //     model.getTextureCoordinates,
-    //     model.getBones,
-    //     "textures/debug.png"
-    // );
+    Mesh debugMesh = new Mesh(
+        model.getVertexPositions,
+        model.getIndices,
+        model.getTextureCoordinates,
+        model.getBones,
+        "textures/debug.png"
+    );
 
     // Initialize shader program early to dump in uniforms
     glUseProgram(shader.getShaderProgram);
 
 
-    // const int maxFrame = 1;
-    // const double FPS = 1;
+    const int maxFrame = model.total_frames;
+    const double FPS = model.FPS;
     // // Framerate is constant LINEAR interpolation
-    // const double frameTick = 1/FPS;
-    // double frameTime = 0.0;
-    // int currentFrame = 0;
+    const double frameTick = 1/FPS;
+    double frameTime = 0.0;
+    int currentFrame = 0;
 
-    while (window.shouldClose()) {
+    while (!window.shouldClose()) {
         
         window.pollEvents();
 
@@ -77,36 +77,40 @@ void main()
         //! Begin first iteration of animation prototyping, this is doing the ENTIRE animation
         //! In future implementation: Containerization will allow LERP portions of the animation
 
-        // frameTime += getDelta();
+        frameTime += getDelta();
 
-        // // Tick up integral frame
-        // if (frameTime >= frameTick) {
-        //     frameTime -= frameTick;
-        //     currentFrame++;
-        //     // Loop integral frame - Remember: 0 count
-        //     if (currentFrame >= maxFrame) {
-        //         currentFrame = 0;
-        //     }
-        // }
+        // Tick up integral frame
+        if (frameTime >= frameTick) {
+            frameTime -= frameTick;
+            currentFrame++;
+            // Loop integral frame - Remember: 0 count
+            if (currentFrame >= maxFrame) {
+                currentFrame = 0;
+            }
+        }
 
-        // const double frameProgress = frameTime / frameTick;
+        const double frameProgress = frameTime / frameTick;
         
-        // int startFrame;
-        // int endFrame;
-        // // LERP back to frame 0 - Remember 0 count
-        // if (currentFrame == maxFrame - 1) {
-        //     startFrame = currentFrame;
-        //     endFrame   = 0;
-        // } 
-        // // LERP to next frame
-        // else {
-        //     startFrame = currentFrame;
-        //     endFrame   = currentFrame + 1;
-        // }
+        int startFrame;
+        int endFrame;
+        // LERP back to frame 0 - Remember 0 count
+        if (currentFrame == maxFrame - 1) {
+            startFrame = currentFrame;
+            endFrame   = 0;
+        } 
+        // LERP to next frame
+        else {
+            startFrame = currentFrame;
+            endFrame   = currentFrame + 1;
+        }
 
-        // Vector3d translation = Vector3d(t[startFrame]).lerp(t[endFrame], frameProgress);
-        // Vector3d rotation    = Vector3d(r[startFrame]).lerp(r[endFrame], frameProgress);
-        // Vector3d scale       = Vector3d(s[startFrame]).lerp(s[endFrame], frameProgress);
+        Vector3d[] t = model.blocks[0].translation;
+        Vector3d[] r = model.blocks[0].rotation;
+        Vector3d[] s = model.blocks[0].scale;
+
+        Vector3d translation = Vector3d(t[startFrame]).lerp(t[endFrame], frameProgress);
+        Vector3d rotation    = Vector3d(r[startFrame]).lerp(r[endFrame], frameProgress);
+        Vector3d scale       = Vector3d(s[startFrame]).lerp(s[endFrame], frameProgress);
 
         
         // writeln(currentFrame);
@@ -118,19 +122,19 @@ void main()
 
 
         Matrix4d testMatrix = Matrix4d()
-            .identity();
-            // .setTranslation(translation)
-            // .setRotationXYZ(rotation.x, rotation.y, rotation.z)
-            // .scaleLocal(scale.x,scale.y,scale.z);
+            .identity()
+            .setTranslation(translation)
+            .setRotationXYZ(rotation.x, rotation.y, rotation.z)
+            .scaleLocal(scale.x,scale.y,scale.z);
 
         shader.setUniformMatrix4f("boneTRS", testMatrix.getFloatArray);
         
 
-        // debugMesh.render(
-        //     Vector3d(0,0,-8), // Translation
-        //     Vector3d(0,0,0), // Rotation
-        //     Vector3d(1), // Scale
-        // 1);
+        debugMesh.render(
+            Vector3d(0,0,-8), // Translation
+            Vector3d(0,0,0), // Rotation
+            Vector3d(1), // Scale
+        1);
 
         window.swapBuffers();
     }
