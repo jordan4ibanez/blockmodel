@@ -2,7 +2,7 @@
 
 // Frag is for tri positions.
 
-// Bone limit is 256.
+// Bone limit is 64.
 const int MAX_BONES = 64;
 
 // Joint is synced with position.
