@@ -52,6 +52,7 @@ class BlockModel {
     float[] vertexPositions;
     int[] indices;
     int[] bones;
+    float[] textureCoordinates;
 
     this(string fileLocation) {
 
@@ -65,9 +66,8 @@ class BlockModel {
     //*========================= BEGIN OPENGL METHODS =====================================
 
     void constructGLModel() {
+        // Construct each cube
         foreach (block; blocks) {
-            // Construct each cube
-
             this.constructVertexPositions(block);
             this.constructIndices();
             this.constructBones(block);
@@ -114,8 +114,6 @@ class BlockModel {
         assembleQuad(v3,v4,v7,v0);
         // Bottom face (up is -Z, points to front face)
         assembleQuad(v1,v6,v5,v2);
-
-        
     }
 
     // Builds a plane of 2 tris out of 4 vertex positions
@@ -148,76 +146,11 @@ class BlockModel {
     }
 
     float[] getTextureCoordinates() {
-        // These are place holders for future modeling implementation
-        const float xMin = 0.0;
-        const float xMax = 1.0;
-        const float yMin = 0.0;
-        const float yMax = 1.0;
-        return [
-            //* Front face
-            // Top left
-            xMin,yMin,
-            // Bottom left
-            xMin,yMax,
-            // Top right
-            xMax,yMax,
-            // Bottom right
-            xMax,yMin,
-
-            //* Back face
-            // Top left
-            xMin,yMin,
-            // Bottom left
-            xMin,yMax,
-            // Top right
-            xMax,yMax,
-            // Bottom right
-            xMax,yMin,
-
-            //* Left face
-            // Top left
-            xMin,yMin,
-            // Bottom left
-            xMin,yMax,
-            // Top right
-            xMax,yMax,
-            // Bottom right
-            xMax,yMin,
-
-            //* Right face
-            // Top left
-            xMin,yMin,
-            // Bottom left
-            xMin,yMax,
-            // Top right
-            xMax,yMax,
-            // Bottom right
-            xMax,yMin,
-
-            //* Top face
-            // Top left
-            xMin,yMin,
-            // Bottom left
-            xMin,yMax,
-            // Top right
-            xMax,yMax,
-            // Bottom right
-            xMax,yMin,
-
-            //* Bottom face
-            // Top left
-            xMin,yMin,
-            // Bottom left
-            xMin,yMax,
-            // Top right
-            xMax,yMax,
-            // Bottom right
-            xMax,yMin,
-        ];
+        return this.textureCoordinates;
     }
 
     int[] getBones() {
-        return bones;
+        return this.bones;
     }
 
     //!====================== END OPENGL METHODS =================================
