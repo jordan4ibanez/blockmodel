@@ -40,7 +40,7 @@ void main()
     Mesh.createShaderContext(shader);
 
 
-    BlockModel model = new BlockModel("models/2_cube.json");
+    BlockModel model = new BlockModel("models/2_cube_tango.json");
 
     Mesh debugMesh = new Mesh(
         model.getVertexPositions,
@@ -56,7 +56,7 @@ void main()
 
     const int maxFrame = model.total_frames;
     const double FPS = model.FPS;
-    // // Framerate is constant LINEAR interpolation
+    // Framerate is constant LINEAR interpolation
     const double frameTick = 1/FPS;
     double frameTime = 0.0;
     int currentFrame = 0;
