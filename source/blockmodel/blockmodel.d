@@ -73,6 +73,14 @@ class BlockModel {
             this.constructVertexPositions(block);
             this.constructIndices();
             this.constructBones(block);
+            this.constructTextureCoordinates(block);
+        }
+    }
+
+    void constructTextureCoordinates(Block block) {
+        foreach (Vector2d point; block.textureCoordinates) {
+            textureCoordinates ~= point.x;
+            textureCoordinates ~= point.y;
         }
     }
 
