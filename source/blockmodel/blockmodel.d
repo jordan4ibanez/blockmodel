@@ -17,7 +17,8 @@ import vector_2d;
 class Block {
     int id;
     Vector3d size;
-    Vector3d static_position;
+    Vector3d staticPosition;
+    Vector3d staticRotation;
     Vector3d[] translation;
     Vector3d[] rotation;
     Vector3d[] scale;
@@ -71,7 +72,7 @@ class BlockModel {
         // Construct each cube
         foreach (block; blocks) {
             this.constructVertexPositions(block);
-            this.constructIndices();
+            this.constructIndices(block);
             this.constructBones(block);
             this.constructTextureCoordinates(block);
         }
@@ -91,7 +92,6 @@ class BlockModel {
             bones ~= boneCache;
         }
     }
-    
 
     void constructVertexPositions(Block block) {
         
@@ -123,6 +123,7 @@ class BlockModel {
         assembleQuad(v3,v4,v7,v0);
         // Bottom face (up is -Z, points to front face)
         assembleQuad(v1,v6,v5,v2);
+
     }
 
     // Builds a plane of 2 tris out of 4 vertex positions
@@ -135,15 +136,14 @@ class BlockModel {
     }
 
     // Assembles the indices of the block
-    void constructIndices() {
+    void constructIndices(Block block) {
 
-        const int currentCount = cast(int)indices.length;
+        // There are 24 indices per block
+        const int currentCount = block.id * 24;
 
         foreach (int key; indiceOrder) {
             indices ~= currentCount + key;
         }
-
-        writeln(this.indices);
     }
 
     float[] getVertexPositions() {
@@ -207,7 +207,7 @@ class BlockModel {
         // Now store if it's a static model
         if (total_frames == 0 || FPS == 0) {
             //! Re-enable this for export testing
-            // isStatic = true;
+            isStatic = true;
         }
 
         // Now get the blocks and animation
@@ -238,7 +238,19 @@ class BlockModel {
 
                         JSONValue[3] temp = value.array;
                         
-                        block.static_position = Vector3d(
+                        block.staticPosition = Vector3d(
+                            getDouble(temp[0]),
+                            getDouble(temp[1]),
+                            getDouble(temp[2])
+                        );
+                        break;
+                    }
+                    case "static_rotation": {
+                        assert(value.type == JSONType.array);
+
+                        JSONValue[3] temp = value.array;
+                        
+                        block.staticRotation = Vector3d(
                             getDouble(temp[0]),
                             getDouble(temp[1]),
                             getDouble(temp[2])
