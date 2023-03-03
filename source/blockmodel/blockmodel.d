@@ -71,7 +71,6 @@ class BlockModel {
             this.constructVertexPositions(block);
             this.constructIndices();
             this.constructBones(block);
-            
         }
     }
 
