@@ -147,7 +147,7 @@ void main()
         
 
         debugMesh.render(
-            Vector3d(0,0,-8), // Translation
+            Vector3d(0,-3,-10), // Translation
             Vector3d(0,0,0), // Rotation
             Vector3d(1), // Scale
         1);
