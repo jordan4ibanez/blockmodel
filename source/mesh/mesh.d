@@ -289,4 +289,13 @@ class Mesh {
     public static void destroyWindowContext() {
         this.window = null;
     }
+
+    GLenum getAndClearGLErrors(){
+        GLenum error = glGetError();
+        // Clear OpenGL errors
+        while (glGetError() != GL_NO_ERROR) {
+            glGetError();
+        }
+        return error;
+    }
 }
