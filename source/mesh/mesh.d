@@ -233,7 +233,6 @@ class Mesh {
         glBindTexture(GL_TEXTURE_2D, this.texture.getId);
 
         glBindVertexArray(this.vao);
-        // glDrawArrays(GL_TRIANGLES, 0, this.indexCount);
         glDrawElements(GL_TRIANGLES, this.indexCount, GL_UNSIGNED_INT, cast(const(void)*)0);
         
         GLenum glErrorInfo = window.getAndClearGLErrors();
