@@ -85,7 +85,7 @@ class Mesh {
     Mesh addTextureCoordinates(const float[] textureCoordinates) {
 
         // Don't bother if not divisible by 2 and less than 2, these are raw Vector2 components in a linear array.
-        if (vertices.length % 2 != 0 || vertices.length < 2) {
+        if (textureCoordinates.length % 2 != 0 || textureCoordinates.length < 2) {
             throw new Exception("Vertices must contain XY components for ALL texture coordinates!");
         }
 
@@ -163,6 +163,7 @@ class Mesh {
 
     Mesh setLineMode(const bool lineMode) {
         this.lineMode = lineMode;
+        return this;
     }
 
 
@@ -184,6 +185,8 @@ class Mesh {
         if (debugEnabled) {
             writeln("Mesh ", this.vao, " has been successfully created");
         }
+
+        return this;
     }
 
     /**
