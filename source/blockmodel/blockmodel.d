@@ -79,6 +79,10 @@ class BlockModel {
     
     //! This is a debug container method for playing animation
     //! In the future create a frame range and automate
+
+    // These comments are dumped from main()
+    //! Begin first iteration of animation prototyping, this is doing the ENTIRE animation
+    //! In future implementation: Containerization will allow LERP portions of the animation
     
     // Speed is a multiplier on the base model FPS
     float[] playAnimation(double speed = 1.0) {
