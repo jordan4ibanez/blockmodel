@@ -18,14 +18,19 @@ class Mesh {
 
     // Vertex array object - Main object
     private GLuint vao = invalid;
+
     // Positions vertex buffer object
+    //* Layout position 0
     private GLuint pbo = invalid;
-    // Texture positions vertex buffer object
+    // Texture coordinates vertex buffer object
+    //* Layout position 1
     private GLuint tbo = invalid;
+    // Bones vertex buffer object
+    //* Layout position 2
+    private GLuint bbo = invalid;
+
     // Indices vertex buffer object
     private GLuint ibo = invalid;
-    // Bones vertex buffer object
-    private GLuint bbo = invalid;
 
     ///This is used for telling glsl how many indices are drawn in the render method.
     private GLuint indexCount = invalid;
@@ -212,9 +217,13 @@ class Mesh {
 
         // Disable all attributes of this "object"
         //! This needs to check if it's negative
-        glDisableVertexAttribArray(0);
+        if (this.pbo != invalid) {
+            glDisableVertexAttribArray(0);
+        }
+
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
+        
 
         //! This needs to check if it's negative
         // Delete the positions vbo
