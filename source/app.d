@@ -59,7 +59,7 @@ void main()
         camera.setRotation(Vector3d(0,0,0));
 
 
-        glUseProgram(modelShader.getShaderProgram);
+        modelShader.startProgram();
 
         modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(1), model.total_blocks);
         modelShader.setUniformMatrix4f("cameraMatrix", camera.updateCameraMatrix(window));
