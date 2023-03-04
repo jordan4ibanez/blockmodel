@@ -49,6 +49,7 @@ class Mesh {
         return this;
     }
 
+    /// Adds vertex position data in Vector3 format within a linear float[].
     Mesh addVertices(const float[] vertices) {
 
         // Don't bother if not divisible by 3 TRI from cube vertex positions
@@ -80,6 +81,7 @@ class Mesh {
         return this;
     }
 
+    /// Adds texture coordinate data in Vector2 format within a linear float[].
     Mesh addTextureCoordinates(const float[] textureCoordinates) {
 
         // Don't bother if not divisible by 2 and less than 2, these are raw Vector2 components in a linear array.
@@ -112,16 +114,28 @@ class Mesh {
         return this;
     }
 
+    /// Adds indices data (order of vertex positions) in a linear int[].
+    Mesh addIndices(const int[] indices) {
 
-    this( 
-        const int[] indices, 
-        const int[] bones,
-        const bool lineMode = false) {
+        // Indices VBO
 
-        this.lineMode = lineMode;
+        this.indexCount = cast(GLuint)(indices.length);
 
-        
+        glGenBuffers(1, &this.ibo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.ibo);
 
+        glBufferData(
+            GL_ELEMENT_ARRAY_BUFFER,     // Target object
+            indices.length * int.sizeof, // size (bytes)
+            indices.ptr,                 // the pointer to the data for the object
+            GL_STATIC_DRAW               // The draw mode OpenGL will use
+        );
+
+        return this;
+    }
+
+    /// Adds bone data aligned with the vertex position in a linear int[].
+    Mesh addBones(const int[] bones) {
 
         // Bones VBO
 
@@ -144,25 +158,21 @@ class Mesh {
         );
         glEnableVertexAttribArray(2);
 
+        return this;
+    }
 
-        // Indices VBO
-
-        this.indexCount = cast(GLuint)(indices.length);
-
-        glGenBuffers(1, &this.ibo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.ibo);
-
-        glBufferData(
-            GL_ELEMENT_ARRAY_BUFFER,     // Target object
-            indices.length * int.sizeof, // size (bytes)
-            indices.ptr,                 // the pointer to the data for the object
-            GL_STATIC_DRAW               // The draw mode OpenGL will use
-        );
+    Mesh setLineMode(const bool lineMode) {
+        this.lineMode = lineMode;
+    }
 
 
+    Mesh finalize() {
+        
+        
+        // Unbind buffer pointer
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         
-        // Unbind vao just in case
+        // Unbind vao
         glBindVertexArray(0);
 
         GLenum glErrorInfo = getAndClearGLErrors();
