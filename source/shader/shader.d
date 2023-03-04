@@ -3,11 +3,9 @@ module shader.shader;
 import std.stdio;
 import std.file;
 import bindbc.opengl;
+import tools.gl_error;
 
 class Shader {
-
-    // Window context pointer.
-    private static Window window;
 
     private string name;
 
