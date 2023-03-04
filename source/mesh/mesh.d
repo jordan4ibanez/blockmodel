@@ -39,6 +39,9 @@ class Mesh {
     /// Draws the mesh as a bunch of lines.
     bool lineMode = false;
 
+    /// Enforces calling the finalize() method.
+    private bool finalized = false;
+
     /// Creates the OpenGL context for assembling this GL Mesh Object.
     this() {
 
@@ -169,6 +172,7 @@ class Mesh {
 
     Mesh finalize() {
         
+        finalized = true;
         
         // Unbind buffer pointer
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -197,6 +201,10 @@ class Mesh {
         cause unexpected behavior.
     */
     void cleanUp() {
+
+        if (!finalized) {
+            throw new Exception("You MUST call finalize() for a mesh!");
+        }
 
         // This is done like this because it works around driver issues
         
@@ -248,6 +256,10 @@ class Mesh {
     }
 
     void render(Shader shader) {
+
+        if (!finalized) {
+            throw new Exception("You MUST call finalize() for a mesh!");
+        }
 
         shader.setUniformInt("textureSampler", 0);
 
