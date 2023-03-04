@@ -9,10 +9,12 @@ import std.algorithm.iteration;
 import std.algorithm.sorting;
 import std.conv;
 import tinygltf;
+import vector_2d;
 import vector_3d;
 import vector_3i;
-import vector_2d;
+import matrix_4d;
 import math;
+import delta_time;
 
 /// Container class for constructing the model
 class Block {
@@ -59,13 +61,112 @@ class BlockModel {
     int[] indices;
     int[] bones;
     float[] textureCoordinates;
+    
+    // Framerate is constant LINEAR interpolation
+    const double frameTick;
+
+    double frameTime = 0.0;
+    int currentFrame = 0;
 
     this(string fileLocation) {
         this.loadBlocks(fileLocation);
         this.constructGLModel();
+
+        frameTick = 1.0/cast(double)FPS;
     }
 
     //*========================= BEGIN OPENGL METHODS =====================================
+    
+    //! This is a debug container method for playing animation
+    //! In the future create a frame range and automate
+    
+    float[] playAnimation() {
+
+        float[] animationAccumulator;
+        
+        if (isStatic) {
+            foreach (Block block; blocks) {
+                Vector3d translation = block.staticPosition;
+                Vector3d rotation = block.staticRotation;
+                Vector3d scale = Vector3d(1,1,1);
+
+                Matrix4d animationMatrix = Matrix4d()
+                    .identity()
+                    .setTranslation(translation)
+                    .setRotationXYZ(rotation.x, rotation.y, rotation.z)
+                    .scaleLocal(scale.x,scale.y,scale.z);
+                    
+                animationAccumulator ~= animationMatrix.getFloatArray;
+            }
+
+        } else {
+
+            frameTime += getDelta();
+
+            // Tick up integral frame
+            if (frameTime >= frameTick) {
+                frameTime -= frameTick;
+                currentFrame++;
+                // Loop integral frame - Remember: 0 count
+                if (currentFrame >= total_frames) {
+                    currentFrame = 0;
+                }
+            }
+
+            const double frameProgress = frameTime / frameTick;
+            
+            int startFrame;
+            int endFrame;
+
+            // LERP back to frame 0 - Remember 0 count
+            if (currentFrame == total_frames - 1) {
+                startFrame = currentFrame;
+                endFrame   = 0;
+            } 
+            // LERP to next frame
+            else {
+                startFrame = currentFrame;
+                endFrame   = currentFrame + 1;
+            }
+
+            foreach (Block block; blocks) {
+                Vector3d[] t = block.translation;
+                Vector3d[] r = block.rotation;
+                Vector3d[] s = block.scale;
+
+                Vector3d translation = Vector3d(t[startFrame]).lerp(t[endFrame], frameProgress);
+                Vector3d rotation    = Vector3d(r[startFrame]).lerp(r[endFrame], frameProgress);
+                Vector3d scale       = Vector3d(s[startFrame]).lerp(s[endFrame], frameProgress);
+                Matrix4d animationMatrix = Matrix4d()
+                    .identity()
+                    .setTranslation(translation)
+                    .setRotationXYZ(rotation.x, rotation.y, rotation.z)
+                    .scaleLocal(scale.x,scale.y,scale.z);
+                    
+                animationAccumulator ~= animationMatrix.getFloatArray;
+            }
+        }
+        
+        return animationAccumulator;
+    }
+
+    float[] getVertexPositions() {
+        return this.vertexPositions;
+    }
+
+    int[] getIndices() {
+        return this.indices;
+    }
+
+    float[] getTextureCoordinates() {
+        return this.textureCoordinates;
+    }
+
+    int[] getBones() {
+        return this.bones;
+    }
+
+private:
 
     void constructGLModel() {
         // Construct each cube
@@ -143,23 +244,6 @@ class BlockModel {
             indices ~= currentCount + key;
         }
     }
-
-    float[] getVertexPositions() {
-        return this.vertexPositions;
-    }
-
-    int[] getIndices() {
-        return this.indices;
-    }
-
-    float[] getTextureCoordinates() {
-        return this.textureCoordinates;
-    }
-
-    int[] getBones() {
-        return this.bones;
-    }
-
     //!====================== END OPENGL METHODS =================================
 
     //*====================== BEGIN JSON METHODS =================================
