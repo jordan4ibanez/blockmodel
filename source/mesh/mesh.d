@@ -9,6 +9,7 @@ import vector_4d;
 import vector_4i;
 import tools.gl_error;
 
+/// An OpenGL mesh. Utilizes builder pattern.
 class Mesh {
 
     private static immutable GLint invalid = GLint.max;
@@ -38,23 +39,29 @@ class Mesh {
     /// Draws the mesh as a bunch of lines.
     bool lineMode = false;
 
+    /// Creates the OpenGL context for assembling this GL Mesh Object.
+    Mesh initialize() {
 
-    this(const float[] vertices, 
+        // bind the Vertex Array Object.
+        glGenVertexArrays(1, &this.vao);
+        glBindVertexArray(this.vao);
+
+        return this;
+    }
+
+    Mesh addVertices(const float[] vertices) {
+        
+        return this;
+    }
+
+
+    this( 
         const int[] indices, 
         const float[] textureCoordinates, 
         const int[] bones,
-        const string textureLocation,
         const bool lineMode = false) {
 
         this.lineMode = lineMode;
-
-        // Don't bother if not divisible by 3 TRI from cube vertex positions
-        assert(vertices.length % 3 == 0 && vertices.length >= 3);
-        this.indexCount = cast(GLuint)(indices.length);
-
-        // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-        glGenVertexArrays(1, &this.vao);
-        glBindVertexArray(this.vao);
     
 
         // Positions VBO
