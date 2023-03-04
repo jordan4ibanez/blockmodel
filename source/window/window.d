@@ -164,8 +164,9 @@ class Window {
         return FPS;
     }
 
-    void setTitle(string newTitle) {
+    Window setTitle(string newTitle) {
         glfwSetWindowTitle(window, cast(const(char*))newTitle);
+        return this;
     }
 
     void close() {
