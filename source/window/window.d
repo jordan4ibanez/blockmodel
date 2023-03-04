@@ -17,11 +17,10 @@ import loader = bindbc.loader.sharedlib;
 // This is an import that allows us to print debug info.
 import tools.log;
 
-/// This is a "singleton" interface object into OpenGL and GLFW
+/// This is a singleton interface object into OpenGL and GLFW
 class Window {
 
-    // Sort of a variation on singleton, create more than one window and OpenGL context and it crashes.
-    static private bool locked = false;
+    private static Window instance;
 
     // OpenGL fields
     private string glVersion;
@@ -42,31 +41,23 @@ class Window {
     private double deltaAccumulator = 0.0;
     private int fpsCounter = 0;
     private int FPS = 0;
-    
-    this(string windowTitle) {
-        this.windowTitle = windowTitle;
+
+    // Only one window can exist
+    static Window getInstance() {
+        if (instance is null) {
+            instance = new Window();
+            instance.initialize();
+        }
+        return instance;
     }
 
-    Window initialize() {
-        checkLock();
-
+    private void initialize() {
         if (!initializeGLFW()) {
             throw new Exception("GLFW failed");
         }
-
         if (!initializeOpenGL()) {
             throw new Exception("OpenGL failed");
         }
-
-        return this;
-    }
-
-    // This checks the lock state and WILL crash the program if more than one exist
-    private void checkLock() {
-        if (locked) {
-            throw new Exception("More than one window was created!");
-        }
-        locked = true;
     }
 
     //* ======== GLFW Tools ========
