@@ -11,7 +11,7 @@ import tools.gl_error;
 
 class Mesh {
 
-    private static bool debugEnabled = false;
+    private static bool debugEnabled = true;
 
     private bool exists = false;
 
@@ -151,7 +151,14 @@ class Mesh {
         }
     }
 
-    void cleanUp() {
+    /**
+        Delete the texture from gpu memory.
+        deleteTexture specifies if the encapsulated
+        texture should be deleted from GPU memory as well.
+        Do not delete the texture if it is shared, this will
+        cause unexpected behavior.
+    */
+    void cleanUp(bool deleteTexture = true) {
 
         // Don't bother the gpu with garbage data
         if (!this.exists) {
@@ -199,6 +206,10 @@ class Mesh {
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
             writeln("ERROR IN A MESH DESTRUCTOR");
+        }
+
+        if (deleteTexture) {
+            this.texture.cleanUp();
         }
 
         if (debugEnabled) {
