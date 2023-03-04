@@ -14,7 +14,7 @@ class Texture {
     private GLuint width = 0;
     private GLuint height = 0;
 
-    string name;
+    private string name;
 
     this(string textureLocation) {
 
@@ -57,6 +57,10 @@ class Texture {
 
     GLuint getId() {
         return this.id;
+    }
+
+    string getName() {
+        return this.name;
     }
 
     void cleanUp() {
