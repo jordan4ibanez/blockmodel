@@ -1,6 +1,7 @@
 #version 410 core
 
 // Frag is for tri positions.
+// View this as a reference shader for blockmodel.
 
 // Bone limit is 64.
 const int MAX_BONES = 64;

@@ -1,6 +1,7 @@
 #version 410 core
 
 // Frag is for tri texture mapping.
+// View this as a reference shader for blockmodel.
 
 in vec2 outputTextureCoordinate;
 
