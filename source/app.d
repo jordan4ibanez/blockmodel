@@ -25,9 +25,6 @@ void main()
 
     // Camera controls view point and mathematical OpenGL calculations
     Camera camera = new Camera();
-
-    //* Allow direct message passing through reference pointers. Reduces verbosity.
-    Mesh.createCameraContext(camera);
     
     // Shader controls GLSL
     Shader modelShader = new Shader("base", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
@@ -90,9 +87,6 @@ void main()
     }
 
     modelShader.deleteShader();
-
-    //* Clean up all reference pointers.
-    Mesh.destroyCameraContext();
 
     Shader.destroyWindowContext();
     Texture.destroyWindowContext();
