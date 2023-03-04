@@ -18,7 +18,6 @@ void main()
 	Window window = new Window("BlockModel Editor").initialize;
 
     //* Allow direct message passing through reference pointers. Reduces verbosity.
-    Mesh.createWindowContext(window);
     Camera.createWindowContext(window);
     Texture.createWindowContext(window);
     Shader.createWindowContext(window);
@@ -90,7 +89,6 @@ void main()
 
     Shader.destroyWindowContext();
     Texture.destroyWindowContext();
-    Mesh.destroyWindowContext();
     Camera.destroyWindowContext();
 
     window.destroy();
