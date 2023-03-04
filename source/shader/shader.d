@@ -206,6 +206,9 @@ class Shader {
 
     void deleteShader() {
 
+        // Stop it if it's running
+        glUseProgram(0);
+
         // Detach shaders from program
         glDetachShader(this.shaderProgram, this.vertexShader);
         glDetachShader(this.shaderProgram, this.fragmentShader);
