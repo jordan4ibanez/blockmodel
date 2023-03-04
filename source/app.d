@@ -21,7 +21,7 @@ void main()
     Camera camera = new Camera();
     
     // Shader controls GLSL
-    // Shader modelShader = new Shader("base", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
+    // Shader modelShader = new Shader("model", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
     // modelShader.createUniform("cameraMatrix");
     // modelShader.createUniform("objectMatrix");
     // modelShader.createUniform("textureSampler");
@@ -37,6 +37,8 @@ void main()
     //     model.getBones,
     //     "textures/debug_character.png"
     // );
+
+    Shader regularShader = new Shader("regular", "shaders/regular_vertex.vs", "shaders/regular_fragment.fs");
     
 
     float fancyRotation = 0;
@@ -79,6 +81,7 @@ void main()
         window.swapBuffers();
     }
 
+    regularShader.deleteShader();
     // debugMesh.cleanUp(true);
 
     // modelShader.deleteShader();
