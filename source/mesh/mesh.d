@@ -17,27 +17,27 @@ class Mesh {
     private static bool debugEnabled = true;
 
     // Vertex array object - Main object
-    GLuint vao = invalid;
+    private GLuint vao = invalid;
     // Positions vertex buffer object
-    GLuint pbo = invalid;
+    private GLuint pbo = invalid;
     // Texture positions vertex buffer object
-    GLuint tbo = invalid;
+    private GLuint tbo = invalid;
     // Indices vertex buffer object
-    GLuint ibo = invalid;
+    private GLuint ibo = invalid;
     // Bones vertex buffer object
-    GLuint bbo = invalid;
+    private GLuint bbo = invalid;
 
     ///This is used for telling glsl how many indices are drawn in the render method.
-    GLuint indexCount = invalid;
+    private GLuint indexCount = invalid;
 
     /**
      This is used to tell GL and GLSL which texture we are using.
      It is: (uniform sampler2D textureSampler) in the fragment shader
     */
-    GLuint textureId = invalid;
+    private GLuint textureId = invalid;
 
     /// Draws the mesh as a bunch of lines.
-    bool lineMode = false;
+    private bool lineMode = false;
 
     /// Enforces calling the finalize() method.
     private bool finalized = false;
@@ -49,7 +49,6 @@ class Mesh {
         glGenVertexArrays(1, &this.vao);
         glBindVertexArray(this.vao);
 
-        return this;
     }
 
     /// Adds vertex position data in Vector3 format within a linear float[].
