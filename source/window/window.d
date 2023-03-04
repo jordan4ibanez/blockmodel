@@ -27,7 +27,7 @@ class Window {
     private Vector3d clearColor;
 
     // GLFW fields
-    private string windowTitle;
+    private string title;
     static private Vector2i windowSize;
     
     private  GLFWwindow* window = null;
@@ -164,9 +164,14 @@ class Window {
         return FPS;
     }
 
-    Window setTitle(string newTitle) {
-        glfwSetWindowTitle(window, cast(const(char*))newTitle);
+    Window setTitle(string title) {
+        this.title = title;
+        glfwSetWindowTitle(window, this.title.toStringz);
         return this;
+    }
+
+    string getTitle() {
+        return this.title;
     }
 
     void close() {
@@ -224,7 +229,7 @@ class Window {
         }
 
         // Create a window on the primary monitor
-        window = glfwCreateWindow(windowSizeX, windowSizeY, this.windowTitle.toStringz, null, null);
+        window = glfwCreateWindow(windowSizeX, windowSizeY, this.title.toStringz, null, null);
 
         // Something even scarier fails to load
         if (!window || window == null) {
