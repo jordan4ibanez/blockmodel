@@ -70,10 +70,10 @@ void main()
 
 
         glUseProgram(modelShader.getShaderProgram);
-        
-        camera.updateCameraMatrix();
 
         modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(1), model.total_blocks);
+
+        modelShader.setUniformMatrix4f("cameraMatrix", camera.updateCameraMatrix());
         
 
         debugMesh.render(
