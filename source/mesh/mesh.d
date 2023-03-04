@@ -13,8 +13,6 @@ class Mesh {
 
     private static bool debugEnabled = true;
 
-    private bool exists = false;
-
     // Vertex array object - Main object
     GLuint vao = 0;
     // Positions vertex buffer object
@@ -46,9 +44,6 @@ class Mesh {
         this.lineMode = lineMode;
 
         this.texture = new Texture(textureLocation);
-
-        // Existence lock
-        this.exists = true;
 
         // Don't bother if not divisible by 3 TRI from cube vertex positions
         assert(vertices.length % 3 == 0 && vertices.length >= 3);
@@ -164,14 +159,6 @@ class Mesh {
     */
     void cleanUp(bool deleteTexture = true) {
 
-        // Don't bother the gpu with garbage data
-        if (!this.exists) {
-            if (debugEnabled) {
-                writeln("sorry, I cannot clear gpu memory, I don't exist in gpu memory");
-            }
-            return;
-        }
-
         // This is done like this because it works around driver issues
         
         // When you bind to the array, the buffers are automatically unbound
@@ -222,14 +209,6 @@ class Mesh {
     }
 
     void render(Shader shader) {
-
-        // Don't bother the gpu with garbage data
-        if (!this.exists) {
-            if (debugEnabled) {
-                writeln("sorry, I cannot render, I don't exist in gpu memory");
-            }
-            return;
-        }
 
         shader.setUniformInt("textureSampler", 0);
 
