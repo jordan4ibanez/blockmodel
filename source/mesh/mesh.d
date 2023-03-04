@@ -216,7 +216,7 @@ class Mesh {
         }
     }
 
-    void render(Vector3d offset, Vector3d rotation, Vector3d scale, float light) {
+    void render() {
 
         // Don't bother the gpu with garbage data
         if (!this.exists) {
@@ -231,8 +231,6 @@ class Mesh {
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this.texture.getId);
-
-        camera.setObjectMatrix(offset, rotation, scale);
 
         glBindVertexArray(this.vao);
         // glDrawArrays(GL_TRIANGLES, 0, this.indexCount);
