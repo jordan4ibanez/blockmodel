@@ -53,7 +53,7 @@ class Mesh {
         this.indexCount = cast(GLuint)(indices.length);
 
         // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-        glGenVertexArrays(1, this.vao);
+        glGenVertexArrays(1, &this.vao);
         glBindVertexArray(this.vao);
     
 
