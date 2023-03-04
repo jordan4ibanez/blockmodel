@@ -1,4 +1,5 @@
 import std.stdio;
+import std.conv;
 import bindbc.opengl;
 import camera.camera;
 import mesh.mesh;
@@ -90,6 +91,8 @@ void main()
         if (fancyRotation >= 360.0) {
             fancyRotation -= 360.0;
         }
+
+        window.setTitle(window.getTitle ~ " " ~ to!string(fancyRotation), false);
 
         window.clear(1);
 
