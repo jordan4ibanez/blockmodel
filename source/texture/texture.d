@@ -7,7 +7,6 @@ import png;
 import tools.gl_error;
 
 class Texture {
-    
 
     private static const bool debugEnabled = true;
 
