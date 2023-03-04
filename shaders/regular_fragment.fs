@@ -1,6 +1,7 @@
 #version 410 core
 
 // Frag is for tri texture mapping.
+// This is just your standard old glsl shader.
 
 in vec2 outputTextureCoordinate;
 
