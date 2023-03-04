@@ -30,7 +30,7 @@ void main()
     Mesh.createCameraContext(camera);
     
     // Shader controls GLSL
-    Shader modelShader = new Shader("base", "shaders/vertex.vs", "shaders/fragment.fs");
+    Shader modelShader = new Shader("base", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
     modelShader.createUniform("cameraMatrix");
     modelShader.createUniform("objectMatrix");
     modelShader.createUniform("textureSampler");
@@ -42,13 +42,13 @@ void main()
 
     BlockModel model = new BlockModel("models/minetest_sam.json");
 
-    Mesh debugMesh = new Mesh(
-        model.getVertexPositions,
-        model.getIndices,
-        model.getTextureCoordinates,
-        model.getBones,
-        "textures/debug_character.png"
-    );
+    // Mesh debugMesh = new Mesh(
+    //     model.getVertexPositions,
+    //     model.getIndices,
+    //     model.getTextureCoordinates,
+    //     model.getBones,
+    //     "textures/debug_character.png"
+    // );
     
 
     float fancyRotation = 0;
@@ -74,16 +74,16 @@ void main()
         //! Begin first iteration of animation prototyping, this is doing the ENTIRE animation
         //! In future implementation: Containerization will allow LERP portions of the animation
 
-        modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(10), model.total_blocks);
+        // modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(10), model.total_blocks);
 
         //! End first iteration of animation prototyping
         
 
-        debugMesh.render(
-            Vector3d(0,-3,-10), // Translation
-            Vector3d(0,fancyRotation,0), // Rotation
-            Vector3d(1), // Scale
-        1);
+        // debugMesh.render(
+        //     Vector3d(0,-3,-10), // Translation
+        //     Vector3d(0,fancyRotation,0), // Rotation
+        //     Vector3d(1), // Scale
+        // 1);
 
         window.swapBuffers();
     }
