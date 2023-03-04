@@ -55,19 +55,6 @@ class Mesh {
         if (vertices.length % 3 != 0 || vertices.length < 3) {
             throw new Exception("Vertices must contain XYZ components for ALL vertex positions!");
         }
-        
-        return this;
-    }
-
-
-    this( 
-        const int[] indices, 
-        const float[] textureCoordinates, 
-        const int[] bones,
-        const bool lineMode = false) {
-
-        this.lineMode = lineMode;
-    
 
         // Positions VBO
         glGenBuffers(1, &this.pbo);
@@ -89,7 +76,16 @@ class Mesh {
             cast(void*)0 // Array buffer offset
         );
         glEnableVertexAttribArray(0);
+        
+        return this;
+    }
 
+    Mesh addTextureCoordinates(const float[] textureCoordinates) {
+
+        // Don't bother if not divisible by 2 and less than 2, these are raw Vector2 components in a linear array.
+        if (vertices.length % 2 != 0 || vertices.length < 2) {
+            throw new Exception("Vertices must contain XY components for ALL texture coordinates!");
+        }
 
         // Texture coordinates VBO
 
@@ -112,6 +108,19 @@ class Mesh {
             cast(const(void)*)0
         );
         glEnableVertexAttribArray(1); 
+
+        return this;
+    }
+
+
+    this( 
+        const int[] indices, 
+        const int[] bones,
+        const bool lineMode = false) {
+
+        this.lineMode = lineMode;
+
+        
 
 
         // Bones VBO
