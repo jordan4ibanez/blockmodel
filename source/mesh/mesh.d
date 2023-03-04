@@ -11,27 +11,29 @@ import tools.gl_error;
 
 class Mesh {
 
+    private static immutable GLint invalid = GLint.max;
+
     private static bool debugEnabled = true;
 
     // Vertex array object - Main object
-    GLint vao = -1;
+    GLuint vao = invalid;
     // Positions vertex buffer object
-    GLint pbo = -1;
+    GLuint pbo = invalid;
     // Texture positions vertex buffer object
-    GLint tbo = -1;
+    GLuint tbo = invalid;
     // Indices vertex buffer object
-    GLint ibo = -1;
+    GLuint ibo = invalid;
     // Bones vertex buffer object
-    GLint bbo = -1;
+    GLuint bbo = invalid;
 
     ///This is used for telling glsl how many indices are drawn in the render method.
-    GLint indexCount = -1;
+    GLuint indexCount = invalid;
 
     /**
      This is used to tell GL and GLSL which texture we are using.
      It is: (uniform sampler2D textureSampler) in the fragment shader
     */
-    GLint textureId = -1;
+    GLuint textureId = invalid;
 
     /// Draws the mesh as a bunch of lines.
     bool lineMode = false;
@@ -51,7 +53,7 @@ class Mesh {
         this.indexCount = cast(GLuint)(indices.length);
 
         // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-        glGenVertexArrays(1, &this.vao);
+        glGenVertexArrays(1, this.vao);
         glBindVertexArray(this.vao);
     
 
@@ -158,7 +160,7 @@ class Mesh {
         Do not delete the texture if it is shared, this will
         cause unexpected behavior.
     */
-    void cleanUp(bool deleteTexture = true) {
+    void cleanUp() {
 
         // This is done like this because it works around driver issues
         
@@ -234,5 +236,5 @@ class Mesh {
         if (debugEnabled) {
             writeln("Mesh ", this.vao, " has rendered successfully ");
         }
-    }    
+    }
 }
