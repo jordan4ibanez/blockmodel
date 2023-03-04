@@ -2,7 +2,6 @@ module mesh.mesh;
 
 import std.stdio;
 import bindbc.opengl;
-import camera.camera;
 import shader.shader;
 import texture.texture;
 import window.window;
@@ -14,9 +13,6 @@ class Mesh {
 
     // Window context pointer.
     private static Window window = null;
-
-    // Camera context pointer;
-    private static Camera camera = null;
 
     private static bool debugEnabled = false;
 
@@ -292,17 +288,5 @@ class Mesh {
     // Prevents a circular reference.
     public static void destroyWindowContext() {
         this.window = null;
-    }
-
-    // This injects and holds the pointer to the Camera object.
-    public static void createCameraContext(Camera camera) {
-        if (this.camera !is null) {
-            throw new Exception("Tried to assign a camera context to mesh more than once!");
-        }
-        this.camera = camera;
-    }
-    // Prevents a circular reference.
-    public static void destroyCameraContext() {
-        this.camera = null;
     }
 }
