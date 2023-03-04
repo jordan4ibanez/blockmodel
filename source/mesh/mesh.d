@@ -14,18 +14,18 @@ class Mesh {
     private static bool debugEnabled = true;
 
     // Vertex array object - Main object
-    GLuint vao = -1;
+    GLint vao = -1;
     // Positions vertex buffer object
-    GLuint pbo = -1;
+    GLint pbo = -1;
     // Texture positions vertex buffer object
-    GLuint tbo = -1;
+    GLint tbo = -1;
     // Indices vertex buffer object
-    GLuint ibo = -1;
+    GLint ibo = -1;
     // Bones vertex buffer object
-    GLuint bbo = -1;
+    GLint bbo = -1;
 
     ///This is used for telling glsl how many indices are drawn in the render method.
-    GLuint indexCount = -1;
+    GLint indexCount = -1;
 
     /**
      This is used to tell GL and GLSL which texture we are using.
