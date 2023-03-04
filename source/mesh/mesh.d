@@ -231,48 +231,5 @@ class Mesh {
         if (debugEnabled) {
             writeln("Mesh ", this.vao, " has rendered successfully ");
         }
-    }
-
-    // void batchRender(Vector3d offset, Vector3d rotation, Vector3d scale, bool culling, Vector3d min, Vector3d max) {
-
-    //     // Don't bother the gpu with garbage data
-    //     if (!this.exists) {
-    //         if (debugEnabled) {
-    //             writeln("sorry, I cannot render, I don't exist in gpu memory");
-    //         }
-    //         return;
-    //     }
-
-    //     shader.setUniformI("textureSampler", 0);
-    //     // getShader("main").setUniformF("light", light);
-
-    //     glActiveTexture(GL_TEXTURE0);
-    //     glBindTexture(GL_TEXTURE_2D, this.texture.getId);
-
-    //     //! Camera.setObjectMatrix(offset, rotation, scale);
-
-    //     if (culling) {
-    //         // Let's get some weird behavior to show it
-    //         bool inside = true;//!Re-enable this insideFrustumAABB(min, max);
-    //         // bool inside = insideFrustumSphere(10);
-    //         if (!inside) {
-    //             return;
-    //         }
-    //     }
-
-    //     glBindVertexArray(this.vao);
-    //     // glDrawArrays(GL_TRIANGLES, 0, this.indexCount);
-    //     glDrawElements(GL_TRIANGLES, this.indexCount, GL_UNSIGNED_INT, cast(const(void)*)0);
-        
-    //     GLenum glErrorInfo = window.getAndClearGLErrors();
-    //     if (glErrorInfo != GL_NO_ERROR) {
-    //         writeln("GL ERROR: ", glErrorInfo);
-    //         writeln("ERROR IN A MESH RENDER");
-    //     }
-    //     if (debugEnabled) {
-    //         writeln("Mesh ", this.vao, " has rendered successfully ");
-    //     }
-    // }
-
-    
+    }    
 }
