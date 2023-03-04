@@ -9,6 +9,7 @@ import vector_2i;
 import vector_2d;
 import vector_3d;
 import delta_time;
+import tools.gl_error;
 
 // This is a special import. We only want to extract the loader from this module.
 import loader = bindbc.loader.sharedlib;
@@ -479,15 +480,6 @@ class Window {
         }
 
         return true;
-    }
-
-    GLenum getAndClearGLErrors(){
-        GLenum error = glGetError();
-        // Clear OpenGL errors
-        while (glGetError() != GL_NO_ERROR) {
-            glGetError();
-        }
-        return error;
     }
 
     string getInitialOpenGLVersion() {
