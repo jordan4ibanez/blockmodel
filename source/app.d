@@ -40,7 +40,7 @@ void main()
     Mesh.createShaderContext(shader);
 
 
-    BlockModel model = new BlockModel("models/minetest_sam.bm");
+    BlockModel model = new BlockModel("models/minetest_sam.json");
 
     Mesh debugMesh = new Mesh(
         model.getVertexPositions,
@@ -52,15 +52,6 @@ void main()
 
     // Initialize shader program early to dump in uniforms
     glUseProgram(shader.getShaderProgram);
-
-
-    const int maxFrame = model.total_frames;
-    const double FPS = model.FPS;
-    // Framerate is constant LINEAR interpolation
-    const double frameTick = 1/FPS;
-    double frameTime = 0.0;
-    int currentFrame = 0;
-    bool isStatic = model.isStatic;
 
     float fancyRotation = 0;
 
@@ -85,70 +76,7 @@ void main()
         //! Begin first iteration of animation prototyping, this is doing the ENTIRE animation
         //! In future implementation: Containerization will allow LERP portions of the animation
 
-        float[] animationAccumulator;
-        
-        if (isStatic) {
-            foreach (Block block; model.blocks) {
-                Vector3d translation = block.staticPosition;
-                Vector3d rotation = block.staticRotation;
-                Vector3d scale = Vector3d(1,1,1);
-
-                Matrix4d animationMatrix = Matrix4d()
-                    .identity()
-                    .setTranslation(translation)
-                    .setRotationXYZ(rotation.x, rotation.y, rotation.z)
-                    .scaleLocal(scale.x,scale.y,scale.z);
-                    
-                animationAccumulator ~= animationMatrix.getFloatArray;
-            }
-
-        } else {
-            frameTime += getDelta();
-
-            // Tick up integral frame
-            if (frameTime >= frameTick) {
-                frameTime -= frameTick;
-                currentFrame++;
-                // Loop integral frame - Remember: 0 count
-                if (currentFrame >= maxFrame) {
-                    currentFrame = 0;
-                }
-            }
-
-            const double frameProgress = frameTime / frameTick;
-            
-            int startFrame;
-            int endFrame;
-            // LERP back to frame 0 - Remember 0 count
-            if (currentFrame == maxFrame - 1) {
-                startFrame = currentFrame;
-                endFrame   = 0;
-            } 
-            // LERP to next frame
-            else {
-                startFrame = currentFrame;
-                endFrame   = currentFrame + 1;
-            }
-
-            foreach (Block block; model.blocks) {
-                Vector3d[] t = block.translation;
-                Vector3d[] r = block.rotation;
-                Vector3d[] s = block.scale;
-
-                Vector3d translation = Vector3d(t[startFrame]).lerp(t[endFrame], frameProgress);
-                Vector3d rotation    = Vector3d(r[startFrame]).lerp(r[endFrame], frameProgress);
-                Vector3d scale       = Vector3d(s[startFrame]).lerp(s[endFrame], frameProgress);
-                Matrix4d animationMatrix = Matrix4d()
-                    .identity()
-                    .setTranslation(translation)
-                    .setRotationXYZ(rotation.x, rotation.y, rotation.z)
-                    .scaleLocal(scale.x,scale.y,scale.z);
-                    
-                animationAccumulator ~= animationMatrix.getFloatArray;
-            }
-        }
-
-        shader.setUniformMatrix4f("boneTRS", animationAccumulator, model.total_blocks);
+        shader.setUniformMatrix4f("boneTRS", model.playAnimation(), model.total_blocks);
 
         //! End first iteration of animation prototyping
         
