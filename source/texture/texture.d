@@ -11,11 +11,15 @@ class Texture {
 
     private static const bool debugEnabled = true;
 
-    private GLuint id = 0;    
+    private GLuint id = 0;
     private GLuint width = 0;
     private GLuint height = 0;
 
+    string name;
+
     this(string textureLocation) {
+
+        this.name = textureLocation;
 
         TrueColorImage tempImageObject = readPng(textureLocation).getAsTrueColorImage();
 
@@ -59,7 +63,7 @@ class Texture {
     void cleanUp() {
         glDeleteTextures(1, &this.id);
         if (debugEnabled) {
-            writeln("TEXTURE ", this.id, " HAS BEEN DELETED");
+            writeln("TEXTURE ", this.id, " (" ~ this.name ~ ") HAS BEEN DELETED");
         }
     }
 }
