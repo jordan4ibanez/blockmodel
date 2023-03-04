@@ -74,7 +74,7 @@ void main()
         //! Begin first iteration of animation prototyping, this is doing the ENTIRE animation
         //! In future implementation: Containerization will allow LERP portions of the animation
 
-        modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(), model.total_blocks);
+        modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(10), model.total_blocks);
 
         //! End first iteration of animation prototyping
         

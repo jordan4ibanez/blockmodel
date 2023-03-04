@@ -80,7 +80,8 @@ class BlockModel {
     //! This is a debug container method for playing animation
     //! In the future create a frame range and automate
     
-    float[] playAnimation() {
+    // Speed is a multiplier on the base model FPS
+    float[] playAnimation(double speed = 1.0) {
 
         float[] animationAccumulator;
         
@@ -101,7 +102,7 @@ class BlockModel {
 
         } else {
 
-            frameTime += getDelta();
+            frameTime += getDelta() * speed;
 
             // Tick up integral frame
             if (frameTime >= frameTick) {
