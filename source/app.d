@@ -79,13 +79,12 @@ void main()
     float fancyRotation = 0;
 
     while (!window.shouldClose()) {
+        // Calculating the delta goes first, we want this to be as accurate as possible.
+        calculateDelta();
         // Poll events is hugging the entry point to the scope
         // because it needs to take all GLFW input before anything
         // is calculated. This increases responsiveness.
         window.pollEvents();
-        
-        // Calculating the delta goes next, we want this to be as accurate as possible.
-        calculateDelta();
 
         fancyRotation += 1.0;
         if (fancyRotation >= 360.0) {
