@@ -42,13 +42,13 @@ void main()
 
     BlockModel model = new BlockModel("models/minetest_sam.json");
 
-    // Mesh debugMesh = new Mesh(
-    //     model.getVertexPositions,
-    //     model.getIndices,
-    //     model.getTextureCoordinates,
-    //     model.getBones,
-    //     "textures/debug_character.png"
-    // );
+    Mesh debugMesh = new Mesh(
+        model.getVertexPositions,
+        model.getIndices,
+        model.getTextureCoordinates,
+        model.getBones,
+        "textures/debug_character.png"
+    );
     
 
     float fancyRotation = 0;
@@ -64,26 +64,23 @@ void main()
 
         calculateDelta();
 
-        glUseProgram(modelShader.getShaderProgram);
-
         window.clear(1);
         camera.clearDepthBuffer();
         camera.setRotation(Vector3d(0,0,0));
+
+
+        glUseProgram(modelShader.getShaderProgram);
+        
         camera.updateCameraMatrix();
 
-        //! Begin first iteration of animation prototyping, this is doing the ENTIRE animation
-        //! In future implementation: Containerization will allow LERP portions of the animation
-
-        // modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(10), model.total_blocks);
-
-        //! End first iteration of animation prototyping
+        modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(1), model.total_blocks);
         
 
-        // debugMesh.render(
-        //     Vector3d(0,-3,-10), // Translation
-        //     Vector3d(0,fancyRotation,0), // Rotation
-        //     Vector3d(1), // Scale
-        // 1);
+        debugMesh.render(
+            Vector3d(0,-3,-10), // Translation
+            Vector3d(0,fancyRotation,0), // Rotation
+            Vector3d(1), // Scale
+        1);
 
         window.swapBuffers();
     }
