@@ -137,5 +137,7 @@ void main()
 
     xyzCompass.cleanUp();
 
+    Texture.cleanUp();
+
     window.destroy();
 }

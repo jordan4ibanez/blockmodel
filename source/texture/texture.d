@@ -81,8 +81,12 @@ class Texture {
         return id;
     }
 
-    void cleanUp() {
-        foreach (string key, GLuint value; storage) {
+    static void cleanUp() {
+        if(instance is null) {
+            throw new Exception("Texture was never initialized!");
+        }
+
+        foreach (string key, GLuint value; instance.storage) {
             glDeleteTextures(1, &value);
 
             writeln("TEXTURE ", value, " (" ~ key ~ ") HAS BEEN DELETED");
