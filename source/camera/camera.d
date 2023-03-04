@@ -1,7 +1,6 @@
 module camera.camera;
 
 import bindbc.opengl;
-import shader.shader;
 import window.window;
 import vector_3d;
 import matrix_4d;
@@ -14,7 +13,6 @@ class Camera {
 
     // Window context pointer.
     private static Window window = null;
-
 
     private double FOV = math.toRadians(60.0);
 
