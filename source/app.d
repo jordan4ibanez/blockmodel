@@ -21,22 +21,22 @@ void main()
     Camera camera = new Camera();
     
     // Shader controls GLSL
-    Shader modelShader = new Shader("base", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
-    modelShader.createUniform("cameraMatrix");
-    modelShader.createUniform("objectMatrix");
-    modelShader.createUniform("textureSampler");
-    modelShader.createUniform("boneTRS");
+    // Shader modelShader = new Shader("base", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
+    // modelShader.createUniform("cameraMatrix");
+    // modelShader.createUniform("objectMatrix");
+    // modelShader.createUniform("textureSampler");
+    // modelShader.createUniform("boneTRS");
 
 
-    BlockModel model = new BlockModel("models/minetest_sam.json");
+    // BlockModel model = new BlockModel("models/minetest_sam.json");
 
-    Mesh debugMesh = new Mesh(
-        model.getVertexPositions,
-        model.getIndices,
-        model.getTextureCoordinates,
-        model.getBones,
-        "textures/debug_character.png"
-    );
+    // Mesh debugMesh = new Mesh(
+    //     model.getVertexPositions,
+    //     model.getIndices,
+    //     model.getTextureCoordinates,
+    //     model.getBones,
+    //     "textures/debug_character.png"
+    // );
     
 
     float fancyRotation = 0;
@@ -61,27 +61,27 @@ void main()
         camera.setRotation(Vector3d(0,0,0));
 
 
-        modelShader.startProgram();
+        // modelShader.startProgram();
 
-        modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(1), model.total_blocks);
-        modelShader.setUniformMatrix4f("cameraMatrix", camera.updateCameraMatrix(window));
+        // modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(1), model.total_blocks);
+        // modelShader.setUniformMatrix4f("cameraMatrix", camera.updateCameraMatrix(window));
 
-        modelShader.setUniformMatrix4f("objectMatrix",
-            camera.setObjectMatrix(
-                Vector3d(0,-3,-10), // Translation
-                Vector3d(0,fancyRotation,0), // Rotation
-                Vector3d(1), // Scale
-            )
-        );
+        // modelShader.setUniformMatrix4f("objectMatrix",
+        //     camera.setObjectMatrix(
+        //         Vector3d(0,-3,-10), // Translation
+        //         Vector3d(0,fancyRotation,0), // Rotation
+        //         Vector3d(1), // Scale
+        //     )
+        // );
 
-        debugMesh.render(modelShader);
+        // debugMesh.render(modelShader);
 
         window.swapBuffers();
     }
 
-    debugMesh.cleanUp(true);
+    // debugMesh.cleanUp(true);
 
-    modelShader.deleteShader();
+    // modelShader.deleteShader();
 
     window.destroy();
 }
