@@ -164,9 +164,12 @@ class Window {
         return FPS;
     }
 
-    Window setTitle(string title) {
-        this.title = title;
-        glfwSetWindowTitle(window, this.title.toStringz);
+    /// Setting storage to false allows you to chain data into a base window title
+    Window setTitle(string title, bool storeNewTitle = true) {
+        if (storeNewTitle) {
+            this.title = title;
+        }
+        glfwSetWindowTitle(window, title.toStringz);
         return this;
     }
 
