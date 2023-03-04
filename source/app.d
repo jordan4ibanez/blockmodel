@@ -19,7 +19,6 @@ void main()
 
     //* Allow direct message passing through reference pointers. Reduces verbosity.
     Texture.createWindowContext(window);
-    Shader.createWindowContext(window);
 
     // Camera controls view point and mathematical OpenGL calculations
     Camera camera = new Camera();
@@ -85,8 +84,7 @@ void main()
     }
 
     modelShader.deleteShader();
-
-    Shader.destroyWindowContext();
+    
     Texture.destroyWindowContext();
 
     window.destroy();
