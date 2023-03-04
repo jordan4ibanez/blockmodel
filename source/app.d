@@ -44,8 +44,8 @@ void main()
     regularShader.createUniform("objectMatrix");
     regularShader.createUniform("textureSampler");
 
-    Mesh xyzCompass = new Mesh(
-        [ // Vertices
+    Mesh xyzCompass = new Mesh()
+        .addVertices([
             0,0,0,
             1,0,0,
 
@@ -54,13 +54,13 @@ void main()
 
             0,0,0,
             0,0,-1
-        ],
-        [ // Indices
+        ])
+        .addIndices([
             0,1,
             2,3,
             4,5
-        ], 
-        [ // Texture coordinates
+        ])
+        .addTextureCoordinates([
             0,0,
             1.0/3.0,0,
 
@@ -69,11 +69,9 @@ void main()
 
             2.0/3.0,0,
             1,0
-        ],
-        [], // Bones
-        "textures/xyz_compass.png", // Texture location
-        true // Enable line mode
-    );
+        ])
+        .setLineMode(true)
+        .finalize();
     
 
     float fancyRotation = 0;
