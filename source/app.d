@@ -46,15 +46,17 @@ void main()
         // because it needs to take all GLFW input before anything
         // is calculated. This increases responsiveness.
         window.pollEvents();
+        
+        // Calculating the delta goes next, we want this to be as accurate as possible.
+        calculateDelta();
 
         fancyRotation += 1.0;
         if (fancyRotation >= 360.0) {
             fancyRotation -= 360.0;
         }
 
-        calculateDelta();
-
         window.clear(1);
+
         camera.clearDepthBuffer();
         camera.setRotation(Vector3d(0,0,0));
 
