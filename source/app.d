@@ -42,13 +42,15 @@ void main()
     float fancyRotation = 0;
 
     while (!window.shouldClose()) {
+        // Poll events is hugging the entry point to the scope
+        // because it needs to take all GLFW input before anything
+        // is calculated. This increases responsiveness.
+        window.pollEvents();
 
         fancyRotation += 1.0;
         if (fancyRotation >= 360.0) {
             fancyRotation -= 360.0;
         }
-        
-        window.pollEvents();
 
         calculateDelta();
 
@@ -69,11 +71,6 @@ void main()
                 Vector3d(1), // Scale
             )
         );
-
-
-
-
-        
 
         debugMesh.render(modelShader);
 
