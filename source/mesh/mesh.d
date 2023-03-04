@@ -29,9 +29,6 @@ class Mesh {
 
     /// Draws the mesh as a bunch of lines.
     bool lineMode = false;
-    
-    
-    private Texture texture = null;
 
 
     this(const float[] vertices, 
@@ -42,8 +39,6 @@ class Mesh {
         const bool lineMode = false) {
 
         this.lineMode = lineMode;
-
-        this.texture = new Texture(textureLocation);
 
         // Don't bother if not divisible by 3 TRI from cube vertex positions
         assert(vertices.length % 3 == 0 && vertices.length >= 3);
@@ -165,14 +160,17 @@ class Mesh {
         glBindVertexArray(this.vao);
 
         // Disable all attributes of this "object"
+        //! This needs to check if it's negative
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
 
+        //! This needs to check if it's negative
         // Delete the positions vbo
         glDeleteBuffers(1, &this.pbo);
         assert (glIsBuffer(this.pbo) == GL_FALSE);
     
+        //! This needs to check if it's negative
         // Delete the texture coordinates vbo
         glDeleteBuffers(1, &this.tbo);
         assert (glIsBuffer(this.tbo) == GL_FALSE);
@@ -181,6 +179,7 @@ class Mesh {
         // glDeleteBuffers(1, &this.cbo);
         // assert (glIsBuffer(this.cbo) == GL_FALSE);
 
+        //! This needs to check if it's negative
         // Delete the indices vbo
         glDeleteBuffers(1, &this.ibo);
         assert (glIsBuffer(this.ibo) == GL_FALSE);
@@ -199,10 +198,6 @@ class Mesh {
             writeln("ERROR IN A MESH DESTRUCTOR");
         }
 
-        if (deleteTexture) {
-            this.texture.cleanUp();
-        }
-
         if (debugEnabled) {
             writeln("Mesh ", this.vao, " has been successfully deleted from gpu memory");
         }
@@ -213,7 +208,9 @@ class Mesh {
         shader.setUniformInt("textureSampler", 0);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this.texture.getId);
+
+        //! This needs to use the internal setter pointer (int) and check if it's negative
+        glBindTexture(GL_TEXTURE_2D, this.textureId);
 
         glBindVertexArray(this.vao);
 
