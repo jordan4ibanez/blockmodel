@@ -40,27 +40,25 @@ void main()
     Mesh.createShaderContext(shader);
 
 
-    BlockModel model = new BlockModel("models/minetest_sam.json");
+    // BlockModel model = new BlockModel("models/minetest_sam.json");
 
-    Mesh debugMesh = new Mesh(
-        model.getVertexPositions,
-        model.getIndices,
-        model.getTextureCoordinates,
-        model.getBones,
-        "textures/debug_character.png"
-    );
+    // Mesh debugMesh = new Mesh(
+    //     model.getVertexPositions,
+    //     model.getIndices,
+    //     model.getTextureCoordinates,
+    //     model.getBones,
+    //     "textures/debug_character.png"
+    // );
+    
 
-    // Initialize shader program early to dump in uniforms
-    glUseProgram(shader.getShaderProgram);
-
-    float fancyRotation = 0;
+    // float fancyRotation = 0;
 
     while (!window.shouldClose()) {
 
-        fancyRotation += 1.0;
-        if (fancyRotation >= 360.0) {
-            fancyRotation -= 360.0;
-        }
+        // fancyRotation += 1.0;
+        // if (fancyRotation >= 360.0) {
+        //     fancyRotation -= 360.0;
+        // }
         
         window.pollEvents();
 
@@ -76,16 +74,16 @@ void main()
         //! Begin first iteration of animation prototyping, this is doing the ENTIRE animation
         //! In future implementation: Containerization will allow LERP portions of the animation
 
-        shader.setUniformMatrix4f("boneTRS", model.playAnimation(), model.total_blocks);
+        // shader.setUniformMatrix4f("boneTRS", model.playAnimation(), model.total_blocks);
 
         //! End first iteration of animation prototyping
         
 
-        debugMesh.render(
-            Vector3d(0,-3,-10), // Translation
-            Vector3d(0,fancyRotation,0), // Rotation
-            Vector3d(1), // Scale
-        1);
+        // debugMesh.render(
+        //     Vector3d(0,-3,-10), // Translation
+        //     Vector3d(0,fancyRotation,0), // Rotation
+        //     Vector3d(1), // Scale
+        // 1);
 
         window.swapBuffers();
     }
