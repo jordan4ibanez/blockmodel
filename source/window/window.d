@@ -181,25 +181,8 @@ class Window {
         glfwSetWindowShouldClose(window, true);
     }
 
-    // Gets the primary monitor's size and halfs it automatically
-    // private bool initializeWindow(){   
-    //     // -1, -1 indicates that it will automatically interpret as half window size
-    //     return initializeGLFW(-1, -1, false);
-    // }
-
-    // // Allows for predefined window size
-    // bool initializeWindow(int windowSizeX, int windowSizeY){   
-    //     return initializeGLFW(this.windowTitle, windowSizeX, windowSizeY, false);
-    // }
-
-    // // Automatically half sizes, then full screens it
-    // bool initializeWindow(bool fullScreen){   
-    //     // -1, -1 indicates that it will automatically interpret as half window size
-    //     return initializeGLFW(this.windowTitle, -1, -1, fullScreen);
-    // }
-
     // Window talks directly to GLFW
-    private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1, bool fullScreenAuto = false) {
+    private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
 
         // Something fails to load
         if (!initializeGLFWComponents()) {
@@ -259,11 +242,6 @@ class Window {
             setHalfSizeInternal();
         }
 
-        // Automatically fullscreen, this is a bolt on
-        // if (fullScreenAuto) {
-        //     writeln("automatically fullscreening the window");
-        //     setFullScreenInternal();
-        // }
 
         glfwSetFramebufferSizeCallback(window, &myframeBufferSizeCallback);
 
