@@ -3,7 +3,6 @@ module shader.shader;
 import std.stdio;
 import std.file;
 import bindbc.opengl;
-import window.window;
 
 class Shader {
 
@@ -72,7 +71,7 @@ class Shader {
         if (location < 0) {
             throw new Exception("OpenGL uniform is out of bounds!");
         }
-        GLenum glErrorInfo = window.getAndClearGLErrors();
+        GLenum glErrorInfo = getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
             writeln("ERROR CREATING UNIFORM: ", uniformName);
@@ -87,7 +86,7 @@ class Shader {
     void setUniformInt(string uniformName, GLuint value) {
         glUniform1i(uniforms[uniformName], value);
         
-        GLenum glErrorInfo = window.getAndClearGLErrors();
+        GLenum glErrorInfo = getAndClearGLErrors();
 
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
@@ -100,7 +99,7 @@ class Shader {
     void setUniformFloat(string uniformName, GLfloat value) {
         glUniform1f(uniforms[uniformName], value);
         
-        GLenum glErrorInfo = window.getAndClearGLErrors();
+        GLenum glErrorInfo = getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
             // This needs to crash too! Game needs shaders!
@@ -111,7 +110,7 @@ class Shader {
     void setUniformDouble(string uniformName, GLdouble value) {
         glUniform1d(uniforms[uniformName], value);
         
-        GLenum glErrorInfo = window.getAndClearGLErrors();
+        GLenum glErrorInfo = getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
             // This needs to crash too! Game needs shaders!
@@ -127,7 +126,7 @@ class Shader {
             matrix.ptr// Pointer
         );
         
-        GLenum glErrorInfo = window.getAndClearGLErrors();
+        GLenum glErrorInfo = getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
             // This needs to crash too! Game needs shaders!
@@ -144,7 +143,7 @@ class Shader {
             matrix.ptr// Pointer
         );
         
-        GLenum glErrorInfo = window.getAndClearGLErrors();
+        GLenum glErrorInfo = getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
             // This needs to crash too! Game needs shaders!
@@ -220,17 +219,5 @@ class Shader {
         glDeleteProgram(this.shaderProgram);
 
         writeln("Deleted shader: ", this.name);
-    }
-
-    // This injects and holds the pointer to the Window object.
-    public static void createWindowContext(Window window) {
-        if (this.window !is null) {
-            throw new Exception("Tried to assign a window context to mesh more than once!");
-        }
-        this.window = window;
-    }
-    // Prevents a circular reference.
-    public static void destroyWindowContext() {
-        this.window = null;
     }
 }
