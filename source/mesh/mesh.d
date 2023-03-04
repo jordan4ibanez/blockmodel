@@ -50,6 +50,11 @@ class Mesh {
     }
 
     Mesh addVertices(const float[] vertices) {
+
+        // Don't bother if not divisible by 3 TRI from cube vertex positions
+        if (vertices.length % 3 != 0 || vertices.length < 3) {
+            throw new Exception("Vertices must contain XYZ components for ALL vertex positions!");
+        }
         
         return this;
     }
@@ -132,6 +137,8 @@ class Mesh {
 
 
         // Indices VBO
+
+        this.indexCount = cast(GLuint)(indices.length);
 
         glGenBuffers(1, &this.ibo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.ibo);
