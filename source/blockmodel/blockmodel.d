@@ -84,7 +84,7 @@ class BlockModel {
     //! Begin first iteration of animation prototyping, this is doing the ENTIRE animation
     //! In future implementation: Containerization will allow LERP portions of the animation
     
-    // Speed is a multiplier on the base model FPS
+    /// Speed is a multiplier on the base model FPS
     float[] playAnimation(double speed = 1.0) {
 
         float[] animationAccumulator;

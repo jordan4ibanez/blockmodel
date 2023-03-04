@@ -42,7 +42,7 @@ class Camera {
         return objectMatrix;
     }
 
-    /*
+    /**
     This is where the object get's it's render point
     it does 3 things:
     1. Calculates it's position in 4d space
@@ -62,7 +62,7 @@ class Camera {
         return objectMatrix.getFloatArray();
     }
 
-    /*
+    /**
     This is where the camera gets it's viewpoint for the frame
     it does 3 things:
     1. Calculates and sets it's aspect ratio from the window
