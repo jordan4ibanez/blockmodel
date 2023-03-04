@@ -7,6 +7,7 @@ import texture.texture;
 import vector_3d;
 import vector_4d;
 import vector_4i;
+import tools.gl_error;
 
 class Mesh {
 
@@ -139,7 +140,7 @@ class Mesh {
         // Unbind vao just in case
         glBindVertexArray(0);
 
-        GLenum glErrorInfo = this.getAndClearGLErrors();
+        GLenum glErrorInfo = getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
             writeln("ERROR IN A MESH CONSTRUCTOR");
@@ -194,7 +195,7 @@ class Mesh {
 
         
 
-        GLenum glErrorInfo = this.getAndClearGLErrors();
+        GLenum glErrorInfo = getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
             writeln("ERROR IN A MESH DESTRUCTOR");
@@ -223,7 +224,7 @@ class Mesh {
         glBindVertexArray(this.vao);
         glDrawElements(GL_TRIANGLES, this.indexCount, GL_UNSIGNED_INT, cast(const(void)*)0);
         
-        GLenum glErrorInfo = this.getAndClearGLErrors();
+        GLenum glErrorInfo = getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
             writeln("ERROR IN A MESH RENDER");
@@ -274,12 +275,5 @@ class Mesh {
     //     }
     // }
 
-    GLenum getAndClearGLErrors(){
-        GLenum error = glGetError();
-        // Clear OpenGL errors
-        while (glGetError() != GL_NO_ERROR) {
-            glGetError();
-        }
-        return error;
-    }
+    
 }
