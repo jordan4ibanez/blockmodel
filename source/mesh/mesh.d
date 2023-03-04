@@ -29,6 +29,8 @@ class Mesh {
     // Indices count, not sure why this is stored in this class?
     // Todo: Figure out why this is.
     GLuint indexCount = 0;
+
+    bool lineMode = true;
     
     
     private Texture texture = null;
@@ -38,7 +40,10 @@ class Mesh {
         const int[] indices, 
         const float[] textureCoordinates, 
         const int[] bones,
-        const string textureLocation ) {
+        const string textureLocation,
+        const bool lineMode = false) {
+
+        this.lineMode = lineMode;
 
         this.texture = new Texture(textureLocation);
 
@@ -46,7 +51,7 @@ class Mesh {
         this.exists = true;
 
         // Don't bother if not divisible by 3 TRI from cube vertex positions
-        assert(indices.length % 3 == 0 && indices.length >= 3);
+        assert(vertices.length % 3 == 0 && vertices.length >= 3);
         this.indexCount = cast(GLuint)(indices.length);
 
         // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
@@ -233,7 +238,12 @@ class Mesh {
         glBindTexture(GL_TEXTURE_2D, this.texture.getId);
 
         glBindVertexArray(this.vao);
-        glDrawElements(GL_TRIANGLES, this.indexCount, GL_UNSIGNED_INT, cast(const(void)*)0);
+
+        if (lineMode) {
+            glDrawArrays(GL_LINES, 0, this.indexCount);
+        } else {
+            glDrawElements(GL_TRIANGLES, this.indexCount, GL_UNSIGNED_INT, cast(const(void)*)0);
+        }
         
         GLenum glErrorInfo = getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
