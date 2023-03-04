@@ -209,44 +209,38 @@ class Mesh {
         if (!finalized) {
             throw new Exception("You MUST call finalize() for a mesh!");
         }
-
-        // This is done like this because it works around driver issues
         
-        // When you bind to the array, the buffers are automatically unbound
+        // Bind to the context of the Vertex Array Object in gpu memory
         glBindVertexArray(this.vao);
 
-        // Disable all attributes of this "object"
-        //! This needs to check if it's negative
+        // Delete the positions vbo
         if (this.pbo != invalid) {
             glDisableVertexAttribArray(0);
+            glDeleteBuffers(1, &this.pbo);
+            assert (glIsBuffer(this.pbo) == GL_FALSE);
+
+            writeln("deleted VERTEX POSITIONS");
         }
 
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-        
-
-        //! This needs to check if it's negative
-        // Delete the positions vbo
-        glDeleteBuffers(1, &this.pbo);
-        assert (glIsBuffer(this.pbo) == GL_FALSE);
-    
-        //! This needs to check if it's negative
         // Delete the texture coordinates vbo
-        glDeleteBuffers(1, &this.tbo);
-        assert (glIsBuffer(this.tbo) == GL_FALSE);
-
-        // Delete the colors vbo
-        // glDeleteBuffers(1, &this.cbo);
-        // assert (glIsBuffer(this.cbo) == GL_FALSE);
-
-        //! This needs to check if it's negative
+        if (this.tbo != invalid) {
+            glDisableVertexAttribArray(1);
+            glDeleteBuffers(1, &this.tbo);
+            assert (glIsBuffer(this.tbo) == GL_FALSE);
+            writeln("deleted TEXTURE COORDINATES");
+        }
         // Delete the indices vbo
-        glDeleteBuffers(1, &this.ibo);
-        assert (glIsBuffer(this.ibo) == GL_FALSE);
+        if (this.bbo != invalid) {
+            glDisableVertexAttribArray(2);
+            glDeleteBuffers(1, &this.ibo);
+            assert (glIsBuffer(this.ibo) == GL_FALSE);
+            writeln("deleted BONES");
+        }
 
-        // Unbind the "object"
+        // Unbind the OpenGL object
         glBindVertexArray(0);
-        // Now we can delete it without any issues
+
+        // Now we can delete the OpenGL Vertex Array Object without any issues
         glDeleteVertexArrays(1, &this.vao);
         assert(glIsVertexArray(this.vao) == GL_FALSE);
 
