@@ -15,9 +15,6 @@ class Camera {
     // Window context pointer.
     private static Window window = null;
 
-    // Model shader context pointer.
-    private static Shader modelShader = null;
-
 
     private double FOV = math.toRadians(60.0);
 
@@ -163,16 +160,5 @@ class Camera {
 
     public static void destroyWindowContext() {
         this.window = null;
-    }
-
-    public static void createModelShaderContext(Shader modelShader) {
-        if (this.modelShader !is null) {
-            throw new Exception("Tried to assign the shader context more than once!");
-        }
-        this.modelShader = modelShader;
-    }
-
-    public static void destroyModelShaderContext() {
-        this.modelShader = null;
     }
 }
