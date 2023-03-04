@@ -135,5 +135,7 @@ void main()
 
     // modelShader.deleteShader();
 
+    xyzCompass.cleanUp();
+
     window.destroy();
 }
