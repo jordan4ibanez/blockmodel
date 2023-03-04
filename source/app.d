@@ -39,6 +39,40 @@ void main()
     // );
 
     Shader regularShader = new Shader("regular", "shaders/regular_vertex.vs", "shaders/regular_fragment.fs");
+    regularShader.createUniform("cameraMatrix");
+    regularShader.createUniform("objectMatrix");
+    regularShader.createUniform("textureSampler");
+
+    Mesh xyzCompass = new Mesh(
+        [ // Vertices
+            0,0,0,
+            1,0,0,
+
+            0,0,0,
+            0,1,0,
+
+            0,0,0,
+            0,0,1
+        ],
+        [ // Indices
+            0,1,
+            2,3,
+            4,5
+        ], 
+        [ // Texture coordinates
+            0,0,
+            1.0/3.0,0,
+
+            1.0/3.0,0,
+            2.0/3.0,0,
+
+            2.0/3.0,0,
+            1,0
+        ],
+        [], // Bones
+        "textures/xyz_compass.png", // Texture location
+        true // Enable line mode
+    );
     
 
     float fancyRotation = 0;
@@ -79,6 +113,19 @@ void main()
         // );
 
         // debugMesh.render(modelShader);
+
+        regularShader.setUniformMatrix4f("cameraMatrix", camera.updateCameraMatrix(window));
+
+        regularShader.setUniformMatrix4f("objectMatrix",
+            camera.setObjectMatrix(
+                Vector3d(0,-1,-4), // Translation
+                Vector3d(0,fancyRotation,0), // Rotation
+                Vector3d(1), // Scale
+            )
+        );
+
+        xyzCompass.render(regularShader);
+        
 
         window.swapBuffers();
     }
