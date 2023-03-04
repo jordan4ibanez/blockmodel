@@ -40,7 +40,7 @@ class Mesh {
     bool lineMode = false;
 
     /// Creates the OpenGL context for assembling this GL Mesh Object.
-    Mesh initialize() {
+    this() {
 
         // bind the Vertex Array Object.
         glGenVertexArrays(1, &this.vao);
