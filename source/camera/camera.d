@@ -15,8 +15,8 @@ class Camera {
     // Window context pointer.
     private static Window window = null;
 
-    // Shader context pointer.
-    private static Shader shader = null;
+    // Model shader context pointer.
+    private static Shader modelShader = null;
 
 
     private double FOV = math.toRadians(60.0);
@@ -67,7 +67,7 @@ class Camera {
             .rotateZ(math.toRadians(-rotation.z))
             .scale(scale);
         float[16] floatBuffer = objectMatrix.getFloatArray();
-        glUniformMatrix4fv(shader.getUniform("objectMatrix"), 1, GL_FALSE, floatBuffer.ptr);
+        glUniformMatrix4fv(modelShader.getUniform("objectMatrix"), 1, GL_FALSE, floatBuffer.ptr);
     }
 
     /*
@@ -86,7 +86,7 @@ class Camera {
             .rotateY(math.toRadians(rotation.y));
         float[16] floatBuffer = cameraMatrix.getFloatArray();
 
-        glUniformMatrix4fv(shader.getUniform("cameraMatrix"),1, GL_FALSE, floatBuffer.ptr);
+        glUniformMatrix4fv(modelShader.getUniform("cameraMatrix"),1, GL_FALSE, floatBuffer.ptr);
     }
 
     // It is extremely important to clear the buffer bit!
@@ -168,14 +168,14 @@ class Camera {
         this.window = null;
     }
 
-    public static void createShaderContext(Shader shader) {
-        if (this.shader !is null) {
+    public static void createModelShaderContext(Shader modelShader) {
+        if (this.modelShader !is null) {
             throw new Exception("Tried to assign the shader context more than once!");
         }
-        this.shader = shader;
+        this.modelShader = modelShader;
     }
 
-    public static void destroyShaderContext() {
-        this.shader = null;
+    public static void destroyModelShaderContext() {
+        this.modelShader = null;
     }
 }

@@ -15,8 +15,8 @@ class Mesh {
     // Window context pointer.
     private static Window window = null;
 
-    // Shader context pointer.
-    private static Shader shader = null;
+    // Model shader context pointer.
+    private static Shader modelShader = null;
 
     // Camera context pointer;
     private static Camera camera = null;
@@ -226,7 +226,7 @@ class Mesh {
             return;
         }
 
-        shader.setUniformInt("textureSampler", 0);
+        modelShader.setUniformInt("textureSampler", 0);
         //! getShader("main").setUniformF("light", light);
 
         glActiveTexture(GL_TEXTURE0);
@@ -313,14 +313,14 @@ class Mesh {
         this.camera = null;
     }
 
-    public static void createShaderContext(Shader shader) {
-        if (this.shader !is null) {
+    public static void createModelShaderContext(Shader modelShader) {
+        if (this.modelShader !is null) {
             throw new Exception("Tried to assign the shader context more than once!");
         }
-        this.shader = shader;
+        this.modelShader = modelShader;
     }
 
-    public static void destroyShaderContext() {
-        this.shader = null;
+    public static void destroyModelShaderContext() {
+        this.modelShader = null;
     }
 }

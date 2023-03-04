@@ -30,14 +30,14 @@ void main()
     Mesh.createCameraContext(camera);
     
     // Shader controls GLSL
-    Shader shader = new Shader("base", "shaders/vertex.vs", "shaders/fragment.fs");
-    shader.createUniform("cameraMatrix");
-    shader.createUniform("objectMatrix");
-    shader.createUniform("textureSampler");
-    shader.createUniform("boneTRS");
+    Shader modelShader = new Shader("base", "shaders/vertex.vs", "shaders/fragment.fs");
+    modelShader.createUniform("cameraMatrix");
+    modelShader.createUniform("objectMatrix");
+    modelShader.createUniform("textureSampler");
+    modelShader.createUniform("boneTRS");
 
-    Camera.createShaderContext(shader);
-    Mesh.createShaderContext(shader);
+    Camera.createModelShaderContext(modelShader);
+    Mesh.createModelShaderContext(modelShader);
 
 
     // BlockModel model = new BlockModel("models/minetest_sam.json");
@@ -64,7 +64,7 @@ void main()
 
         calculateDelta();
 
-        glUseProgram(shader.getShaderProgram);
+        glUseProgram(modelShader.getShaderProgram);
 
         window.clear(1);
         camera.clearDepthBuffer();
@@ -88,10 +88,10 @@ void main()
         window.swapBuffers();
     }
 
-    Mesh.destroyShaderContext();
-    Camera.destroyShaderContext();
+    Mesh.destroyModelShaderContext();
+    Camera.destroyModelShaderContext();
 
-    shader.deleteShader();
+    modelShader.deleteShader();
 
     //* Clean up all reference pointers.
     Mesh.destroyCameraContext();
