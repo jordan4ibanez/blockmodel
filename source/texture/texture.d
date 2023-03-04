@@ -6,6 +6,18 @@ import color;
 import png;
 import tools.gl_error;
 
+/// Texture works as a singleton container.
+class Texture {
+    
+    private static Texture instance;
+
+    static Texture getInstance() {
+        if (instance is null){
+            instance = new Texture();
+        }
+        return instance;
+    }
+}
 
 /// TextureObject creates OpenGL data and stores the information for future utilization.
 private class TextureObject {
