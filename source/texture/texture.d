@@ -6,45 +6,47 @@ import color;
 import png;
 import tools.gl_error;
 
-/// Texture works as a singleton container.
+/**
+    Texture works as a singleton container.
+    If you add all textures in at the beginning
+    of the program, this becomes a cache.
+*/
 class Texture {
     
+    // The only instance of Texture container.
     private static Texture instance;
 
+    // Stores all textures as simple GLuint pointers. Accessed by file location.
+    private GLuint[string] storage;
+    
+    //! Note: see about making a new texture object that has a protected flag?
+
+    /// Get the instance of the texture class.
     static Texture getInstance() {
         if (instance is null){
             instance = new Texture();
         }
         return instance;
     }
-}
+    
+    /// Add a texture into the container.
+    GLuint addTexture(string fileLocation, bool debugEnabled = false) {
 
-/// TextureObject creates OpenGL data and stores the information for future utilization.
-private class TextureObject {
+        // Use ADR's awesome framework library to convert the png into a raw data stream.
+        TrueColorImage tempImageObject = readPng(fileLocation).getAsTrueColorImage();
 
-    private static const bool debugEnabled = true;
-
-    private GLuint id = 0;
-    private GLuint width = 0;
-    private GLuint height = 0;
-
-    private string name;
-
-    this(string textureLocation) {
-
-        this.name = textureLocation;
-
-        TrueColorImage tempImageObject = readPng(textureLocation).getAsTrueColorImage();
-
-        this.width = tempImageObject.width();
-        this.height = tempImageObject.height();
+        const int width = tempImageObject.width();
+        const int height = tempImageObject.height();
 
         ubyte[] tempData = tempImageObject.imageData.bytes;
 
-        glGenTextures(1, &this.id);
-        glBindTexture(GL_TEXTURE_2D, this.id);
+        // Now use the OpenGL framework to upload it.
+        GLuint id;
+
+        glGenTextures(1, &id);
+        glBindTexture(GL_TEXTURE_2D, id);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this.width, this.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tempData.ptr);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tempData.ptr);
 
         // Enable texture clamping to edge
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -67,20 +69,24 @@ private class TextureObject {
 
             throw new Exception("Failed to load texture!");
         }
-    }
 
-    GLuint getId() {
-        return this.id;
-    }
+        if (debugEnabled) {
+            writeln(fileLocation, " is stored as ID: ", id);
+        }
 
-    string getName() {
-        return this.name;
+        // Finally cache the GL pointer ID as a GLuint
+        storage[fileLocation] = id;
+        
+        // Then return ID to make this even more flexible
+        return id;
     }
 
     void cleanUp() {
-        glDeleteTextures(1, &this.id);
-        if (debugEnabled) {
-            writeln("TEXTURE ", this.id, " (" ~ this.name ~ ") HAS BEEN DELETED");
+        foreach (string key, GLuint value; storage) {
+            glDeleteTextures(1, &value);
+
+            writeln("TEXTURE ", value, " (" ~ key ~ ") HAS BEEN DELETED");
         }
     }
+
 }
