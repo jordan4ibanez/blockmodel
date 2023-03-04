@@ -10,9 +10,7 @@ class Camera {
 
     // There can only be one camera in the game, this is it
     private static bool locked = false;
-
-    // Window context pointer.
-    private static Window window = null;
+    
 
     private double FOV = math.toRadians(60.0);
 
@@ -71,7 +69,7 @@ class Camera {
     2. Calculates it's position in 4d space, and locks it in place
     3. It updates GLSL so it can work with it
     */
-    float[16] updateCameraMatrix() {
+    float[16] updateCameraMatrix(Window window) {
         double aspectRatio = window.getAspectRatio();
         
         cameraMatrix.identity()
@@ -147,16 +145,5 @@ class Camera {
     // Gets rotation in degrees
     Vector3d getRotation() {
         return rotation;
-    }
-
-    public static void createWindowContext(Window window) {
-        if (this.window !is null) {
-            throw new Exception("Tried to assign the window context more than once!");
-        }
-        this.window = window;
-    }
-
-    public static void destroyWindowContext() {
-        this.window = null;
     }
 }
