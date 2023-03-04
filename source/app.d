@@ -122,7 +122,7 @@ void main()
         regularShader.setUniformMatrix4f("objectMatrix",
             camera.setObjectMatrix(
                 Vector3d(0,-1,-4), // Translation
-                Vector3d(0,0,0), // Rotation
+                Vector3d(0,fancyRotation,0), // Rotation
                 Vector3d(1), // Scale
             )
         );
