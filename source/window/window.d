@@ -267,39 +267,11 @@ class Window {
         // Dereference the pointer into a usable structure in class
         videoMode = *mode;
     }
-
-    // void toggleFullScreen() {
-    //     if (fullscreen) {
-    //         setHalfSizeInternal();
-    //     } else {
-    //         setFullScreenInternal();
-    //     }
-    // }
+    
 
     bool isFullScreen() {
         return fullscreen;
     }
-
-    // private void setFullScreenInternal() {
-    //     updateVideoMode();    
-
-    //     glfwSetWindowMonitor(
-    //         window,
-    //         monitor,
-    //         0,
-    //         0,
-    //         videoMode.width,
-    //         videoMode.height,
-    //         videoMode.refreshRate
-    //     );
-
-    //     glfwSwapInterval(vsync);
-
-    //     centerMouse();
-    //     stopMouseJolt();
-
-    //     fullscreen = true;
-    // }
 
     private void setHalfSizeInternal() {
 
@@ -331,18 +303,6 @@ class Window {
         fullscreen = false;
     }
 
-    // void lockMouse() {
-    //     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    //     centerMouse();
-    //     stopMouseJolt();
-    // }
-
-    // void unlockMouse() {
-    //     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    //     centerMouse();
-    //     stopMouseJolt();
-    // }
-
     void setMousePosition(double x, double y) {
         glfwSetCursorPos(window, x, y);
     }
@@ -357,10 +317,6 @@ class Window {
         );
         return Vector2d(x,y);
     }
-
-    // void stopMouseJolt(){
-    //     Mouse.setOldPosition(Vector2d(size.x / 2.0, size.y / 2.0));
-    // }
 
     void setVsync(ubyte value) {
         vsync = value;
