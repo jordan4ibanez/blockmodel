@@ -153,10 +153,6 @@ class Shader {
         return uniforms[uniformName];
     }
 
-    uint getShaderProgram() {
-        return this.shaderProgram;
-    }
-
     /// A helper shortcut to initialize this shader
     void startProgram() {
         glUseProgram(this.shaderProgram);
