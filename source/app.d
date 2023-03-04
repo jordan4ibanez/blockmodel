@@ -35,8 +35,7 @@ void main()
     modelShader.createUniform("objectMatrix");
     modelShader.createUniform("textureSampler");
     modelShader.createUniform("boneTRS");
-
-    Camera.createModelShaderContext(modelShader);
+    
     Mesh.createModelShaderContext(modelShader);
 
 
@@ -94,7 +93,6 @@ void main()
     }
 
     Mesh.destroyModelShaderContext();
-    Camera.destroyModelShaderContext();
 
     modelShader.deleteShader();
 
