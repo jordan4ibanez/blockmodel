@@ -79,6 +79,8 @@ void main()
         window.swapBuffers();
     }
 
+    debugMesh.cleanUp(true);
+
     modelShader.deleteShader();
 
     window.destroy();
