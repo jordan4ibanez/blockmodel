@@ -4,15 +4,11 @@ import std.stdio;
 import bindbc.opengl;
 import shader.shader;
 import texture.texture;
-import window.window;
 import vector_3d;
 import vector_4d;
 import vector_4i;
 
 class Mesh {
-
-    // Window context pointer.
-    private static Window window = null;
 
     private static bool debugEnabled = false;
 
@@ -143,7 +139,7 @@ class Mesh {
         // Unbind vao just in case
         glBindVertexArray(0);
 
-        GLenum glErrorInfo = window.getAndClearGLErrors();
+        GLenum glErrorInfo = this.getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
             writeln("ERROR IN A MESH CONSTRUCTOR");
@@ -198,7 +194,7 @@ class Mesh {
 
         
 
-        GLenum glErrorInfo = window.getAndClearGLErrors();
+        GLenum glErrorInfo = this.getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
             writeln("ERROR IN A MESH DESTRUCTOR");
@@ -227,7 +223,7 @@ class Mesh {
         glBindVertexArray(this.vao);
         glDrawElements(GL_TRIANGLES, this.indexCount, GL_UNSIGNED_INT, cast(const(void)*)0);
         
-        GLenum glErrorInfo = window.getAndClearGLErrors();
+        GLenum glErrorInfo = this.getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
             writeln("ERROR IN A MESH RENDER");
@@ -277,18 +273,6 @@ class Mesh {
     //         writeln("Mesh ", this.vao, " has rendered successfully ");
     //     }
     // }
-
-    // This injects and holds the pointer to the Window object.
-    public static void createWindowContext(Window window) {
-        if (this.window !is null) {
-            throw new Exception("Tried to assign a window context to mesh more than once!");
-        }
-        this.window = window;
-    }
-    // Prevents a circular reference.
-    public static void destroyWindowContext() {
-        this.window = null;
-    }
 
     GLenum getAndClearGLErrors(){
         GLenum error = glGetError();
