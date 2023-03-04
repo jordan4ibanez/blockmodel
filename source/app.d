@@ -62,6 +62,8 @@ void main()
         camera.clearDepthBuffer();
         camera.setRotation(Vector3d(0,0,0));
 
+        regularShader.startProgram();
+
 
         // modelShader.startProgram();
 
