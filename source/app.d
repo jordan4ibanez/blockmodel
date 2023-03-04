@@ -17,9 +17,6 @@ void main()
     // Window controls OpenGL and GLFW
 	Window window = new Window("BlockModel Editor").initialize;
 
-    //* Allow direct message passing through reference pointers. Reduces verbosity.
-    Texture.createWindowContext(window);
-
     // Camera controls view point and mathematical OpenGL calculations
     Camera camera = new Camera();
     
@@ -84,8 +81,6 @@ void main()
     }
 
     modelShader.deleteShader();
-    
-    Texture.destroyWindowContext();
 
     window.destroy();
 }
