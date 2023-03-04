@@ -15,7 +15,7 @@ void main()
 {
 
     // Window controls OpenGL and GLFW
-	Window window = new Window("BlockModel prototyping").initialize;
+	Window window = new Window("BlockModel Editor").initialize;
 
     //* Allow direct message passing through reference pointers. Reduces verbosity.
     Mesh.createWindowContext(window);
