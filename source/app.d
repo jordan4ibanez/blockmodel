@@ -74,13 +74,21 @@ void main()
         modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(1), model.total_blocks);
 
         modelShader.setUniformMatrix4f("cameraMatrix", camera.updateCameraMatrix());
+
+        modelShader.setUniformMatrix4f("objectMatrix",
+            camera.setObjectMatrix(
+                Vector3d(0,-3,-10), // Translation
+                Vector3d(0,fancyRotation,0), // Rotation
+                Vector3d(1), // Scale
+            )
+        );
+
+
+
+
         
 
-        debugMesh.render(
-            Vector3d(0,-3,-10), // Translation
-            Vector3d(0,fancyRotation,0), // Rotation
-            Vector3d(1), // Scale
-        1);
+        debugMesh.render();
 
         window.swapBuffers();
     }
