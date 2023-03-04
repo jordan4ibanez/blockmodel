@@ -35,8 +35,6 @@ void main()
     modelShader.createUniform("objectMatrix");
     modelShader.createUniform("textureSampler");
     modelShader.createUniform("boneTRS");
-    
-    Mesh.createModelShaderContext(modelShader);
 
 
     BlockModel model = new BlockModel("models/minetest_sam.json");
@@ -71,7 +69,6 @@ void main()
         glUseProgram(modelShader.getShaderProgram);
 
         modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(1), model.total_blocks);
-
         modelShader.setUniformMatrix4f("cameraMatrix", camera.updateCameraMatrix());
 
         modelShader.setUniformMatrix4f("objectMatrix",
@@ -87,12 +84,10 @@ void main()
 
         
 
-        debugMesh.render();
+        debugMesh.render(modelShader);
 
         window.swapBuffers();
     }
-
-    Mesh.destroyModelShaderContext();
 
     modelShader.deleteShader();
 
