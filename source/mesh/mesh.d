@@ -208,7 +208,7 @@ class Mesh {
             writeln("ERROR IN A MESH DESTRUCTOR");
         }
 
-        if (texture !is null && deleteTexture) {
+        if (deleteTexture) {
             this.texture.cleanUp();
         }
 
