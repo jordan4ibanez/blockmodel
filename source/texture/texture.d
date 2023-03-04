@@ -6,7 +6,9 @@ import color;
 import png;
 import tools.gl_error;
 
-class Texture {
+
+/// TextureObject creates OpenGL data and stores the information for future utilization.
+private class TextureObject {
 
     private static const bool debugEnabled = true;
 
