@@ -26,11 +26,11 @@ class Mesh {
     // Bones vertex buffer object
     GLuint bbo = 0;
 
-    // Indices count, not sure why this is stored in this class?
-    // Todo: Figure out why this is.
+    ///This is used for telling glsl how many indices are drawn in the render method.
     GLuint indexCount = 0;
 
-    bool lineMode = true;
+    /// Draws the mesh as a bunch of lines.
+    bool lineMode = false;
     
     
     private Texture texture = null;
@@ -60,7 +60,6 @@ class Mesh {
     
 
         // Positions VBO
-
         glGenBuffers(1, &this.pbo);
         glBindBuffer(GL_ARRAY_BUFFER, this.pbo);
 
