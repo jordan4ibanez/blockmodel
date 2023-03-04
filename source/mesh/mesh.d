@@ -27,6 +27,12 @@ class Mesh {
     ///This is used for telling glsl how many indices are drawn in the render method.
     GLuint indexCount = 0;
 
+    /**
+     This is used to tell GL and GLSL which texture we are using.
+     It is: (uniform sampler2D textureSampler) in the fragment shader
+    */
+    GLint textureId = -1;
+
     /// Draws the mesh as a bunch of lines.
     bool lineMode = false;
 
