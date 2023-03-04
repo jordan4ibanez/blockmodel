@@ -18,7 +18,6 @@ void main()
 	Window window = new Window("BlockModel Editor").initialize;
 
     //* Allow direct message passing through reference pointers. Reduces verbosity.
-    Camera.createWindowContext(window);
     Texture.createWindowContext(window);
     Shader.createWindowContext(window);
 
@@ -65,7 +64,7 @@ void main()
         glUseProgram(modelShader.getShaderProgram);
 
         modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(1), model.total_blocks);
-        modelShader.setUniformMatrix4f("cameraMatrix", camera.updateCameraMatrix());
+        modelShader.setUniformMatrix4f("cameraMatrix", camera.updateCameraMatrix(window));
 
         modelShader.setUniformMatrix4f("objectMatrix",
             camera.setObjectMatrix(
@@ -89,7 +88,6 @@ void main()
 
     Shader.destroyWindowContext();
     Texture.destroyWindowContext();
-    Camera.destroyWindowContext();
 
     window.destroy();
 }
