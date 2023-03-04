@@ -77,16 +77,14 @@ class Camera {
     2. Calculates it's position in 4d space, and locks it in place
     3. It updates GLSL so it can work with it
     */
-    void updateCameraMatrix() {
+    float[16] updateCameraMatrix() {
         double aspectRatio = window.getAspectRatio();
         
         cameraMatrix.identity()
             .perspective(FOV, aspectRatio, Z_NEAR, Z_FAR)
             .rotateX(math.toRadians(rotation.x))
             .rotateY(math.toRadians(rotation.y));
-        float[16] floatBuffer = cameraMatrix.getFloatArray();
-
-        glUniformMatrix4fv(modelShader.getUniform("cameraMatrix"),1, GL_FALSE, floatBuffer.ptr);
+        return cameraMatrix.getFloatArray();
     }
 
     // It is extremely important to clear the buffer bit!
