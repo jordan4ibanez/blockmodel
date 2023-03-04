@@ -157,6 +157,11 @@ class Shader {
         return this.shaderProgram;
     }
 
+    /// A helper shortcut to initialize this shader
+    void startProgram() {
+        glUseProgram(this.shaderProgram);
+    }
+
     // Automates shader compilation
     private uint compileShader(string name, string sourceCode, uint shaderType) { 
 
