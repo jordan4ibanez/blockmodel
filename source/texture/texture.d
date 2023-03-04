@@ -2,14 +2,12 @@ module texture.texture;
 
 import std.stdio;
 import bindbc.opengl;
-import window.window;
 import color;
 import png;
+import tools.gl_error;
 
 class Texture {
-
-    // Window context pointer.
-    private static Window window;
+    
 
     private static const bool debugEnabled = true;
 
@@ -45,7 +43,7 @@ class Texture {
 
         // glGenerateMipmap(GL_TEXTURE_2D);
 
-        GLenum glErrorInfo = window.getAndClearGLErrors();
+        GLenum glErrorInfo = getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
             writeln("ERROR IN TEXTURE");
@@ -63,17 +61,5 @@ class Texture {
         if (debugEnabled) {
             writeln("TEXTURE ", this.id, " HAS BEEN DELETED");
         }
-    }
-
-    // This injects and holds the pointer to the Window object.
-    public static void createWindowContext(Window window) {
-        if (this.window !is null) {
-            throw new Exception("Tried to assign a window context to mesh more than once!");
-        }
-        this.window = window;
-    }
-    // Prevents a circular reference.
-    public static void destroyWindowContext() {
-        this.window = null;
     }
 }
