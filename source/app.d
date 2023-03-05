@@ -4,7 +4,7 @@ import bindbc.opengl;
 import camera.camera;
 import mesh.mesh;
 import shader.shader;
-import texture.texture_container;
+import texture.texture;
 import window.window;
 import vector_3d;
 import matrix_4d;
@@ -21,9 +21,9 @@ void main()
     // Camera controls view point and mathematical OpenGL calculations
     Camera camera = new Camera();
 
-    TextureContainer textureContainer = TextureContainer.getInstance();
+    Texture.initialize();
 
-    GLuint xyzTexture = textureContainer.addTexture("textures/xyz_compass.png");
+    GLuint xyzTexture = Texture.addTexture("textures/xyz_compass.png");
     
     // Shader controls GLSL
     // Shader modelShader = new Shader("model", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
@@ -75,6 +75,7 @@ void main()
             2.0/3.0,0,
             1,0
         ])
+        .setTexture(Texture.getTexture("textures/xyz_compass.png"))
         .setLineMode(true)
         .finalize();
     
@@ -142,7 +143,7 @@ void main()
 
     xyzCompass.cleanUp();
 
-    TextureContainer.cleanUp();
+    Texture.cleanUp();
 
     window.destroy();
 }
