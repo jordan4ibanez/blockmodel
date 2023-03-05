@@ -42,6 +42,8 @@ class Window {
     private int fpsCounter = 0;
     private int FPS = 0;
 
+    private this() {}
+
     // Only one window can exist
     static Window getInstance() {
         if (instance is null) {

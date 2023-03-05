@@ -20,6 +20,8 @@ class TextureContainer {
     private GLuint[string] storage;
     
     //! Note: see about making a new texture object that has a protected flag?
+    
+    private this() {}
 
     /// Get the instance of the texture class.
     static TextureContainer getInstance() {
