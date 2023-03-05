@@ -20,6 +20,10 @@ void main()
 
     // Camera controls view point and mathematical OpenGL calculations
     Camera camera = new Camera();
+
+    TextureContainer textureContainer = TextureContainer.getInstance();
+
+    textureContainer.addTexture("textures/xyz_compass.png");
     
     // Shader controls GLSL
     // Shader modelShader = new Shader("model", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
@@ -77,7 +81,7 @@ void main()
 
     float fancyRotation = 0;
 
-    while (!window.shouldClose()) {
+    while (window.shouldClose()) {
         // Calculating the delta goes first, we want this to be as accurate as possible.
         calculateDelta();
         // Poll events is hugging the entry point to the scope
