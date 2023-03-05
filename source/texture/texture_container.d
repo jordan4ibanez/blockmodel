@@ -12,6 +12,8 @@ import tools.gl_error;
     of the program, this becomes a cache.
 */
 class TextureContainer {
+
+    private static immutable GLuint invalid = GLuint.max;
     
     // The only instance of Texture container.
     private static TextureContainer instance;
@@ -23,18 +25,19 @@ class TextureContainer {
     
     private this() {}
 
-    /// Get the instance of the texture class.
-    static TextureContainer getInstance() {
+    /// Initialize the instance of the TextureContainer class.
+    static void initialize() {
         if (instance is null){
             instance = new TextureContainer();
         }
-        return instance;
     }
     
     /// Add a texture into the container.
-    GLuint addTexture(string fileLocation, bool debugEnabled = false) {
+    static GLuint addTexture(string fileLocation, bool debugEnabled = false) {
 
-        if (fileLocation in storage) {
+        checkInstance();
+
+        if (fileLocation in instance.storage) {
             throw new Exception("Attempted to create a texture twice! Must be deleted first!");
         }
 
@@ -81,21 +84,34 @@ class TextureContainer {
         }
 
         // Finally cache the GL pointer ID as a GLuint
-        storage[fileLocation] = id;
+        instance.storage[fileLocation] = id;
         
         // Then return ID to make this even more flexible
         return id;
     }
 
-    static void cleanUp() {
-        if(instance is null) {
-            throw new Exception("Texture was never initialized!");
+    static GLuint getTexture(string fileLocation) {
+        checkInstance();
+
+        if (fileLocation !in instance.storage) {
+            return invalid;
         }
+        return instance.storage[fileLocation];
+    }
+
+    static void cleanUp() {
+        checkInstance();
 
         foreach (string key, GLuint value; instance.storage) {
             glDeleteTextures(1, &value);
 
             writeln("TEXTURE ", value, " (" ~ key ~ ") HAS BEEN DELETED");
+        }
+    }
+
+    private static void checkInstance() {
+        if(instance is null) {
+            throw new Exception("Texture was never initialized!");
         }
     }
 
