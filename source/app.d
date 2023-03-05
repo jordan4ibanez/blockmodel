@@ -124,7 +124,7 @@ void main()
 
         Window.clear(1);
 
-        if (false) {
+        if (true) {
             Camera.clearDepthBuffer();
             Camera.setRotation(Vector3d(0,0,0));
 
