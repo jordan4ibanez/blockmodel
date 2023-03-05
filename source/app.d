@@ -81,7 +81,7 @@ void main()
 
     float fancyRotation = 0;
 
-    while (window.shouldClose()) {
+    while (!window.shouldClose()) {
         // Calculating the delta goes first, we want this to be as accurate as possible.
         calculateDelta();
         // Poll events is hugging the entry point to the scope
