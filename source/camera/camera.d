@@ -69,8 +69,8 @@ class Camera {
     2. Calculates it's position in 4d space, and locks it in place
     3. It updates GLSL so it can work with it
     */
-    float[16] updateCameraMatrix(Window window) {
-        double aspectRatio = window.getAspectRatio();
+    float[16] updateCameraMatrix() {
+        double aspectRatio = Window.getAspectRatio();
         
         cameraMatrix.identity()
             .perspective(FOV, aspectRatio, Z_NEAR, Z_FAR)
