@@ -3,7 +3,6 @@ module mesh.mesh;
 import std.stdio;
 import bindbc.opengl;
 import shader.shader;
-import texture.texture;
 import vector_3d;
 import vector_4d;
 import vector_4i;
