@@ -180,6 +180,10 @@ class Window {
         glfwSetWindowShouldClose(instance.window, true);
     }
 
+    static bool isFullScreen() {
+        return instance.fullscreen;
+    }
+
     // Window talks directly to GLFW
     private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
 
@@ -268,9 +272,7 @@ class Window {
     }
     
 
-    bool isFullScreen() {
-        return fullscreen;
-    }
+    
 
     private void setHalfSizeInternal() {
 
@@ -302,24 +304,24 @@ class Window {
         fullscreen = false;
     }
 
-    void setMousePosition(double x, double y) {
-        glfwSetCursorPos(window, x, y);
+    static void setMousePosition(double x, double y) {
+        glfwSetCursorPos(instance.window, x, y);
     }
 
-    Vector2d centerMouse() {
-        double x = windowSize.x / 2.0;
-        double y = windowSize.y / 2.0;
+    static Vector2d centerMouse() {
+        double x = instance.windowSize.x / 2.0;
+        double y = instance.windowSize.y / 2.0;
         glfwSetCursorPos(
-            window,
+            instance.window,
             x,
             y
         );
         return Vector2d(x,y);
     }
 
-    void setVsync(ubyte value) {
-        vsync = value;
-        glfwSwapInterval(vsync);
+    static void setVsync(ubyte value) {
+        instance.vsync = value;
+        glfwSwapInterval(instance.vsync);
     }
 
     //! ====== End GLFW Tools ======
