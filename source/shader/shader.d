@@ -4,196 +4,182 @@ import std.stdio;
 import std.file;
 import bindbc.opengl;
 import tools.gl_error;
+import std.string;
 
-class Shader {
+/// These work as a synced list
+private GLuint[string] vertexShaders;
+private GLuint[string] fragmentShaders;
+private GLuint[string] shaderPrograms;
+// Indexed as uniform["shaderName"]["uniformName"]
+private GLint[string][string] uniforms;
 
-    private string name;
-
-    private uint vertexShader = 0;
-    private uint fragmentShader = 0;
-    private uint shaderProgram = 0;
-
-    private uint[string] uniforms;
-
-    this(string name,
-        string vertexShaderCodeLocation,
-        string fragmentShaderCodeLocation,
-        string[] uniforms = []) {
+void create(string shaderName,
+    string vertexShaderCodeLocation,
+    string fragmentShaderCodeLocation,
+    string[] uniformList = []) {
     
-        this.name = name;
 
-        // The game cannot run without shaders, bail out
-        if (!exists(vertexShaderCodeLocation)) {
-            throw new Exception("Vertex shader code does not exist!");
-        }
-        if (!exists(fragmentShaderCodeLocation)) {
-            throw new Exception("Fragment shader code does not exist!");
-        }
-
-        string vertexShaderCode = cast(string)read(vertexShaderCodeLocation);
-        string fragmentShaderCode = cast(string)read(fragmentShaderCodeLocation);
-
-        this.vertexShader = compileShader(name, vertexShaderCode, GL_VERTEX_SHADER);
-        this.fragmentShader = compileShader(name, fragmentShaderCode, GL_FRAGMENT_SHADER);
-
-        this.shaderProgram = glCreateProgram();
-
-        glAttachShader(shaderProgram, vertexShader);
-        glAttachShader(shaderProgram, fragmentShader);
-
-        glLinkProgram(shaderProgram);
-
-        int success;
-        // Default value is SPACE instead of garbage
-        char[512] infoLog = (' ');
-        glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-
-        if (!success) {
-            glGetProgramInfoLog(shaderProgram, 512, null, infoLog.ptr);
-            writeln(infoLog);
-
-            throw new Exception("Error creating shader program!");
-        }
-
-        writeln("GL Shader Program with ID ", shaderProgram, " successfully linked!");
-
-        foreach (string uniformName; uniforms) {
-            this.createUniform(uniformName);
-        }
+    // The game cannot run without shaders, bail out
+    if (!exists(vertexShaderCodeLocation)) {
+        throw new Exception("Vertex shader code does not exist!");
+    }
+    if (!exists(fragmentShaderCodeLocation)) {
+        throw new Exception("Fragment shader code does not exist!");
     }
 
-    Shader createUniform(string uniformName) {
-        GLint location = glGetUniformLocation(this.shaderProgram, uniformName.ptr);
-        writeln("uniform ", uniformName, " is at id ", location);
-        // Do not allow out of bounds
-        if (location < 0) {
-            throw new Exception("OpenGL uniform is out of bounds!");
-        }
-        GLenum glErrorInfo = getAndClearGLErrors();
-        if (glErrorInfo != GL_NO_ERROR) {
-            writeln("GL ERROR: ", glErrorInfo);
-            writeln("ERROR CREATING UNIFORM: ", uniformName);
-            // More needed crashes!
-            throw new Exception("Failed to create shader uniform!");
-        }
+    string vertexShaderCode = cast(string)read(vertexShaderCodeLocation);
+    string fragmentShaderCode = cast(string)read(fragmentShaderCodeLocation);
 
-        uniforms[uniformName] = location;
+    GLuint vertexShader = compileShader(shaderName, vertexShaderCode, GL_VERTEX_SHADER);
+    GLuint fragmentShader = compileShader(shaderName, fragmentShaderCode, GL_FRAGMENT_SHADER);
 
-        return this;
+    GLuint shaderProgram = glCreateProgram();
+
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+
+    glLinkProgram(shaderProgram);
+
+    int success;
+    // Default value is SPACE instead of garbage
+    char[512] infoLog = (' ');
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 512, null, infoLog.ptr);
+        writeln(infoLog);
+
+        throw new Exception("Error creating shader program!");
     }
 
-    // Set the uniform's int value in GPU memory (integer)
-    void setUniformInt(string uniformName, GLuint value) {
-        glUniform1i(uniforms[uniformName], value);
-        
-        GLenum glErrorInfo = getAndClearGLErrors();
+    writeln("GL Shader Program with ID ", shaderProgram, " successfully linked!");
 
-        if (glErrorInfo != GL_NO_ERROR) {
-            writeln("GL ERROR: ", glErrorInfo);
-            // This absolutely needs to crash, there's no way
-            // the game can continue without shaders
-            throw new Exception("Error setting shader uniform: " ~ uniformName);
-        }
+    // Now dump them into the container
+    vertexShaders[shaderName] = vertexShader;
+    fragmentShaders[shaderName] = fragmentShader;
+    shaderPrograms[shaderName] = shaderProgram;
+
+    foreach (string uniformName; uniformList) {
+        createUniform(shaderName, uniformName);
+    }
+}
+
+void createUniform(string shaderName, string uniformName) {
+
+    GLint location = glGetUniformLocation(shaderPrograms[shaderName], uniformName.toStringz);
+
+    writeln("Shader ",shaderName, ": uniform ", uniformName, " is at id ", location);
+    // Do not allow out of bounds
+    if (location < 0) {
+        throw new Exception("OpenGL uniform is out of bounds!");
+    }
+    GLenum glErrorInfo = getAndClearGLErrors();
+    if (glErrorInfo != GL_NO_ERROR) {
+        writeln("GL ERROR: ", glErrorInfo);
+        writeln("ERROR CREATING UNIFORM: ", uniformName);
+        // More needed crashes!
+        throw new Exception("Failed to create shader uniform!");
     }
 
-    void setUniformFloat(string uniformName, GLfloat value) {
-        glUniform1f(uniforms[uniformName], value);
-        
-        GLenum glErrorInfo = getAndClearGLErrors();
-        if (glErrorInfo != GL_NO_ERROR) {
-            writeln("GL ERROR: ", glErrorInfo);
-            // This needs to crash too! Game needs shaders!
-            throw new Exception("Error setting shader uniform: " ~ uniformName);
-        }
+    uniforms[shaderName][uniformName] = location;
+}
+
+// Set the uniform's int value in GPU memory (integer)
+void setUniformInt(string shaderName, string uniformName, GLuint value) {
+    glUniform1i(uniforms[shaderName][uniformName], value);
+    
+    GLenum glErrorInfo = getAndClearGLErrors();
+
+    if (glErrorInfo != GL_NO_ERROR) {
+        writeln("GL ERROR: ", glErrorInfo);
+        // This absolutely needs to crash, there's no way
+        // the game can continue without shaders
+        throw new Exception("Error setting shader uniform: " ~ uniformName);
     }
+}
 
-    void setUniformDouble(string uniformName, GLdouble value) {
-        glUniform1d(uniforms[uniformName], value);
-        
-        GLenum glErrorInfo = getAndClearGLErrors();
-        if (glErrorInfo != GL_NO_ERROR) {
-            writeln("GL ERROR: ", glErrorInfo);
-            // This needs to crash too! Game needs shaders!
-            throw new Exception("Error setting shader uniform: " ~ uniformName);
-        }
+void setUniformFloat(string shaderName, string uniformName, GLfloat value) {
+    glUniform1f(uniforms[shaderName][uniformName], value);
+    
+    GLenum glErrorInfo = getAndClearGLErrors();
+    if (glErrorInfo != GL_NO_ERROR) {
+        writeln("GL ERROR: ", glErrorInfo);
+        // This needs to crash too! Game needs shaders!
+        throw new Exception("Error setting shader uniform: " ~ uniformName);
     }
+}
 
-    void setUniformMatrix4f(string uniformName, float[] matrix, GLint count = 1) {
-        glUniformMatrix4fv(
-            uniforms[uniformName], // Location
-            count, // Count
-            GL_FALSE,// Transpose
-            matrix.ptr// Pointer
-        );
-        
-        GLenum glErrorInfo = getAndClearGLErrors();
-        if (glErrorInfo != GL_NO_ERROR) {
-            writeln("GL ERROR: ", glErrorInfo);
-            // This needs to crash too! Game needs shaders!
-            throw new Exception("Error setting shader uniform: " ~ uniformName);
-        }
+void setUniformDouble(string shaderName, string uniformName, GLdouble value) {
+    glUniform1d(uniforms[shaderName][uniformName], value);
+    
+    GLenum glErrorInfo = getAndClearGLErrors();
+    if (glErrorInfo != GL_NO_ERROR) {
+        writeln("GL ERROR: ", glErrorInfo);
+        // This needs to crash too! Game needs shaders!
+        throw new Exception("Error setting shader uniform: " ~ uniformName);
     }
+}
 
-    void setUniformMatrix4d(string uniformName, double[] matrix, GLint count = 1) {
-
-        glUniformMatrix4dv(
-            uniforms[uniformName], // Location
-            count, // Count
-            GL_FALSE,// Transpose
-            matrix.ptr// Pointer
-        );
-        
-        GLenum glErrorInfo = getAndClearGLErrors();
-        if (glErrorInfo != GL_NO_ERROR) {
-            writeln("GL ERROR: ", glErrorInfo);
-            // This needs to crash too! Game needs shaders!
-            throw new Exception("Error setting shader uniform: " ~ uniformName);
-        }
+void setUniformMatrix4f(string shaderName, string uniformName, float[] matrix, GLint count = 1) {
+    glUniformMatrix4fv(
+        uniforms[shaderName][uniformName], // Location
+        count, // Count
+        GL_FALSE,// Transpose
+        matrix.ptr// Pointer
+    );
+    
+    GLenum glErrorInfo = getAndClearGLErrors();
+    if (glErrorInfo != GL_NO_ERROR) {
+        writeln("GL ERROR: ", glErrorInfo);
+        // This needs to crash too! Game needs shaders!
+        throw new Exception("Error setting shader uniform: " ~ uniformName);
     }
+}
 
-    uint getUniform(string uniformName) {
-        return uniforms[uniformName];
+void setUniformMatrix4d(string shaderName, string uniformName, double[] matrix, GLint count = 1) {
+
+    glUniformMatrix4dv(
+        uniforms[shaderName][uniformName], // Location
+        count, // Count
+        GL_FALSE,// Transpose
+        matrix.ptr// Pointer
+    );
+    
+    GLenum glErrorInfo = getAndClearGLErrors();
+    if (glErrorInfo != GL_NO_ERROR) {
+        writeln("GL ERROR: ", glErrorInfo);
+        // This needs to crash too! Game needs shaders!
+        throw new Exception("Error setting shader uniform: " ~ uniformName);
     }
+}
 
-    /// A helper shortcut to initialize this shader
-    void startProgram() {
-        glUseProgram(this.shaderProgram);
-    }
+uint getUniform(string shaderName, string uniformName) {
+    return uniforms[shaderName][uniformName];
+}
 
-    // Automates shader compilation
-    private uint compileShader(string name, string sourceCode, uint shaderType) { 
+/// A helper shortcut to initialize this shader
+void startProgram(string shaderName) {
+    glUseProgram(shaderPrograms[shaderName]);
+}
 
-        uint shader;
-        shader = glCreateShader(shaderType);
+// Automates shader compilation
+private uint compileShader(string shaderName, string sourceCode, GLuint shaderType) { 
 
-        char* shaderCodePointer = sourceCode.dup.ptr;
-        const(char*)* shaderCodeConstantPointer = &shaderCodePointer;
-        glShaderSource(shader, 1, shaderCodeConstantPointer, null);
-        glCompileShader(shader);
+    GLuint shader;
+    shader = glCreateShader(shaderType);
 
-        int success;
-        // Default value is SPACE instead of garbage
-        char[512] infoLog = (' ');
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    char* shaderCodePointer = sourceCode.dup.ptr;
+    const(char*)* shaderCodeConstantPointer = &shaderCodePointer;
+    glShaderSource(shader, 1, shaderCodeConstantPointer, null);
+    glCompileShader(shader);
 
-        // Log info in terminal, freeze the program to prevent erroneous behavior
-        if (!success) {
-            string infoName = "?Other Shader?";
-            if (shaderType == GL_VERTEX_SHADER) {
-                infoName = "GL Vertex Shader";
-            } else if (shaderType == GL_FRAGMENT_SHADER) {
-                infoName = "GL Fragment Shader";
-            }
+    int success;
+    // Default value is SPACE instead of garbage
+    char[512] infoLog = (' ');
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 
-            writeln("ERROR IN SHADER ", name, " ", infoName);
-
-            glGetShaderInfoLog(shader, 512, null, infoLog.ptr);
-            writeln(infoLog);
-
-            throw new Exception("Shader compile error");
-        }
-
-        // Match the correct debug info name
+    // Log info in terminal, freeze the program to prevent erroneous behavior
+    if (!success) {
         string infoName = "?Other Shader?";
         if (shaderType == GL_VERTEX_SHADER) {
             infoName = "GL Vertex Shader";
@@ -201,27 +187,47 @@ class Shader {
             infoName = "GL Fragment Shader";
         }
 
-        writeln("Successfully compiled ", infoName, " with ID: ", shader);
+        writeln("ERROR IN SHADER ", shaderName, " ", infoName);
 
-        return shader;
+        glGetShaderInfoLog(shader, 512, null, infoLog.ptr);
+        writeln(infoLog);
+
+        throw new Exception("Shader compile error");
     }
 
-    void deleteShader() {
-
-        // Stop it if it's running
-        glUseProgram(0);
-
-        // Detach shaders from program
-        glDetachShader(this.shaderProgram, this.vertexShader);
-        glDetachShader(this.shaderProgram, this.fragmentShader);
-
-        // Delete shaders
-        glDeleteShader(this.vertexShader);
-        glDeleteShader(this.fragmentShader);
-
-        // Delete the program
-        glDeleteProgram(this.shaderProgram);
-
-        writeln("Deleted shader: ", this.name);
+    // Match the correct debug info name
+    string infoName = "?Other Shader?";
+    if (shaderType == GL_VERTEX_SHADER) {
+        infoName = "GL Vertex Shader";
+    } else if (shaderType == GL_FRAGMENT_SHADER) {
+        infoName = "GL Fragment Shader";
     }
+
+    writeln("Successfully compiled ", infoName, " with ID: ", shader);
+
+    return shader;
+}
+
+void deleteShader(string shaderName) {
+
+    // Stop it if it's running
+    glUseProgram(0);
+
+    // Detach shaders from program
+    glDetachShader(shaderPrograms[shaderName], vertexShaders[shaderName]);
+    glDetachShader(shaderPrograms[shaderName], fragmentShaders[shaderName]);
+
+    // Delete shaders
+    glDeleteShader(vertexShaders[shaderName]);
+    glDeleteShader(fragmentShaders[shaderName]);
+
+    // Delete the program
+    glDeleteProgram(shaderPrograms[shaderName]);
+
+    // Delete the program memory
+    vertexShaders.remove(shaderName);
+    fragmentShaders.remove(shaderName);
+    shaderPrograms.remove(shaderName);
+
+    writeln("Deleted shader: ", shaderName);
 }
