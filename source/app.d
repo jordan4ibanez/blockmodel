@@ -107,6 +107,8 @@ void main()
 
     float fancyRotation = 0;
 
+    Window.setVsync(0);
+
     while (!Window.shouldClose()) {
         // Calculating the delta goes first, we want this to be as accurate as possible.
         calculateDelta();
@@ -115,12 +117,12 @@ void main()
         // is calculated. This increases responsiveness.
         Window.pollEvents();
 
-        fancyRotation += 1.0;
+        fancyRotation += getDelta * 100.0;
         if (fancyRotation >= 360.0) {
             fancyRotation -= 360.0;
         }
 
-        Window.setTitle(Window.getTitle ~ " " ~ to!string(fancyRotation), false);
+        Window.setTitle(Window.getTitle ~ " | FPS: " ~ to!string(Window.getFPS) ~ " | Rotation: " ~ to!string(fancyRotation), false);
 
         Window.clear(1);
 
