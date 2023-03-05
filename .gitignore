@@ -13,3 +13,4 @@ blockmodel-test-*
 *.o
 *.obj
 *.lst
+*.pdb
