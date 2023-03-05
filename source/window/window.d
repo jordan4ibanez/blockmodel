@@ -374,7 +374,7 @@ private bool initializeOpenGL() {
 
     glViewport(0, 0, windowSize.x, windowSize.y);
 
-    bool cull = true;
+    bool cull = false;
     
     if (cull) {
         // Enable backface culling
@@ -439,5 +439,11 @@ void clear(Vector3d rgb) {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
+double getWidth() {
+    return windowSize.x;
+}
+double getHeight() {
+    return windowSize.y;
+}
 
 //! ===== End OpenGL Tools =====
