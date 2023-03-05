@@ -30,7 +30,7 @@ private GLFWmonitor* monitor = null;
 private GLFWvidmode videoMode;
 private bool fullscreen = false;
 // 0 none, 1 normal vsync, 2 double buffered
-private byte vsync = 1;
+private int vsync = 1;
 
 // These 3 functions calculate the FPS
 private double deltaAccumulator = 0.0;
@@ -246,7 +246,7 @@ Vector2d centerMouse() {
     return Vector2d(x,y);
 }
 
-void setVsync(ubyte value) {
+void setVsync(int value) {
     vsync = value;
     glfwSwapInterval(vsync);
 }
@@ -297,7 +297,7 @@ void setTitle(string newTitle, bool storeNewTitle = true) {
     if (storeNewTitle) {
         title = newTitle;
     }
-    glfwSetWindowTitle(window, title.toStringz);
+    glfwSetWindowTitle(window, newTitle.toStringz);
 }
 
 string getTitle() {
