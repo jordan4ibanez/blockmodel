@@ -1,4 +1,4 @@
-module texture.texture;
+module texture.texture_container;
 
 import std.stdio;
 import bindbc.opengl;
@@ -11,10 +11,10 @@ import tools.gl_error;
     If you add all textures in at the beginning
     of the program, this becomes a cache.
 */
-class Texture {
+class TextureContainer {
     
     // The only instance of Texture container.
-    private static Texture instance;
+    private static TextureContainer instance;
 
     // Stores all textures as simple GLuint pointers. Accessed by file location.
     private GLuint[string] storage;
@@ -22,15 +22,19 @@ class Texture {
     //! Note: see about making a new texture object that has a protected flag?
 
     /// Get the instance of the texture class.
-    static Texture getInstance() {
+    static TextureContainer getInstance() {
         if (instance is null){
-            instance = new Texture();
+            instance = new TextureContainer();
         }
         return instance;
     }
     
     /// Add a texture into the container.
     GLuint addTexture(string fileLocation, bool debugEnabled = false) {
+
+        if (fileLocation in storage) {
+            throw new Exception("Attempted to create a texture twice! Must be deleted first!");
+        }
 
         // Use ADR's awesome framework library to convert the png into a raw data stream.
         TrueColorImage tempImageObject = readPng(fileLocation).getAsTrueColorImage();
