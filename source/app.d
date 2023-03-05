@@ -16,7 +16,8 @@ void main()
 {
 
     // Window controls OpenGL and GLFW
-	Window window = Window.getInstance().setTitle("BlockModel Editor");
+    Window.initialize();
+	// .setTitle("BlockModel Editor");
 
     // Camera controls view point and mathematical OpenGL calculations
     Camera camera = new Camera();
