@@ -262,6 +262,10 @@ class Mesh {
             throw new Exception("You MUST call finalize() for a mesh!");
         }
 
+        if (textureId == invalid) {
+            throw new Exception("Attempted to render a mesh with an invalid texture!");
+        }
+
         shader.setUniformInt("textureSampler", 0);
 
         glActiveTexture(GL_TEXTURE0);
