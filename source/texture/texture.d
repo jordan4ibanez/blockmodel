@@ -14,9 +14,6 @@ import tools.gl_error;
 
 private immutable GLuint invalid = GLuint.max;
 
-// The only instance of Texture container.
-private Texture instance;
-
 // Stores all textures as simple GLuint pointers. Accessed by file location.
 private GLuint[string] storage;
 
