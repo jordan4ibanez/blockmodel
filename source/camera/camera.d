@@ -1,7 +1,7 @@
 module camera.camera;
 
 import bindbc.opengl;
-import window.window;
+import Window = window.window;
 import vector_3d;
 import matrix_4d;
 import math;

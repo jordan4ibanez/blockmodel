@@ -23,7 +23,7 @@ private Vector3d clearColor;
 
 // GLFW fields
 private string title;
-static private Vector2i windowSize;
+private Vector2i windowSize;
 
 private  GLFWwindow* window = null;
 private GLFWmonitor* monitor = null;
@@ -91,8 +91,8 @@ private bool initializeGLFWComponents() {
 
 nothrow
 static extern(C) void myframeBufferSizeCallback(GLFWwindow* theWindow, int x, int y) {
-    this.windowSize.x = x;
-    this.windowSize.y = y;
+    windowSize.x = x;
+    windowSize.y = y;
     glViewport(0,0,x,y);
 }
 // nothrow
@@ -146,7 +146,7 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
     }
 
     // Create a window on the primary monitor
-    window = glfwCreateWindow(windowSizeX, windowSizeY, this.title.toStringz, null, null);
+    window = glfwCreateWindow(windowSizeX, windowSizeY, title.toStringz, null, null);
 
     // Something even scarier fails to load
     if (!window || window == null) {
@@ -176,7 +176,7 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
 
     glfwSetFramebufferSizeCallback(window, &myframeBufferSizeCallback);
 
-    // glfwSetKeyCallback(window, &this.externalKeyCallBack);
+    // glfwSetKeyCallback(window, &externalKeyCallBack);
 
     // glfwSetCursorPosCallback(window, &externalcursorPositionCallback);    
     
@@ -231,60 +231,60 @@ private void setHalfSizeInternal() {
 
 
 
-static void setMousePosition(double x, double y) {
-    glfwSetCursorPos(instance.window, x, y);
+void setMousePosition(double x, double y) {
+    glfwSetCursorPos(window, x, y);
 }
 
-static Vector2d centerMouse() {
-    double x = instance.windowSize.x / 2.0;
-    double y = instance.windowSize.y / 2.0;
+Vector2d centerMouse() {
+    double x = windowSize.x / 2.0;
+    double y = windowSize.y / 2.0;
     glfwSetCursorPos(
-        instance.window,
+        window,
         x,
         y
     );
     return Vector2d(x,y);
 }
 
-static void setVsync(ubyte value) {
-    instance.vsync = value;
-    glfwSwapInterval(instance.vsync);
+void setVsync(ubyte value) {
+    vsync = value;
+    glfwSwapInterval(vsync);
 }
 
 // Internally handles interfacing to C
-static bool shouldClose() {
-    bool newValue = (glfwWindowShouldClose(instance.window) != 0);
+bool shouldClose() {
+    bool newValue = (glfwWindowShouldClose(window) != 0);
     return newValue;
 }
 
-static void swapBuffers() {
-    glfwSwapBuffers(instance.window);
+void swapBuffers() {
+    glfwSwapBuffers(window);
 }
 
-static Vector2i getSize() {
-    return instance.windowSize;
+Vector2i getSize() {
+    return windowSize;
 }
 
-static void destroy() {
-    glfwDestroyWindow(instance.window);
+void destroy() {
+    glfwDestroyWindow(window);
 }
 
-static double getAspectRatio() {
-    return cast(double)instance.windowSize.x / cast(double)instance.windowSize.y;
+double getAspectRatio() {
+    return cast(double)windowSize.x / cast(double)windowSize.y;
 }
 
-static void pollEvents() {
+void pollEvents() {
     glfwPollEvents();
     // This causes an issue with low FPS getting the wrong FPS
     // Perhaps make an internal engine ticker that is created as an object or struct
     // Store it on heap, then calculate from there, specific to this
-    instance.deltaAccumulator += getDelta();
-    instance.fpsCounter += 1;
+    deltaAccumulator += getDelta();
+    fpsCounter += 1;
     // Got a full second, reset counter, set variable
-    if (instance.deltaAccumulator >= 1) {
-        instance.deltaAccumulator = 0.0;
-        instance.FPS = instance.fpsCounter;
-        instance.fpsCounter = 0;
+    if (deltaAccumulator >= 1) {
+        deltaAccumulator = 0.0;
+        FPS = fpsCounter;
+        fpsCounter = 0;
     }
 }
 
@@ -293,23 +293,23 @@ int getFPS() {
 }
 
 /// Setting storage to false allows you to chain data into a base window title
-static void setTitle(string title, bool storeNewTitle = true) {
+void setTitle(string newTitle, bool storeNewTitle = true) {
     if (storeNewTitle) {
-        instance.title = title;
+        title = newTitle;
     }
-    glfwSetWindowTitle(instance.window, title.toStringz);
+    glfwSetWindowTitle(window, title.toStringz);
 }
 
-static string getTitle() {
-    return instance.title;
+string getTitle() {
+    return title;
 }
 
-static void close() {
-    glfwSetWindowShouldClose(instance.window, true);
+void close() {
+    glfwSetWindowShouldClose(window, true);
 }
 
-static bool isFullScreen() {
-    return instance.fullscreen;
+bool isFullScreen() {
+    return fullscreen;
 }
 
 //! ====== End GLFW Tools ======
@@ -327,9 +327,9 @@ private bool initializeOpenGL() {
 
     writeln(ret);
 
-    this.glVersion = translateGLVersionName(ret);
+    glVersion = translateGLVersionName(ret);
 
-    writeln("The current supported context is: ", this.glVersion);
+    writeln("The current supported context is: ", glVersion);
 
     // Minimum version is GL 4.1 (July 26, 2010)
     if(ret < GLSupport.gl41) {
@@ -411,31 +411,31 @@ string getInitialOpenGLVersion() {
     return "OpenGL " ~ charArray[0] ~ "." ~ charArray[1];
 }
 
-static string translateGLVersionName(GLSupport name) {
+string translateGLVersionName(GLSupport name) {
     string raw = to!string(name);
     char[] charArray = raw.dup[2..raw.length];
     return "OpenGL " ~ charArray[0] ~ "." ~ charArray[1];
 }
 
-static void clear() {
+void clear() {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-static void clear(float intensity) {
-    instance.clearColor = Vector3d(intensity);
-    glClearColor(instance.clearColor.x,instance.clearColor.y,instance.clearColor.z,1);
+void clear(float intensity) {
+    clearColor = Vector3d(intensity);
+    glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-static void clear(float r, float g, float b) {
-    instance.clearColor = Vector3d(r,g,b);
-    glClearColor(instance.clearColor.x,instance.clearColor.y,instance.clearColor.z,1);
+void clear(float r, float g, float b) {
+    clearColor = Vector3d(r,g,b);
+    glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-static void clear(Vector3d rgb) {
-    instance.clearColor = rgb;
-    glClearColor(instance.clearColor.x,instance.clearColor.y,instance.clearColor.z,1);
+void clear(Vector3d rgb) {
+    clearColor = rgb;
+    glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
