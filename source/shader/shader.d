@@ -62,7 +62,7 @@ class Shader {
         }
     }
 
-    void createUniform(string uniformName) {
+    Shader createUniform(string uniformName) {
         GLint location = glGetUniformLocation(this.shaderProgram, uniformName.ptr);
         writeln("uniform ", uniformName, " is at id ", location);
         // Do not allow out of bounds
@@ -78,6 +78,8 @@ class Shader {
         }
 
         uniforms[uniformName] = location;
+
+        return this;
     }
 
     // Set the uniform's int value in GPU memory (integer)
