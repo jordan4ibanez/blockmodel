@@ -1,7 +1,7 @@
 import std.stdio;
 import std.conv;
 import bindbc.opengl;
-import camera.camera;
+import Camera = camera.camera;
 import mesh.mesh;
 import shader.shader;
 import texture.texture;
@@ -19,18 +19,16 @@ void main()
     Window.initialize();
 	Window.setTitle("BlockModel Editor");
 
-    Camera.initialize();
-
     Texture.initialize();
 
     GLuint xyzTexture = Texture.addTexture("textures/xyz_compass.png");
     
-    // Shader controls GLSL
-    // Shader modelShader = new Shader("model", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
-    // modelShader.createUniform("cameraMatrix");
-    // modelShader.createUniform("objectMatrix");
-    // modelShader.createUniform("textureSampler");
-    // modelShader.createUniform("boneTRS");
+    // Controls blockmodel rendering
+    Shader modelShader = new Shader("model", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
+    modelShader.createUniform("cameraMatrix");
+    modelShader.createUniform("objectMatrix");
+    modelShader.createUniform("textureSampler");
+    modelShader.createUniform("boneTRS");
 
 
     // BlockModel model = new BlockModel("models/minetest_sam.json");
@@ -44,6 +42,7 @@ void main()
     // );
     
 
+    // Controls regular rendering
     Shader regularShader = new Shader("regular", "shaders/regular_vertex.vs", "shaders/regular_fragment.fs");
     regularShader.createUniform("cameraMatrix");
     regularShader.createUniform("objectMatrix");
