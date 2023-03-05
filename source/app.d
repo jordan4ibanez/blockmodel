@@ -2,10 +2,10 @@ import std.stdio;
 import std.conv;
 import bindbc.opengl;
 import Camera = camera.camera;
+import Shader = shader.shader;
 import Texture = texture.texture;
 import Window = window.window;
 import mesh.mesh;
-import shader.shader;
 import vector_3d;
 import matrix_4d;
 import blockmodel.blockmodel;
@@ -22,11 +22,11 @@ void main()
     GLuint xyzTexture = Texture.addTexture("textures/xyz_compass.png");
     
     // Controls blockmodel rendering
-    Shader modelShader = new Shader("model", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
-    modelShader.createUniform("cameraMatrix");
-    modelShader.createUniform("objectMatrix");
-    modelShader.createUniform("textureSampler");
-    modelShader.createUniform("boneTRS");
+    Shader.create("model", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
+    Shader.createUniform("model", "cameraMatrix");
+    Shader.createUniform("model", "objectMatrix");
+    Shader.createUniform("model", "textureSampler");
+    Shader.createUniform("model", "boneTRS");
 
 
     // BlockModel model = new BlockModel("models/minetest_sam.json");
@@ -41,10 +41,10 @@ void main()
     
 
     // Controls regular rendering
-    Shader regularShader = new Shader("regular", "shaders/regular_vertex.vs", "shaders/regular_fragment.fs");
-    regularShader.createUniform("cameraMatrix");
-    regularShader.createUniform("objectMatrix");
-    regularShader.createUniform("textureSampler");
+    Shader.create("regular", "shaders/regular_vertex.vs", "shaders/regular_fragment.fs");
+    Shader.createUniform("regular", "cameraMatrix");
+    Shader.createUniform("regular", "objectMatrix");
+    Shader.createUniform("regular", "textureSampler");
 
     Mesh xyzCompass = new Mesh()
         .addVertices([
@@ -99,7 +99,7 @@ void main()
         Camera.clearDepthBuffer();
         Camera.setRotation(Vector3d(0,0,0));
 
-        regularShader.startProgram();
+        Shader.startProgram("regular");
 
 
         // modelShader.startProgram();
@@ -117,9 +117,9 @@ void main()
 
         // debugMesh.render(modelShader);
 
-        regularShader.setUniformMatrix4f("cameraMatrix", Camera.updateCameraMatrix());
+        Shader.setUniformMatrix4f("regular", "cameraMatrix", Camera.updateCameraMatrix());
 
-        regularShader.setUniformMatrix4f("objectMatrix",
+        Shader.setUniformMatrix4f("regular", "objectMatrix",
             Camera.setObjectMatrix(
                 Vector3d(0,-1,-4), // Translation
                 Vector3d(0,fancyRotation,0), // Rotation
@@ -127,13 +127,13 @@ void main()
             )
         );
 
-        xyzCompass.render(regularShader);
+        xyzCompass.render("regular");
         
 
         Window.swapBuffers();
     }
 
-    regularShader.deleteShader();
+    Shader.deleteShader("regular");
     // debugMesh.cleanUp(true);
 
     // modelShader.deleteShader();
