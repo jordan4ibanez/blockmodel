@@ -99,8 +99,8 @@ void main()
 
         Window.clear(1);
 
-        camera.clearDepthBuffer();
-        camera.setRotation(Vector3d(0,0,0));
+        Camera.clearDepthBuffer();
+        Camera.setRotation(Vector3d(0,0,0));
 
         regularShader.startProgram();
 
@@ -120,10 +120,10 @@ void main()
 
         // debugMesh.render(modelShader);
 
-        regularShader.setUniformMatrix4f("cameraMatrix", camera.updateCameraMatrix());
+        regularShader.setUniformMatrix4f("cameraMatrix", Camera.updateCameraMatrix());
 
         regularShader.setUniformMatrix4f("objectMatrix",
-            camera.setObjectMatrix(
+            Camera.setObjectMatrix(
                 Vector3d(0,-1,-4), // Translation
                 Vector3d(0,fancyRotation,0), // Rotation
                 Vector3d(1), // Scale
