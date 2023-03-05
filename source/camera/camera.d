@@ -6,6 +6,7 @@ import vector_3d;
 import matrix_4d;
 import math;
 
+/// Works as a singleton. Handles all math for rendering.
 class Camera {
 
     
