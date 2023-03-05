@@ -4,7 +4,7 @@ import bindbc.opengl;
 import camera.camera;
 import mesh.mesh;
 import shader.shader;
-import texture.texture;
+import texture.texture_container;
 import window.window;
 import vector_3d;
 import matrix_4d;
@@ -38,6 +38,7 @@ void main()
     //     model.getBones,
     //     "textures/debug_character.png"
     // );
+    
 
     Shader regularShader = new Shader("regular", "shaders/regular_vertex.vs", "shaders/regular_fragment.fs");
     regularShader.createUniform("cameraMatrix");
@@ -137,7 +138,7 @@ void main()
 
     xyzCompass.cleanUp();
 
-    Texture.cleanUp();
+    TextureContainer.cleanUp();
 
     window.destroy();
 }
