@@ -44,22 +44,20 @@ class Window {
 
     private this() {}
 
-    // Only one window can exist
-    static Window getInstance() {
+    static void initialize() {
         if (instance is null) {
-            instance = new Window();
-            instance.initialize();
+            instance = new Window().initializeGLContext();
         }
-        return instance;
     }
 
-    private void initialize() {
+    private Window initializeGLContext() {
         if (!initializeGLFW()) {
             throw new Exception("GLFW failed");
         }
         if (!initializeOpenGL()) {
             throw new Exception("OpenGL failed");
         }
+        return this;
     }
 
     //* ======== GLFW Tools ========
