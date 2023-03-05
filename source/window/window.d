@@ -123,66 +123,7 @@ class Window {
     //     } catch(Exception e){nothrowWriteln(e);}
     // }
 
-    // Internally handles interfacing to C
-    static bool shouldClose() {
-        bool newValue = (glfwWindowShouldClose(instance.window) != 0);
-        return newValue;
-    }
-
-    static void swapBuffers() {
-        glfwSwapBuffers(instance.window);
-    }
-
-    static Vector2i getSize() {
-        return instance.windowSize;
-    }
-
-    static void destroy() {
-        glfwDestroyWindow(instance.window);
-    }
-
-    static double getAspectRatio() {
-        return cast(double)instance.windowSize.x / cast(double)instance.windowSize.y;
-    }
-
-    static void pollEvents() {
-        glfwPollEvents();
-        // This causes an issue with low FPS getting the wrong FPS
-        // Perhaps make an internal engine ticker that is created as an object or struct
-        // Store it on heap, then calculate from there, specific to this
-        instance.deltaAccumulator += getDelta();
-        instance.fpsCounter += 1;
-        // Got a full second, reset counter, set variable
-        if (instance.deltaAccumulator >= 1) {
-            instance.deltaAccumulator = 0.0;
-            instance.FPS = instance.fpsCounter;
-            instance.fpsCounter = 0;
-        }
-    }
-
-    int getFPS() {
-        return FPS;
-    }
-
-    /// Setting storage to false allows you to chain data into a base window title
-    static void setTitle(string title, bool storeNewTitle = true) {
-        if (storeNewTitle) {
-            instance.title = title;
-        }
-        glfwSetWindowTitle(instance.window, title.toStringz);
-    }
-
-    static string getTitle() {
-        return instance.title;
-    }
-
-    static void close() {
-        glfwSetWindowShouldClose(instance.window, true);
-    }
-
-    static bool isFullScreen() {
-        return instance.fullscreen;
-    }
+    
 
     // Window talks directly to GLFW
     private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
@@ -270,9 +211,6 @@ class Window {
         // Dereference the pointer into a usable structure in class
         videoMode = *mode;
     }
-    
-
-    
 
     private void setHalfSizeInternal() {
 
@@ -304,6 +242,8 @@ class Window {
         fullscreen = false;
     }
 
+    
+
     static void setMousePosition(double x, double y) {
         glfwSetCursorPos(instance.window, x, y);
     }
@@ -322,6 +262,67 @@ class Window {
     static void setVsync(ubyte value) {
         instance.vsync = value;
         glfwSwapInterval(instance.vsync);
+    }
+
+    // Internally handles interfacing to C
+    static bool shouldClose() {
+        bool newValue = (glfwWindowShouldClose(instance.window) != 0);
+        return newValue;
+    }
+
+    static void swapBuffers() {
+        glfwSwapBuffers(instance.window);
+    }
+
+    static Vector2i getSize() {
+        return instance.windowSize;
+    }
+
+    static void destroy() {
+        glfwDestroyWindow(instance.window);
+    }
+
+    static double getAspectRatio() {
+        return cast(double)instance.windowSize.x / cast(double)instance.windowSize.y;
+    }
+
+    static void pollEvents() {
+        glfwPollEvents();
+        // This causes an issue with low FPS getting the wrong FPS
+        // Perhaps make an internal engine ticker that is created as an object or struct
+        // Store it on heap, then calculate from there, specific to this
+        instance.deltaAccumulator += getDelta();
+        instance.fpsCounter += 1;
+        // Got a full second, reset counter, set variable
+        if (instance.deltaAccumulator >= 1) {
+            instance.deltaAccumulator = 0.0;
+            instance.FPS = instance.fpsCounter;
+            instance.fpsCounter = 0;
+        }
+    }
+
+    int getFPS() {
+        return FPS;
+    }
+
+    /// Setting storage to false allows you to chain data into a base window title
+    static void setTitle(string title, bool storeNewTitle = true) {
+        if (storeNewTitle) {
+            instance.title = title;
+        }
+        glfwSetWindowTitle(instance.window, title.toStringz);
+    }
+
+    static string getTitle() {
+        return instance.title;
+    }
+
+    static void close() {
+        glfwSetWindowShouldClose(instance.window, true);
+    }
+
+    static bool isFullScreen() {
+        return instance.fullscreen;
     }
 
     //! ====== End GLFW Tools ======
