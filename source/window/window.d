@@ -110,6 +110,12 @@ static extern(C) void myframeBufferSizeCallback(GLFWwindow* theWindow, int x, in
 //     } catch(Exception e){nothrowWriteln(e);}
 // }
 
+// nothrow
+// static extern(C) void myRefreshCallback(GLFWwindow* theWindow) {
+//     try {
+//         return;
+//     } catch(Exception e) {}
+// }
 
 
 // Window talks directly to GLFW
@@ -178,7 +184,10 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
 
     // glfwSetKeyCallback(window, &externalKeyCallBack);
 
-    // glfwSetCursorPosCallback(window, &externalcursorPositionCallback);    
+    // glfwSetCursorPosCallback(window, &externalcursorPositionCallback);
+
+
+    // glfwSetWindowRefreshCallback(window, &myRefreshCallback);
     
     glfwMakeContextCurrent(window);
 
