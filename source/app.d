@@ -6,6 +6,7 @@ import Shader = shader.shader;
 import Texture = texture.texture;
 import Window = window.window;
 import mesh.mesh;
+import vector_2d;
 import vector_3d;
 import matrix_4d;
 import blockmodel.blockmodel;
@@ -21,6 +22,7 @@ void main()
 
     Texture.addTexture("textures/xyz_compass.png");
     Texture.addTexture("textures/debug_character.png");
+    Texture.addTexture("textures/debug.png");
     
     // Controls blockmodel rendering
     Shader.create("model", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
@@ -77,6 +79,31 @@ void main()
         .setLineMode(true)
         .finalize();
     
+    Shader.create("2d", "shaders/2d_vertex.vs", "shaders/2d_fragment.fs");
+    Shader.createUniform("2d", "cameraMatrix");
+    Shader.createUniform("2d", "objectMatrix");
+    Shader.createUniform("2d", "textureSampler");
+
+    // Debug scale thing
+    float d = 100.0;
+    Mesh debug2d = new Mesh()
+        .addVertices2d([
+            0,0,
+            0,d,
+            d,d,
+            d,0
+        ])
+        .addIndices([
+            0,1,2, 2,3,0
+        ])
+        .addTextureCoordinates([
+            0,0,
+            0,1,
+            1,1,
+            1,0
+        ])
+        .setTexture(Texture.getTexture("textures/debug.png"))
+        .finalize();
 
     float fancyRotation = 0;
 
@@ -97,52 +124,74 @@ void main()
 
         Window.clear(1);
 
+        if (false) {
+            Camera.clearDepthBuffer();
+            Camera.setRotation(Vector3d(0,0,0));
+
+            // Render sam first
+
+            Shader.startProgram("model");
+
+            Shader.setUniformMatrix4f("model", "boneTRS", model.playAnimation(1), model.total_blocks);
+            Shader.setUniformMatrix4f("model", "cameraMatrix", Camera.updateCameraMatrix());
+
+            Shader.setUniformMatrix4f("model", "objectMatrix",
+                Camera.setObjectMatrix(
+                    Vector3d(0,-3,-10), // Translation
+                    Vector3d(0,fancyRotation,0), // Rotation
+                    Vector3d(1), // Scale
+                )
+            );
+
+            debugMesh.render("model");
+
+            // Render the xyz compass on top
+            Camera.clearDepthBuffer();
+
+            Shader.startProgram("regular");
+
+            Shader.setUniformMatrix4f("regular", "cameraMatrix", Camera.updateCameraMatrix());
+
+            Shader.setUniformMatrix4f("regular", "objectMatrix",
+                Camera.setObjectMatrix(
+                    Vector3d(0,-1,-4), // Translation
+                    Vector3d(0,fancyRotation,0), // Rotation
+                    Vector3d(1), // Scale
+                )
+            );
+
+            xyzCompass.render("regular");
+
+        }
+        // Now render this debug thing on top of that
         Camera.clearDepthBuffer();
-        Camera.setRotation(Vector3d(0,0,0));
 
-        // Render sam first
+        Shader.startProgram("2d");
 
-        Shader.startProgram("model");
+        Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
 
-        Shader.setUniformMatrix4f("model", "boneTRS", model.playAnimation(1), model.total_blocks);
-        Shader.setUniformMatrix4f("model", "cameraMatrix", Camera.updateCameraMatrix());
-
-        Shader.setUniformMatrix4f("model", "objectMatrix",
-            Camera.setObjectMatrix(
-                Vector3d(0,-3,-10), // Translation
-                Vector3d(0,fancyRotation,0), // Rotation
-                Vector3d(1), // Scale
+        Shader.setUniformMatrix4f("2d", "objectMatrix",
+            Camera.setGuiObjectMatrix(
+                Vector2d(
+                    (Window.getWidth / 2.0) - d,
+                    (Window.getHeight / 2.0) - d
+                )
             )
         );
 
-        debugMesh.render("model");
-
-        // Render the xyz compass on top
-        Camera.clearDepthBuffer();
-
-        Shader.startProgram("regular");
-
-        Shader.setUniformMatrix4f("regular", "cameraMatrix", Camera.updateCameraMatrix());
-
-        Shader.setUniformMatrix4f("regular", "objectMatrix",
-            Camera.setObjectMatrix(
-                Vector3d(0,-1,-4), // Translation
-                Vector3d(0,fancyRotation,0), // Rotation
-                Vector3d(1), // Scale
-            )
-        );
-
-        xyzCompass.render("regular");
+        debug2d.render("2d");
 
         Window.swapBuffers();
     }
 
     Shader.deleteShader("regular");
-    // debugMesh.cleanUp(true);
+    Shader.deleteShader("model");
+    Shader.deleteShader("2d");
 
-    // modelShader.deleteShader();
-
+    
+    debugMesh.cleanUp();
     xyzCompass.cleanUp();
+    debug2d.cleanUp();
 
     Texture.cleanUp();
 
