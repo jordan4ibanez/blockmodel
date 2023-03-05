@@ -173,8 +173,8 @@ void main()
         Shader.setUniformMatrix4f("2d", "objectMatrix",
             Camera.setGuiObjectMatrix(
                 Vector2d(
-                    (Window.getWidth / 2.0) - d,
-                    (Window.getHeight / 2.0) - d
+                    (Window.getWidth / 2.0) - debug2d.getWidth,
+                    (Window.getHeight / 2.0) - debug2d.getHeight
                 )
             )
         );
