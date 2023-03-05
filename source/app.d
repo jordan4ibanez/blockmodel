@@ -2,9 +2,9 @@ import std.stdio;
 import std.conv;
 import bindbc.opengl;
 import Camera = camera.camera;
+import Texture = texture.texture;
 import mesh.mesh;
 import shader.shader;
-import texture.texture;
 import window.window;
 import vector_3d;
 import matrix_4d;
@@ -18,8 +18,6 @@ void main()
     // Window controls OpenGL and GLFW
     Window.initialize();
 	Window.setTitle("BlockModel Editor");
-
-    Texture.initialize();
 
     GLuint xyzTexture = Texture.addTexture("textures/xyz_compass.png");
     
