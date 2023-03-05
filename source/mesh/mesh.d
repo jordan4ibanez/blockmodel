@@ -57,6 +57,17 @@ class Mesh {
 
     /// Adds vertex position data in Vector3 format within a linear float[].
     Mesh addVertices3d(const float[] vertices) {
+        return this.verticesFunc(vertices, 3);
+    }
+
+    /// Adds vertex position data in Vector2 format within a linear float[].
+    Mesh addVertices2d(const float[] vertices) {
+        return this.verticesFunc(vertices, 2);
+    }
+
+
+
+    private Mesh verticesFunc(const float[] vertices, GLuint size) {
 
         // Don't bother if not divisible by 3 TRI from cube vertex positions
         if (vertices.length % 3 != 0 || vertices.length < 3) {
@@ -76,7 +87,7 @@ class Mesh {
 
         glVertexAttribPointer(
             0,           // Attribute 0 (matches the attribute in the glsl shader)
-            3,           // Size (literal like 3 points)  
+            size,           // Size (literal like 3 points)  
             GL_FLOAT,    // Type
             GL_FALSE,    // Normalized?
             0,           // Stride
