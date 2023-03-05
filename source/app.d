@@ -19,8 +19,7 @@ void main()
     Window.initialize();
 	Window.setTitle("BlockModel Editor");
 
-    // Camera controls view point and mathematical OpenGL calculations
-    Camera camera = new Camera();
+    Camera.initialize();
 
     Texture.initialize();
 
