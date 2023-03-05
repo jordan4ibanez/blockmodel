@@ -167,12 +167,19 @@ class Mesh {
         return this;
     }
 
+    /// Make this mesh draw as a bunch of lines between indices
     Mesh setLineMode(const bool lineMode) {
         this.lineMode = lineMode;
         return this;
     }
 
+    /// Set the texture ID of the mesh
+    Mesh setTexture(const GLuint textureId) {
+        this.textureId = textureId;
+        return this;
+    }
 
+    /// Unbinds the GL Array Buffer and Vertex Array Object in GPU memory
     Mesh finalize() {
         
         finalized = true;
@@ -266,7 +273,7 @@ class Mesh {
             throw new Exception("Attempted to render a mesh with an invalid texture!");
         }
 
-        shader.setUniformInt("textureSampler", 0);
+        shader.setUniformInt("textureSampler", this.textureId);
 
         glActiveTexture(GL_TEXTURE0);
 
