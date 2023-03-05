@@ -11,7 +11,7 @@ import tools.gl_error;
 /// An OpenGL mesh. Utilizes builder pattern.
 class Mesh {
 
-    private static immutable GLint invalid = GLint.max;
+    private static immutable GLuint invalid = GLuint.max;
 
     private static bool debugEnabled = true;
 
@@ -291,6 +291,7 @@ class Mesh {
         
         GLenum glErrorInfo = getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
+            
             writeln("GL ERROR: ", glErrorInfo);
             writeln("ERROR IN A MESH RENDER");
         }
