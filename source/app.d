@@ -23,7 +23,7 @@ void main()
 
     TextureContainer textureContainer = TextureContainer.getInstance();
 
-    textureContainer.addTexture("textures/xyz_compass.png");
+    GLuint xyzTexture = textureContainer.addTexture("textures/xyz_compass.png");
     
     // Shader controls GLSL
     // Shader modelShader = new Shader("model", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
