@@ -17,7 +17,7 @@ void main()
 
     // Window controls OpenGL and GLFW
     Window.initialize();
-	// .setTitle("BlockModel Editor");
+	Window.setTitle("BlockModel Editor");
 
     // Camera controls view point and mathematical OpenGL calculations
     Camera camera = new Camera();
@@ -83,22 +83,22 @@ void main()
 
     float fancyRotation = 0;
 
-    while (!window.shouldClose()) {
+    while (!Window.shouldClose()) {
         // Calculating the delta goes first, we want this to be as accurate as possible.
         calculateDelta();
         // Poll events is hugging the entry point to the scope
         // because it needs to take all GLFW input before anything
         // is calculated. This increases responsiveness.
-        window.pollEvents();
+        Window.pollEvents();
 
         fancyRotation += 1.0;
         if (fancyRotation >= 360.0) {
             fancyRotation -= 360.0;
         }
 
-        window.setTitle(window.getTitle ~ " " ~ to!string(fancyRotation), false);
+        Window.setTitle(Window.getTitle ~ " " ~ to!string(fancyRotation), false);
 
-        window.clear(1);
+        Window.clear(1);
 
         camera.clearDepthBuffer();
         camera.setRotation(Vector3d(0,0,0));
@@ -121,7 +121,7 @@ void main()
 
         // debugMesh.render(modelShader);
 
-        regularShader.setUniformMatrix4f("cameraMatrix", camera.updateCameraMatrix(window));
+        regularShader.setUniformMatrix4f("cameraMatrix", camera.updateCameraMatrix());
 
         regularShader.setUniformMatrix4f("objectMatrix",
             camera.setObjectMatrix(
@@ -134,7 +134,7 @@ void main()
         xyzCompass.render(regularShader);
         
 
-        window.swapBuffers();
+        Window.swapBuffers();
     }
 
     regularShader.deleteShader();
@@ -146,5 +146,5 @@ void main()
 
     Texture.cleanUp();
 
-    window.destroy();
+    Window.destroy();
 }
