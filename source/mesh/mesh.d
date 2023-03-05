@@ -65,6 +65,7 @@ class Mesh {
         return this.verticesFunc(vertices, 2);
     }
 
+    // The actual mechanism for addVertices
     private Mesh verticesFunc(const float[] vertices, GLuint size) {
 
         // Don't bother if not divisible by or less than size
