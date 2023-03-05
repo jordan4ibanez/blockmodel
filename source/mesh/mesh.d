@@ -315,4 +315,11 @@ class Mesh {
             writeln("Mesh ", this.vao, " has rendered successfully ");
         }
     }
+
+    double getWidth() {
+        return this.size.x;
+    }
+    double getHeight() {
+        return this.size.y;
+    }
 }
