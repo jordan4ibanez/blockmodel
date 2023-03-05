@@ -1,4 +1,4 @@
-module texture.texture_container;
+module texture.texture;
 
 import std.stdio;
 import bindbc.opengl;
@@ -11,12 +11,12 @@ import tools.gl_error;
     If you add all textures in at the beginning
     of the program, this becomes a cache.
 */
-class TextureContainer {
+class Texture {
 
     private static immutable GLuint invalid = GLuint.max;
     
     // The only instance of Texture container.
-    private static TextureContainer instance;
+    private static Texture instance;
 
     // Stores all textures as simple GLuint pointers. Accessed by file location.
     private GLuint[string] storage;
@@ -25,10 +25,10 @@ class TextureContainer {
     
     private this() {}
 
-    /// Initialize the instance of the TextureContainer class.
+    /// Initialize the instance of the Texture class.
     static void initialize() {
         if (instance is null){
-            instance = new TextureContainer();
+            instance = new Texture();
         }
     }
     
