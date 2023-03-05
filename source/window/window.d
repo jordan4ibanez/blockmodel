@@ -124,39 +124,39 @@ class Window {
     // }
 
     // Internally handles interfacing to C
-    bool shouldClose() {
-        bool newValue = (glfwWindowShouldClose(window) != 0);
+    static bool shouldClose() {
+        bool newValue = (glfwWindowShouldClose(instance.window) != 0);
         return newValue;
     }
 
-    void swapBuffers() {
-        glfwSwapBuffers(window);
+    static void swapBuffers() {
+        glfwSwapBuffers(instance.window);
     }
 
-    Vector2i getSize() {
-        return windowSize;
+    static Vector2i getSize() {
+        return instance.windowSize;
     }
 
-    void destroy() {
-        glfwDestroyWindow(window);
+    static void destroy() {
+        glfwDestroyWindow(instance.window);
     }
 
-    double getAspectRatio() {
-        return cast(double)windowSize.x / cast(double)windowSize.y;
+    static double getAspectRatio() {
+        return cast(double)instance.windowSize.x / cast(double)instance.windowSize.y;
     }
 
-    void pollEvents() {
+    static void pollEvents() {
         glfwPollEvents();
         // This causes an issue with low FPS getting the wrong FPS
         // Perhaps make an internal engine ticker that is created as an object or struct
         // Store it on heap, then calculate from there, specific to this
-        deltaAccumulator += getDelta();
-        fpsCounter += 1;
+        instance.deltaAccumulator += getDelta();
+        instance.fpsCounter += 1;
         // Got a full second, reset counter, set variable
-        if (deltaAccumulator >= 1) {
-            deltaAccumulator = 0.0;
-            FPS = fpsCounter;
-            fpsCounter = 0;
+        if (instance.deltaAccumulator >= 1) {
+            instance.deltaAccumulator = 0.0;
+            instance.FPS = instance.fpsCounter;
+            instance.fpsCounter = 0;
         }
     }
 
@@ -165,20 +165,19 @@ class Window {
     }
 
     /// Setting storage to false allows you to chain data into a base window title
-    Window setTitle(string title, bool storeNewTitle = true) {
+    static void setTitle(string title, bool storeNewTitle = true) {
         if (storeNewTitle) {
-            this.title = title;
+            instance.title = title;
         }
-        glfwSetWindowTitle(window, title.toStringz);
-        return this;
+        glfwSetWindowTitle(instance.window, title.toStringz);
     }
 
-    string getTitle() {
-        return this.title;
+    static string getTitle() {
+        return instance.title;
     }
 
-    void close() {
-        glfwSetWindowShouldClose(window, true);
+    static void close() {
+        glfwSetWindowShouldClose(instance.window, true);
     }
 
     // Window talks directly to GLFW
@@ -422,31 +421,31 @@ class Window {
         return "OpenGL " ~ charArray[0] ~ "." ~ charArray[1];
     }
 
-    string translateGLVersionName(GLSupport name) {
+    static string translateGLVersionName(GLSupport name) {
         string raw = to!string(name);
         char[] charArray = raw.dup[2..raw.length];
         return "OpenGL " ~ charArray[0] ~ "." ~ charArray[1];
     }
 
-    void clear() {
+    static void clear() {
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    void clear(float intensity) {
-        clearColor = Vector3d(intensity);
-        glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
+    static void clear(float intensity) {
+        instance.clearColor = Vector3d(intensity);
+        glClearColor(instance.clearColor.x,instance.clearColor.y,instance.clearColor.z,1);
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    void clear(float r, float g, float b) {
-        clearColor = Vector3d(r,g,b);
-        glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
+    static void clear(float r, float g, float b) {
+        instance.clearColor = Vector3d(r,g,b);
+        glClearColor(instance.clearColor.x,instance.clearColor.y,instance.clearColor.z,1);
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    void clear(Vector3d rgb) {
-        clearColor = rgb;
-        glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
+    static void clear(Vector3d rgb) {
+        instance.clearColor = rgb;
+        glClearColor(instance.clearColor.x,instance.clearColor.y,instance.clearColor.z,1);
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
