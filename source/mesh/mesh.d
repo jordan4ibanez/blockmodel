@@ -48,7 +48,10 @@ class Mesh {
     private bool finalized = false;
 
     // Creates an api element for 2d textures
-    Vector2d size;
+    private Vector2d size;
+    
+    private bool is3d = false;
+    private bool is2d = false;
 
     /// Creates the OpenGL context for assembling this GL Mesh Object.
     this() {
@@ -61,11 +64,25 @@ class Mesh {
 
     /// Adds vertex position data in Vector3 format within a linear float[].
     Mesh addVertices3d(const float[] vertices) {
+        if (is2d) {
+            throw new Exception("Cannot add 3d vertex positions to a 2d model!");
+        } else if (is3d) {
+            throw new Exception("Cannot add vertices to model more than once!");
+        }
+        is3d = true;
+        
         return this.verticesFunc(vertices, 3);
     }
 
     /// Adds vertex position data in Vector2 format within a linear float[].
     Mesh addVertices2d(const float[] vertices) {
+        if (is3d) {
+            throw new Exception("Cannot add 2d vertex positions to a 3d model!");
+        } else if (is2d) {
+            throw new Exception("Cannot add vertices to model more than once!");
+        }
+        is2d = true;
+        
         // Bottom left corner, Top right corner
         this.size = Vector2d(vertices[3], vertices[6]);
         return this.verticesFunc(vertices, 2);
@@ -317,9 +334,15 @@ class Mesh {
     }
 
     double getWidth() {
+        if (is3d) {
+            throw new Exception("Cannot get the size of a 3d model!");
+        }
         return this.size.x;
     }
     double getHeight() {
+        if (is3d) {
+            throw new Exception("Cannot get the size of a 3d model!");
+        }
         return this.size.y;
     }
 }
