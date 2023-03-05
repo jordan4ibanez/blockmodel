@@ -2,7 +2,7 @@ module mesh.mesh;
 
 import std.stdio;
 import bindbc.opengl;
-import shader.shader;
+import Shader = shader.shader;
 import vector_3d;
 import vector_4d;
 import vector_4i;
@@ -263,7 +263,8 @@ class Mesh {
         }
     }
 
-    void render(Shader shader) {
+    /// shaderName is the shader you want to render with
+    void render(string shaderName) {
 
         if (!finalized) {
             throw new Exception("You MUST call finalize() for a mesh!");
@@ -273,7 +274,7 @@ class Mesh {
             throw new Exception("Attempted to render a mesh with an invalid texture!");
         }
 
-        shader.setUniformInt("textureSampler", 0);
+        Shader.setUniformInt(shaderName, "textureSampler", 0);
 
         glActiveTexture(GL_TEXTURE0);
 
