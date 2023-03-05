@@ -273,7 +273,7 @@ class Mesh {
             throw new Exception("Attempted to render a mesh with an invalid texture!");
         }
 
-        shader.setUniformInt("textureSampler", this.textureId);
+        shader.setUniformInt("textureSampler", 0);
 
         glActiveTexture(GL_TEXTURE0);
 
