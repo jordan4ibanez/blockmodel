@@ -65,12 +65,10 @@ class Mesh {
         return this.verticesFunc(vertices, 2);
     }
 
-
-
     private Mesh verticesFunc(const float[] vertices, GLuint size) {
 
-        // Don't bother if not divisible by 3 TRI from cube vertex positions
-        if (vertices.length % 3 != 0 || vertices.length < 3) {
+        // Don't bother if not divisible by or less than size
+        if (vertices.length % size != 0 || vertices.length < size) {
             throw new Exception("Vertices must contain XYZ components for ALL vertex positions!");
         }
 
