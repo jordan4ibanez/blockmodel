@@ -17,9 +17,6 @@ import loader = bindbc.loader.sharedlib;
 // This is an import that allows us to print debug info.
 import tools.log;
 
-
-private static Window instance;
-
 // OpenGL fields
 private string glVersion;
 private Vector3d clearColor;
@@ -40,22 +37,14 @@ private double deltaAccumulator = 0.0;
 private int fpsCounter = 0;
 private int FPS = 0;
 
-private this() {}
 
-static void initialize() {
-    if (instance is null) {
-        instance = new Window().initializeGLContext();
-    }
-}
-
-private Window initializeGLContext() {
+void initialize() {
     if (!initializeGLFW()) {
         throw new Exception("GLFW failed");
     }
     if (!initializeOpenGL()) {
         throw new Exception("OpenGL failed");
     }
-    return this;
 }
 
 //* ======== GLFW Tools ========
