@@ -33,7 +33,7 @@ void main()
     BlockModel model = new BlockModel("models/minetest_sam.json");
 
     Mesh debugMesh = new Mesh()
-        .addVertices(model.getVertexPositions)
+        .addVertices3d(model.getVertexPositions)
         .addIndices(model.getIndices)
         .addTextureCoordinates(model.getTextureCoordinates)
         .addBones(model.getBones)
@@ -48,7 +48,7 @@ void main()
     Shader.createUniform("regular", "textureSampler");
 
     Mesh xyzCompass = new Mesh()
-        .addVertices([
+        .addVertices3d([
             0,0,0,
             1,0,0,
 

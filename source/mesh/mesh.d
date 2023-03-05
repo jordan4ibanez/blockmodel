@@ -56,7 +56,7 @@ class Mesh {
     }
 
     /// Adds vertex position data in Vector3 format within a linear float[].
-    Mesh addVertices(const float[] vertices) {
+    Mesh addVertices3d(const float[] vertices) {
 
         // Don't bother if not divisible by 3 TRI from cube vertex positions
         if (vertices.length % 3 != 0 || vertices.length < 3) {
