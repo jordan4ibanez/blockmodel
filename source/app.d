@@ -19,7 +19,8 @@ void main()
     Window.initialize();
 	Window.setTitle("BlockModel Editor");
 
-    GLuint xyzTexture = Texture.addTexture("textures/xyz_compass.png");
+    Texture.addTexture("textures/xyz_compass.png");
+    Texture.addTexture("textures/debug_character.png");
     
     // Controls blockmodel rendering
     Shader.create("model", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
@@ -29,15 +30,15 @@ void main()
     Shader.createUniform("model", "boneTRS");
 
 
-    // BlockModel model = new BlockModel("models/minetest_sam.json");
+    BlockModel model = new BlockModel("models/minetest_sam.json");
 
-    // Mesh debugMesh = new Mesh(
-    //     model.getVertexPositions,
-    //     model.getIndices,
-    //     model.getTextureCoordinates,
-    //     model.getBones,
-    //     "textures/debug_character.png"
-    // );
+    Mesh debugMesh = new Mesh()
+        .addVertices(model.getVertexPositions)
+        .addIndices(model.getIndices)
+        .addTextureCoordinates(model.getTextureCoordinates)
+        .addBones(model.getBones)
+        .setTexture(Texture.getTexture("texture/debug_character.png"))
+        .finalize();
     
 
     // Controls regular rendering
@@ -99,23 +100,27 @@ void main()
         Camera.clearDepthBuffer();
         Camera.setRotation(Vector3d(0,0,0));
 
+        // Render sam first
+
+        Shader.startProgram("model");
+
+        Shader.setUniformMatrix4f("model", "boneTRS", model.playAnimation(1), model.total_blocks);
+        Shader.setUniformMatrix4f("model", "cameraMatrix", Camera.updateCameraMatrix());
+
+        Shader.setUniformMatrix4f("model", "objectMatrix",
+            Camera.setObjectMatrix(
+                Vector3d(0,-3,-10), // Translation
+                Vector3d(0,fancyRotation,0), // Rotation
+                Vector3d(1), // Scale
+            )
+        );
+
+        debugMesh.render("model");
+
+        // Render the xyz compass on top
+        Camera.clearDepthBuffer();
+
         Shader.startProgram("regular");
-
-
-        // modelShader.startProgram();
-
-        // modelShader.setUniformMatrix4f("boneTRS", model.playAnimation(1), model.total_blocks);
-        // modelShader.setUniformMatrix4f("cameraMatrix", camera.updateCameraMatrix(window));
-
-        // modelShader.setUniformMatrix4f("objectMatrix",
-        //     camera.setObjectMatrix(
-        //         Vector3d(0,-3,-10), // Translation
-        //         Vector3d(0,fancyRotation,0), // Rotation
-        //         Vector3d(1), // Scale
-        //     )
-        // );
-
-        // debugMesh.render(modelShader);
 
         Shader.setUniformMatrix4f("regular", "cameraMatrix", Camera.updateCameraMatrix());
 
@@ -128,7 +133,6 @@ void main()
         );
 
         xyzCompass.render("regular");
-        
 
         Window.swapBuffers();
     }
