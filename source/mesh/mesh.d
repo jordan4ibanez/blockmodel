@@ -3,6 +3,7 @@ module mesh.mesh;
 import std.stdio;
 import bindbc.opengl;
 import Shader = shader.shader;
+import vector_2d;
 import vector_3d;
 import vector_4d;
 import vector_4i;
@@ -13,7 +14,7 @@ class Mesh {
 
     private static immutable GLuint invalid = GLuint.max;
 
-    private static bool debugEnabled = true;
+    private static bool debugEnabled = false;
 
     // Vertex array object - Main object
     private GLuint vao = invalid;
@@ -46,6 +47,9 @@ class Mesh {
     /// Enforces calling the finalize() method.
     private bool finalized = false;
 
+    // Creates an api element for 2d textures
+    Vector2d size;
+
     /// Creates the OpenGL context for assembling this GL Mesh Object.
     this() {
 
@@ -62,6 +66,8 @@ class Mesh {
 
     /// Adds vertex position data in Vector2 format within a linear float[].
     Mesh addVertices2d(const float[] vertices) {
+        // Bottom left corner, Top right corner
+        this.size = Vector2d(vertices[3], vertices[6]);
         return this.verticesFunc(vertices, 2);
     }
 
