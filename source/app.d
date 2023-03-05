@@ -37,7 +37,7 @@ void main()
         .addIndices(model.getIndices)
         .addTextureCoordinates(model.getTextureCoordinates)
         .addBones(model.getBones)
-        .setTexture(Texture.getTexture("texture/debug_character.png"))
+        .setTexture(Texture.getTexture("textures/debug_character.png"))
         .finalize();
     
 
