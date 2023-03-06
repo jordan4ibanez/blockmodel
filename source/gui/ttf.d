@@ -6,6 +6,8 @@ module gui.ttf;
 
 	Credits: Started as a copy of stb_truetype by Sean Barrett and ketmar helped
 	with expansions.
+
+    Now jordan4ibanez rewrote it to be GL/Vulkan agnostic
 +/
 
 // stb_truetype.h - v1.19 - public domain
