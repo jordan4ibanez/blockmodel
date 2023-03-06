@@ -162,9 +162,9 @@ class TTFont {
 }
 
 /// Version of OpenGL you want it to use. Currently only one option.
-enum OpenGlFontGLVersion {
-	old /// old style glBegin/glEnd stuff
-}
+// enum OpenGlFontGLVersion {
+// 	old /// old style glBegin/glEnd stuff
+// }
 
 /+
 	This is mostly there if you want to draw different pieces together in
@@ -196,7 +196,7 @@ struct DrawingTextContext {
 	History:
 		Added April 24, 2020
 +/
-class OpenGlLimitedFont(OpenGlFontGLVersion ver = OpenGlFontGLVersion.old) {
+class OpenGlLimitedFont() {
 // FIXME: does this kern?
 // FIXME: it would be cool if it did per-letter transforms too like word art. make it tangent to some baseline
 
