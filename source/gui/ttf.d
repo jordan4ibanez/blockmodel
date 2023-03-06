@@ -45,11 +45,6 @@ class TTFont {
 
     }
 
-    //! Old constructor
-	// this(in ubyte[] data) {
-	// 	load(data);
-	// }
-
 	///
 	void load(in ubyte[] data) {
    		if(stbtt_InitFont(&font, data.ptr, stbtt_GetFontOffsetForIndex(data.ptr, 0)) == 0)
