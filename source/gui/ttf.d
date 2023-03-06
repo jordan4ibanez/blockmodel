@@ -29,7 +29,7 @@ import std.conv;
 
 
 /// A TTF font held in memory
-struct TtfFont {
+class TtfFont {
 
 	stbtt_fontinfo font;
 
