@@ -11,7 +11,7 @@ private GLuint[string] vertexShaders;
 private GLuint[string] fragmentShaders;
 private GLuint[string] shaderPrograms;
 // Indexed as uniform["shaderName"]["uniformName"]
-private GLint[string][string] uniforms;
+private GLint[string] uniforms;
 
 void create(string shaderName,
     string vertexShaderCodeLocation,
@@ -81,12 +81,12 @@ void createUniform(string shaderName, string uniformName) {
         throw new Exception("Failed to create shader uniform!");
     }
 
-    uniforms[shaderName][uniformName] = location;
+    uniforms[genUniformName(shaderName, uniformName)] = location;
 }
 
 // Set the uniform's int value in GPU memory (integer)
 void setUniformInt(string shaderName, string uniformName, GLuint value) {
-    glUniform1i(uniforms[shaderName][uniformName], value);
+    glUniform1i(getUniform(shaderName, uniformName), value);
     
     GLenum glErrorInfo = getAndClearGLErrors();
 
@@ -99,7 +99,7 @@ void setUniformInt(string shaderName, string uniformName, GLuint value) {
 }
 
 void setUniformFloat(string shaderName, string uniformName, GLfloat value) {
-    glUniform1f(uniforms[shaderName][uniformName], value);
+    glUniform1f(getUniform(shaderName, uniformName), value);
     
     GLenum glErrorInfo = getAndClearGLErrors();
     if (glErrorInfo != GL_NO_ERROR) {
@@ -110,7 +110,7 @@ void setUniformFloat(string shaderName, string uniformName, GLfloat value) {
 }
 
 void setUniformDouble(string shaderName, string uniformName, GLdouble value) {
-    glUniform1d(uniforms[shaderName][uniformName], value);
+    glUniform1d(getUniform(shaderName, uniformName), value);
     
     GLenum glErrorInfo = getAndClearGLErrors();
     if (glErrorInfo != GL_NO_ERROR) {
@@ -121,8 +121,9 @@ void setUniformDouble(string shaderName, string uniformName, GLdouble value) {
 }
 
 void setUniformMatrix4f(string shaderName, string uniformName, float[] matrix, GLint count = 1) {
+
     glUniformMatrix4fv(
-        uniforms[shaderName][uniformName], // Location
+        getUniform(shaderName, uniformName), // Location
         count, // Count
         GL_FALSE,// Transpose
         matrix.ptr// Pointer
@@ -139,7 +140,7 @@ void setUniformMatrix4f(string shaderName, string uniformName, float[] matrix, G
 void setUniformMatrix4d(string shaderName, string uniformName, double[] matrix, GLint count = 1) {
 
     glUniformMatrix4dv(
-        uniforms[shaderName][uniformName], // Location
+        getUniform(shaderName, uniformName), // Location
         count, // Count
         GL_FALSE,// Transpose
         matrix.ptr// Pointer
@@ -154,7 +155,7 @@ void setUniformMatrix4d(string shaderName, string uniformName, double[] matrix, 
 }
 
 uint getUniform(string shaderName, string uniformName) {
-    return uniforms[shaderName][uniformName];
+    return uniforms[genUniformName(shaderName, uniformName)];
 }
 
 /// A helper shortcut to initialize this shader
@@ -230,4 +231,8 @@ void deleteShader(string shaderName) {
     shaderPrograms.remove(shaderName);
 
     writeln("Deleted shader: ", shaderName);
+}
+
+string genUniformName(string shaderName, string uniformName) {
+    return shaderName ~ "_" ~ uniformName;
 }
