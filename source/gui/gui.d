@@ -12,6 +12,12 @@ class GUI {
 
 private class Button {
     private GLuint backgroundTexture;
+    private Text text;
+
+    this(string text, GLuint backgroundTexture) {
+        this.text = new Text(text);
+        this.backgroundTexture = backgroundTexture;
+    }
 }
 
 private class Text {
