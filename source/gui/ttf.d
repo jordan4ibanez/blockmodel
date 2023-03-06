@@ -25,7 +25,7 @@ import std.conv;
 
 // here's some D convenience functions
 
-// need to do some print glyphs t it....
+// need to do some print glyphs to it....
 
 
 /// A TTF font held in memory
