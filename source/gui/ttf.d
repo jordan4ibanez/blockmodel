@@ -28,8 +28,8 @@ import std.conv;
 // need to do some print glyphs to it....
 
 
-/// A TTF font held in memory
-class TtfFont {
+/// A TrueType Font held in memory
+class TTFont {
 
 	stbtt_fontinfo font;
 
