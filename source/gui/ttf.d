@@ -167,16 +167,16 @@ class TTFont {
 
 	Used only with [OpenGlLimitedFont] right now.
 +/
-struct DrawingTextContext {
-	const(char)[] text; /// remaining text
-	float x; /// current position of the baseline
-	float y; /// ditto
+// struct DrawingTextContext {
+// 	const(char)[] text; /// remaining text
+// 	float x; /// current position of the baseline
+// 	float y; /// ditto
 
-	const int left; /// bounding box, if applicable
-	const int top; /// ditto
-	const int right; /// ditto
-	const int bottom; /// ditto
-}
+// 	const int left; /// bounding box, if applicable
+// 	const int top; /// ditto
+// 	const int right; /// ditto
+// 	const int bottom; /// ditto
+// }
 
 /++
 	Note that the constructor calls OpenGL functions and thus this must be called AFTER
@@ -191,269 +191,269 @@ struct DrawingTextContext {
 	History:
 		Added April 24, 2020
 +/
-class OpenGlLimitedFont() {
-// FIXME: does this kern?
-// FIXME: it would be cool if it did per-letter transforms too like word art. make it tangent to some baseline
+// class OpenGlLimitedFont() {
+// // FIXME: does this kern?
+// // FIXME: it would be cool if it did per-letter transforms too like word art. make it tangent to some baseline
 
-	import arsd.simpledisplay;
+// 	import arsd.simpledisplay;
 
-	static private int nextPowerOfTwo(int v) {
-		v--;
-		v |= v >> 1;
-		v |= v >> 2;
-		v |= v >> 4;
-		v |= v >> 8;
-		v |= v >> 16;
-		v++;
-		return v;
-	}
+// 	static private int nextPowerOfTwo(int v) {
+// 		v--;
+// 		v |= v >> 1;
+// 		v |= v >> 2;
+// 		v |= v >> 4;
+// 		v |= v >> 8;
+// 		v |= v >> 16;
+// 		v++;
+// 		return v;
+// 	}
 
-	uint _tex;
-	stbtt_bakedchar[] charInfo;
+// 	uint _tex;
+// 	stbtt_bakedchar[] charInfo;
 
-	import arsd.color;
+// 	import arsd.color;
 
-	/++
+// 	/++
 
-		Tip: if color == Color.transparent, it will not actually attempt to draw to OpenGL. You can use this
-		to help plan pagination inside the bounding box.
+// 		Tip: if color == Color.transparent, it will not actually attempt to draw to OpenGL. You can use this
+// 		to help plan pagination inside the bounding box.
 
-	+/
-	public final DrawingTextContext drawString(int x, int y, in char[] text, Color color = Color.white, Rectangle boundingBox = Rectangle.init) {
-		if(boundingBox == Rectangle.init) {
-			// if you hit a newline, at least keep it aligned here if something wasn't
-			// explicitly given.
-			boundingBox.left = x;
-			boundingBox.top = y;
-			boundingBox.right = int.max;
-			boundingBox.bottom = int.max;
-		}
-		DrawingTextContext dtc = DrawingTextContext(text, x, y, boundingBox.tupleof);
-		drawString(dtc, color);
-		return dtc;
-	}
+// 	+/
+// 	public final DrawingTextContext drawString(int x, int y, in char[] text, Color color = Color.white, Rectangle boundingBox = Rectangle.init) {
+// 		if(boundingBox == Rectangle.init) {
+// 			// if you hit a newline, at least keep it aligned here if something wasn't
+// 			// explicitly given.
+// 			boundingBox.left = x;
+// 			boundingBox.top = y;
+// 			boundingBox.right = int.max;
+// 			boundingBox.bottom = int.max;
+// 		}
+// 		DrawingTextContext dtc = DrawingTextContext(text, x, y, boundingBox.tupleof);
+// 		drawString(dtc, color);
+// 		return dtc;
+// 	}
 
-	/++
-		It won't attempt to draw partial characters if it butts up against the bounding box, unless
-		word wrap was impossible. Use clipping if you need to cover that up and guarantee it never goes
-		outside the bounding box ever.
+// 	/++
+// 		It won't attempt to draw partial characters if it butts up against the bounding box, unless
+// 		word wrap was impossible. Use clipping if you need to cover that up and guarantee it never goes
+// 		outside the bounding box ever.
 
-	+/
-	public final void drawString(ref DrawingTextContext context, Color color = Color.white) {
-		bool actuallyDraw = color != Color.transparent;
+// 	+/
+// 	public final void drawString(ref DrawingTextContext context, Color color = Color.white) {
+// 		bool actuallyDraw = color != Color.transparent;
 
-		if(actuallyDraw) {
-			glBindTexture(GL_TEXTURE_2D, _tex);
+// 		if(actuallyDraw) {
+// 			glBindTexture(GL_TEXTURE_2D, _tex);
 
-			glColor4f(cast(float)color.r/255.0, cast(float)color.g/255.0, cast(float)color.b/255.0, cast(float)color.a / 255.0);
-		}
+// 			glColor4f(cast(float)color.r/255.0, cast(float)color.g/255.0, cast(float)color.b/255.0, cast(float)color.a / 255.0);
+// 		}
 
-		bool newWord = true;
-		bool atStartOfLine = true;
-		float currentWordLength;
-		int currentWordCharsRemaining;
+// 		bool newWord = true;
+// 		bool atStartOfLine = true;
+// 		float currentWordLength;
+// 		int currentWordCharsRemaining;
 
-		void calculateWordInfo() {
-			const(char)[] copy = context.text;
-			currentWordLength = 0.0;
-			currentWordCharsRemaining = 0;
+// 		void calculateWordInfo() {
+// 			const(char)[] copy = context.text;
+// 			currentWordLength = 0.0;
+// 			currentWordCharsRemaining = 0;
 
-			while(copy.length) {
-				auto ch = copy[0];
-				copy = copy[1 .. $];
+// 			while(copy.length) {
+// 				auto ch = copy[0];
+// 				copy = copy[1 .. $];
 
-				currentWordCharsRemaining++;
+// 				currentWordCharsRemaining++;
 
-				if(ch <= 32)
-					break; // not in a word anymore
+// 				if(ch <= 32)
+// 					break; // not in a word anymore
 
-				if(ch < firstChar || ch > lastChar)
-					continue;
+// 				if(ch < firstChar || ch > lastChar)
+// 					continue;
 
-				const b = charInfo[cast(int) ch - cast(int) firstChar];
+// 				const b = charInfo[cast(int) ch - cast(int) firstChar];
 
-				currentWordLength += b.xadvance;
-			}
-		}
+// 				currentWordLength += b.xadvance;
+// 			}
+// 		}
 
-		bool newline() {
-			context.x = context.left;
-			context.y += lineHeight;
-			atStartOfLine = true;
+// 		bool newline() {
+// 			context.x = context.left;
+// 			context.y += lineHeight;
+// 			atStartOfLine = true;
 
-			if(context.y + descent > context.bottom)
-				return false;
+// 			if(context.y + descent > context.bottom)
+// 				return false;
 
-			return true;
-		}
+// 			return true;
+// 		}
 
-		while(context.text.length) {
-			if(newWord) {
-				calculateWordInfo();
-				newWord = false;
+// 		while(context.text.length) {
+// 			if(newWord) {
+// 				calculateWordInfo();
+// 				newWord = false;
 
-				if(context.x + currentWordLength > context.right) {
-					if(!newline())
-						break; // ran out of space
-				}
-			}
+// 				if(context.x + currentWordLength > context.right) {
+// 					if(!newline())
+// 						break; // ran out of space
+// 				}
+// 			}
 
-			// FIXME i should prolly UTF-8 decode....
-			dchar ch = context.text[0];
-			context.text = context.text[1 .. $];
+// 			// FIXME i should prolly UTF-8 decode....
+// 			dchar ch = context.text[0];
+// 			context.text = context.text[1 .. $];
 
-			if(currentWordCharsRemaining) {
-				currentWordCharsRemaining--;
+// 			if(currentWordCharsRemaining) {
+// 				currentWordCharsRemaining--;
 
-				if(currentWordCharsRemaining == 0)
-					newWord = true;
-			}
+// 				if(currentWordCharsRemaining == 0)
+// 					newWord = true;
+// 			}
 
-			if(ch == '\t') {
-				context.x += 20;
-				continue;
-			}
-			if(ch == '\n') {
-				if(newline())
-					continue;
-				else
-					break;
-			}
+// 			if(ch == '\t') {
+// 				context.x += 20;
+// 				continue;
+// 			}
+// 			if(ch == '\n') {
+// 				if(newline())
+// 					continue;
+// 				else
+// 					break;
+// 			}
 
-			if(ch < firstChar || ch > lastChar) {
-				if(ch == ' ')
-					context.x += lineHeight / 4; // fake space if not available in formal font (I recommend you do include it though)
-				continue;
-			}
+// 			if(ch < firstChar || ch > lastChar) {
+// 				if(ch == ' ')
+// 					context.x += lineHeight / 4; // fake space if not available in formal font (I recommend you do include it though)
+// 				continue;
+// 			}
 
-			const b = charInfo[cast(int) ch - cast(int) firstChar];
+// 			const b = charInfo[cast(int) ch - cast(int) firstChar];
 
-			int round_x = STBTT_ifloor((context.x + b.xoff) + 0.5f);
-			int round_y = STBTT_ifloor((context.y + b.yoff) + 0.5f);
+// 			int round_x = STBTT_ifloor((context.x + b.xoff) + 0.5f);
+// 			int round_y = STBTT_ifloor((context.y + b.yoff) + 0.5f);
 
-			// box to draw on the screen
-			auto x0 = round_x;
-			auto y0 = round_y;
-			auto x1 = round_x + b.x1 - b.x0;
-			auto y1 = round_y + b.y1 - b.y0;
+// 			// box to draw on the screen
+// 			auto x0 = round_x;
+// 			auto y0 = round_y;
+// 			auto x1 = round_x + b.x1 - b.x0;
+// 			auto y1 = round_y + b.y1 - b.y0;
 
-			// is that outside the bounding box we should draw in?
-			// if so on x, wordwrap to the next line. if so on y,
-			// return prematurely and let the user context handle it if needed.
+// 			// is that outside the bounding box we should draw in?
+// 			// if so on x, wordwrap to the next line. if so on y,
+// 			// return prematurely and let the user context handle it if needed.
 
-			// box to fetch off the surface
-			auto s0 = b.x0 * ipw;
-			auto t0 = b.y0 * iph;
-			auto s1 = b.x1 * ipw;
-			auto t1 = b.y1 * iph;
+// 			// box to fetch off the surface
+// 			auto s0 = b.x0 * ipw;
+// 			auto t0 = b.y0 * iph;
+// 			auto s1 = b.x1 * ipw;
+// 			auto t1 = b.y1 * iph;
 
-			if(actuallyDraw) {
-				glBegin(GL_QUADS); 
-					glTexCoord2f(s0, t0); 		glVertex2i(x0, y0);
-					glTexCoord2f(s1, t0); 		glVertex2i(x1, y0); 
-					glTexCoord2f(s1, t1); 		glVertex2i(x1, y1); 
-					glTexCoord2f(s0, t1); 		glVertex2i(x0, y1); 
-				glEnd();
-			}
+// 			if(actuallyDraw) {
+// 				glBegin(GL_QUADS); 
+// 					glTexCoord2f(s0, t0); 		glVertex2i(x0, y0);
+// 					glTexCoord2f(s1, t0); 		glVertex2i(x1, y0); 
+// 					glTexCoord2f(s1, t1); 		glVertex2i(x1, y1); 
+// 					glTexCoord2f(s0, t1); 		glVertex2i(x0, y1); 
+// 				glEnd();
+// 			}
 
-			context.x += b.xadvance;
-		}
+// 			context.x += b.xadvance;
+// 		}
 
-		if(actuallyDraw)
-		glBindTexture(GL_TEXTURE_2D, 0); // unbind the texture
-	}
+// 		if(actuallyDraw)
+// 		glBindTexture(GL_TEXTURE_2D, 0); // unbind the texture
+// 	}
 
-	private {
-		const dchar firstChar;
-		const dchar lastChar;
-		const int pw;
-		const int ph;
-		const float ipw;
-		const float iph;
-	}
+// 	private {
+// 		const dchar firstChar;
+// 		const dchar lastChar;
+// 		const int pw;
+// 		const int ph;
+// 		const float ipw;
+// 		const float iph;
+// 	}
 
-	public const int lineHeight; /// metrics
+// 	public const int lineHeight; /// metrics
 
-	public const int ascent; /// ditto
-	public const int descent; /// ditto
-	public const int line_gap; /// ditto;
+// 	public const int ascent; /// ditto
+// 	public const int descent; /// ditto
+// 	public const int line_gap; /// ditto;
 
-	/++
+// 	/++
 
-	+/
-	public this(const ubyte[] ttfData, float fontPixelHeight, dchar firstChar = 32, dchar lastChar = 127) {
+// 	+/
+// 	public this(const ubyte[] ttfData, float fontPixelHeight, dchar firstChar = 32, dchar lastChar = 127) {
 
-		assert(lastChar > firstChar);
-		assert(fontPixelHeight > 0);
+// 		assert(lastChar > firstChar);
+// 		assert(fontPixelHeight > 0);
 
-		this.firstChar = firstChar;
-		this.lastChar = lastChar;
+// 		this.firstChar = firstChar;
+// 		this.lastChar = lastChar;
 
-		int numChars = 1 + cast(int) lastChar - cast(int) firstChar;
+// 		int numChars = 1 + cast(int) lastChar - cast(int) firstChar;
 
-		lineHeight = cast(int) (fontPixelHeight + 0.5);
+// 		lineHeight = cast(int) (fontPixelHeight + 0.5);
 
-		import std.math;
-		// will most likely be 512x512ish; about 256k likely
-		int height = cast(int) (fontPixelHeight + 1) * cast(int) (sqrt(cast(float) numChars) + 1);
-		height = nextPowerOfTwo(height);
-		int width = height;
+// 		import std.math;
+// 		// will most likely be 512x512ish; about 256k likely
+// 		int height = cast(int) (fontPixelHeight + 1) * cast(int) (sqrt(cast(float) numChars) + 1);
+// 		height = nextPowerOfTwo(height);
+// 		int width = height;
 
-		this.pw = width;
-		this.ph = height;
+// 		this.pw = width;
+// 		this.ph = height;
 
-		ipw = 1.0f / pw;
-		iph = 1.0f / ph;
+// 		ipw = 1.0f / pw;
+// 		iph = 1.0f / ph;
 
-		int len = width * height;
+// 		int len = width * height;
 
-		//import std.stdio; writeln(len);
+// 		//import std.stdio; writeln(len);
 
-		import core.stdc.stdlib;
-		ubyte[] buffer = (cast(ubyte*) malloc(len))[0 .. len];
-		if(buffer is null) assert(0);
-		scope(exit) free(buffer.ptr);
+// 		import core.stdc.stdlib;
+// 		ubyte[] buffer = (cast(ubyte*) malloc(len))[0 .. len];
+// 		if(buffer is null) assert(0);
+// 		scope(exit) free(buffer.ptr);
 
-		charInfo.length = numChars;
+// 		charInfo.length = numChars;
 
-		int ascent, descent, line_gap;
+// 		int ascent, descent, line_gap;
 
-		if(stbtt_BakeFontBitmap(
-			ttfData.ptr, 0,
-			fontPixelHeight,
-			buffer.ptr, width, height,
-			cast(int) firstChar, numChars,
-			charInfo.ptr,
-			&ascent, &descent, &line_gap
-		) == 0)
-			throw new Exception("bake font didn't work");
+// 		if(stbtt_BakeFontBitmap(
+// 			ttfData.ptr, 0,
+// 			fontPixelHeight,
+// 			buffer.ptr, width, height,
+// 			cast(int) firstChar, numChars,
+// 			charInfo.ptr,
+// 			&ascent, &descent, &line_gap
+// 		) == 0)
+// 			throw new Exception("bake font didn't work");
 
-		this.ascent = ascent;
-		this.descent = descent;
-		this.line_gap = line_gap;
+// 		this.ascent = ascent;
+// 		this.descent = descent;
+// 		this.line_gap = line_gap;
 
-		glGenTextures(1, &_tex);
-		glBindTexture(GL_TEXTURE_2D, _tex);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+// 		glGenTextures(1, &_tex);
+// 		glBindTexture(GL_TEXTURE_2D, _tex);
+// 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+// 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		
-		glTexImage2D(
-			GL_TEXTURE_2D,
-			0,
-			GL_ALPHA,
-			width,
-			height,
-			0,
-			GL_ALPHA,
-			GL_UNSIGNED_BYTE,
-			buffer.ptr);
+// 		glTexImage2D(
+// 			GL_TEXTURE_2D,
+// 			0,
+// 			GL_ALPHA,
+// 			width,
+// 			height,
+// 			0,
+// 			GL_ALPHA,
+// 			GL_UNSIGNED_BYTE,
+// 			buffer.ptr);
 
-		assert(!glGetError());
+// 		assert(!glGetError());
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-}
+// 		glBindTexture(GL_TEXTURE_2D, 0);
+// 	}
+// }
 
 
 // test program
