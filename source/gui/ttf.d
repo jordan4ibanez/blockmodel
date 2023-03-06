@@ -26,7 +26,9 @@ module gui.ttf;
 
 ///
 struct TtfFont {
+
 	stbtt_fontinfo font;
+
 	///
 	this(in ubyte[] data) {
 		load(data);
@@ -35,7 +37,7 @@ struct TtfFont {
 	///
 	void load(in ubyte[] data) {
    		if(stbtt_InitFont(&font, data.ptr, stbtt_GetFontOffsetForIndex(data.ptr, 0)) == 0)
-			throw new Exception("load font problem");
+			throw new Exception("Font failed to load!");
 	}
 
 	/// Note that you must stbtt_FreeBitmap(returnValue.ptr, null); this thing or it will leak!!!!
