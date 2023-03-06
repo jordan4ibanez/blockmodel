@@ -11,7 +11,7 @@
 		"doml": "~>0.0.5",
 		"tinygltf": "~>1.1.0"
 	},
-	"libs": ["z"],
+	"libs-posix": ["z"],
 	"description": "A model format for voxel games.",
 	"license": "MIT",
 	"name": "blockmodel",
