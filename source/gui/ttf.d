@@ -91,67 +91,67 @@ class TTFont {
 	}
 
 	///
-	ubyte[] renderString(in char[] s, int size, out int width, out int height) {
-		float xpos=0;
+	// ubyte[] renderString(in char[] s, int size, out int width, out int height) {
+	// 	float xpos=0;
 
-		auto scale = stbtt_ScaleForPixelHeight(&font, size);
-		int ascent, descent, line_gap;
-		stbtt_GetFontVMetrics(&font, &ascent,&descent,&line_gap);
-		auto baseline = cast(int) (ascent*scale);
+	// 	auto scale = stbtt_ScaleForPixelHeight(&font, size);
+	// 	int ascent, descent, line_gap;
+	// 	stbtt_GetFontVMetrics(&font, &ascent,&descent,&line_gap);
+	// 	auto baseline = cast(int) (ascent*scale);
 
-		import std.math;
+	// 	import std.math;
 
-		int swidth;
-		int sheight;
-		getStringSize(s, size, swidth, sheight);
-		auto screen = new ubyte[](swidth * sheight);
+	// 	int swidth;
+	// 	int sheight;
+	// 	getStringSize(s, size, swidth, sheight);
+	// 	auto screen = new ubyte[](swidth * sheight);
 
-		foreach(i, dchar ch; s) {
-			int advance,lsb;
-			auto x_shift = xpos - floor(xpos);
-			stbtt_GetCodepointHMetrics(&font, ch, &advance, &lsb);
-			int cw, cheight;
-			auto c = renderCharacter(ch, size, cw, cheight, x_shift, 0.0);
-			scope(exit) stbtt_FreeBitmap(c.ptr, null);
+	// 	foreach(i, dchar ch; s) {
+	// 		int advance,lsb;
+	// 		auto x_shift = xpos - floor(xpos);
+	// 		stbtt_GetCodepointHMetrics(&font, ch, &advance, &lsb);
+	// 		int cw, cheight;
+	// 		auto c = renderCharacter(ch, size, cw, cheight, x_shift, 0.0);
+	// 		scope(exit) stbtt_FreeBitmap(c.ptr, null);
 
-			int x0, y0, x1, y1;
-			stbtt_GetCodepointBitmapBoxSubpixel(&font, ch, scale,scale,x_shift,0, &x0,&y0,&x1,&y1);
+	// 		int x0, y0, x1, y1;
+	// 		stbtt_GetCodepointBitmapBoxSubpixel(&font, ch, scale,scale,x_shift,0, &x0,&y0,&x1,&y1);
 
-			int x = cast(int) xpos + x0;
-			int y = baseline + y0;
-			int cx = 0;
-			foreach(index, pixel; c) {
-				if(cx == cw) {
-					cx = 0;
-					y++;
-					x = cast(int) xpos + x0;
-				}
-				auto offset = swidth * y + x;
-				if(offset >= screen.length)
-					break;
-				int val = (cast(int) pixel * (255 - screen[offset]) / 255);
-				if(val > 255)
-					val = 255;
-				screen[offset] += cast(ubyte)(val);
-				x++;
-				cx++;
-			}
+	// 		int x = cast(int) xpos + x0;
+	// 		int y = baseline + y0;
+	// 		int cx = 0;
+	// 		foreach(index, pixel; c) {
+	// 			if(cx == cw) {
+	// 				cx = 0;
+	// 				y++;
+	// 				x = cast(int) xpos + x0;
+	// 			}
+	// 			auto offset = swidth * y + x;
+	// 			if(offset >= screen.length)
+	// 				break;
+	// 			int val = (cast(int) pixel * (255 - screen[offset]) / 255);
+	// 			if(val > 255)
+	// 				val = 255;
+	// 			screen[offset] += cast(ubyte)(val);
+	// 			x++;
+	// 			cx++;
+	// 		}
 
-			//stbtt_MakeCodepointBitmapSubpixel(&font, &screen[(baseline + y0) * swidth + cast(int) xpos + x0], x1-x0,y1-y0, 79, scale,scale,      x_shift,0, ch);
-			// note that this stomps the old data, so where character boxes overlap (e.g. 'lj') it's wrong
-			// because this API is really for baking character bitmaps into textures. if you want to render
-			// a sequence of characters, you really need to render each bitmap to a temp buffer, then
-			// "alpha blend" that into the working buffer
-			xpos += (advance * scale);
-			if (i + 1 < s.length)
-				xpos += scale*stbtt_GetCodepointKernAdvance(&font, ch,s[i+1]);
-		}
+	// 		//stbtt_MakeCodepointBitmapSubpixel(&font, &screen[(baseline + y0) * swidth + cast(int) xpos + x0], x1-x0,y1-y0, 79, scale,scale,      x_shift,0, ch);
+	// 		// note that this stomps the old data, so where character boxes overlap (e.g. 'lj') it's wrong
+	// 		// because this API is really for baking character bitmaps into textures. if you want to render
+	// 		// a sequence of characters, you really need to render each bitmap to a temp buffer, then
+	// 		// "alpha blend" that into the working buffer
+	// 		xpos += (advance * scale);
+	// 		if (i + 1 < s.length)
+	// 			xpos += scale*stbtt_GetCodepointKernAdvance(&font, ch,s[i+1]);
+	// 	}
 
-   		width = swidth;
-		height = sheight;
+   	// 	width = swidth;
+	// 	height = sheight;
 
-		return screen;
-	}
+	// 	return screen;
+	// }
 
 	// ~this() {}
 }
