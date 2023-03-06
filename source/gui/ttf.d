@@ -1,5 +1,9 @@
 module gui.ttf;
 
+import std.stdio;
+import std.file;
+import std.conv;
+
 /++
 	TrueType Font rendering. Meant to be used with [arsd.simpledisplay], but it doesn't actually require that. Port of stb_truetype plus D wrappers for convenience.
 
@@ -29,10 +33,20 @@ struct TtfFont {
 
 	stbtt_fontinfo font;
 
-	///
-	this(in ubyte[] data) {
-		load(data);
-	}
+	/// Loads the font up from a directory
+
+    this(string fileLocation) {
+        if (!exists(fileLocation)) {
+            throw new Exception(fileLocation ~ " font does not exist!");
+        }
+
+        writeln("Hello there I am a font");
+    }
+
+    //! Old constructor
+	// this(in ubyte[] data) {
+	// 	load(data);
+	// }
 
 	///
 	void load(in ubyte[] data) {
