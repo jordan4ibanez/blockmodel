@@ -54,8 +54,3 @@ The minimum supported version of OpenGL is 4.1. This can probably be set further
 2. Models MUST NOT contain multiple material (texture) buffers. ONLY one.
 3. Texture coordinates are integrated as part of JSON object inside cuboid.
 4. A model MUST contain texture coordinates.
-
-
-### Note for Windows builds:
-
-You need to install visual c++ redistributable to get rid of the "Unrecognised C++ runtime library 'vcruntime140'" output.
