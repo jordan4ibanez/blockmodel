@@ -13,11 +13,24 @@ import blockmodel.blockmodel;
 import math;
 import delta_time;
 
+//! Development import REMOVE LATER
+import gui.ttf;
+
 void main()
 {
 
     // Window controls OpenGL and GLFW
     Window.initialize();
+
+    TtfFont testFont = new TtfFont("blah");
+
+    bool blah = true;
+    if (blah) {
+        Window.destroy();
+        return;
+    }
+
+
 	Window.setTitle("BlockModel Editor");
 
     Texture.addTexture("textures/xyz_compass.png");
@@ -109,7 +122,9 @@ void main()
 
     Window.setVsync(0);
 
-    while (!Window.shouldClose()) {
+
+
+    while (Window.shouldClose()) {
         // Calculating the delta goes first, we want this to be as accurate as possible.
         calculateDelta();
         // Poll events is hugging the entry point to the scope
