@@ -4766,12 +4766,12 @@ public ubyte * stbtt_GetGlyphSDF(stbtt_fontinfo* info, float scale, int glyph, i
 
 public ubyte * stbtt_GetCodepointSDF(stbtt_fontinfo* info, float scale, int codepoint, int padding, ubyte onedge_value, float pixel_dist_scale, int *width, int *height, int *xoff, int *yoff)
 {
-   return stbtt_GetGlyphSDF(info, scale, stbtt_FindGlyphIndex(info, codepoint), padding, onedge_value, pixel_dist_scale, width, height, xoff, yoff);
+    return stbtt_GetGlyphSDF(info, scale, stbtt_FindGlyphIndex(info, codepoint), padding, onedge_value, pixel_dist_scale, width, height, xoff, yoff);
 }
 
 public void stbtt_FreeSDF(ubyte *bitmap, void *userdata)
 {
-   STBTT_free(bitmap, userdata);
+    STBTT_free(bitmap, userdata);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -4782,46 +4782,46 @@ public void stbtt_FreeSDF(ubyte *bitmap, void *userdata)
 // check if a utf8 string contains a prefix which is the utf16 string; if so return length of matching utf8 string
 private stbtt_int32 stbtt__CompareUTF8toUTF16_bigendian_prefix(stbtt_uint8 *s1, stbtt_int32 len1, stbtt_uint8 *s2, stbtt_int32 len2)
 {
-   stbtt_int32 i=0;
+    stbtt_int32 i=0;
 
-   // convert utf16 to utf8 and compare the results while converting
-   while (len2) {
-      stbtt_uint16 ch = s2[0]*256 + s2[1];
-      if (ch < 0x80) {
-         if (i >= len1) return -1;
-         if (s1[i++] != ch) return -1;
-      } else if (ch < 0x800) {
-         if (i+1 >= len1) return -1;
-         if (s1[i++] != 0xc0 + (ch >> 6)) return -1;
-         if (s1[i++] != 0x80 + (ch & 0x3f)) return -1;
-      } else if (ch >= 0xd800 && ch < 0xdc00) {
-         stbtt_uint32 c;
-         stbtt_uint16 ch2 = s2[2]*256 + s2[3];
-         if (i+3 >= len1) return -1;
-         c = ((ch - 0xd800) << 10) + (ch2 - 0xdc00) + 0x10000;
-         if (s1[i++] != 0xf0 + (c >> 18)) return -1;
-         if (s1[i++] != 0x80 + ((c >> 12) & 0x3f)) return -1;
-         if (s1[i++] != 0x80 + ((c >>  6) & 0x3f)) return -1;
-         if (s1[i++] != 0x80 + ((c      ) & 0x3f)) return -1;
-         s2 += 2; // plus another 2 below
-         len2 -= 2;
-      } else if (ch >= 0xdc00 && ch < 0xe000) {
-         return -1;
-      } else {
-         if (i+2 >= len1) return -1;
-         if (s1[i++] != 0xe0 + (ch >> 12)) return -1;
-         if (s1[i++] != 0x80 + ((ch >> 6) & 0x3f)) return -1;
-         if (s1[i++] != 0x80 + ((ch     ) & 0x3f)) return -1;
-      }
-      s2 += 2;
-      len2 -= 2;
-   }
-   return i;
+    // convert utf16 to utf8 and compare the results while converting
+    while (len2) {
+        stbtt_uint16 ch = s2[0]*256 + s2[1];
+        if (ch < 0x80) {
+            if (i >= len1) return -1;
+            if (s1[i++] != ch) return -1;
+        } else if (ch < 0x800) {
+            if (i+1 >= len1) return -1;
+            if (s1[i++] != 0xc0 + (ch >> 6)) return -1;
+            if (s1[i++] != 0x80 + (ch & 0x3f)) return -1;
+        } else if (ch >= 0xd800 && ch < 0xdc00) {
+            stbtt_uint32 c;
+            stbtt_uint16 ch2 = s2[2]*256 + s2[3];
+            if (i+3 >= len1) return -1;
+            c = ((ch - 0xd800) << 10) + (ch2 - 0xdc00) + 0x10000;
+            if (s1[i++] != 0xf0 + (c >> 18)) return -1;
+            if (s1[i++] != 0x80 + ((c >> 12) & 0x3f)) return -1;
+            if (s1[i++] != 0x80 + ((c >>  6) & 0x3f)) return -1;
+            if (s1[i++] != 0x80 + ((c      ) & 0x3f)) return -1;
+            s2 += 2; // plus another 2 below
+            len2 -= 2;
+        } else if (ch >= 0xdc00 && ch < 0xe000) {
+            return -1;
+        } else {
+            if (i+2 >= len1) return -1;
+            if (s1[i++] != 0xe0 + (ch >> 12)) return -1;
+            if (s1[i++] != 0x80 + ((ch >> 6) & 0x3f)) return -1;
+            if (s1[i++] != 0x80 + ((ch     ) & 0x3f)) return -1;
+        }
+        s2 += 2;
+        len2 -= 2;
+    }
+    return i;
 }
 
 private int stbtt_CompareUTF8toUTF16_bigendian_internal(char *s1, int len1, char *s2, int len2)
 {
-   return len1 == stbtt__CompareUTF8toUTF16_bigendian_prefix(cast(stbtt_uint8*) s1, len1, cast(stbtt_uint8*) s2, len2);
+    return len1 == stbtt__CompareUTF8toUTF16_bigendian_prefix(cast(stbtt_uint8*) s1, len1, cast(stbtt_uint8*) s2, len2);
 }
 
 // returns results in whatever encoding you request... but note that 2-byte encodings
