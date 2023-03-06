@@ -126,7 +126,7 @@ void main()
 
         Window.clear(1);
 
-        if (true) {
+        if (false) {
             Camera.clearDepthBuffer();
             Camera.setRotation(Vector3d(0,0,0));
 
@@ -164,24 +164,26 @@ void main()
 
             xyzCompass.render("regular");
 
-        }
-        // Now render this debug thing on top of that
-        Camera.clearDepthBuffer();
 
-        Shader.startProgram("2d");
+            // Now render this debug thing on top of that
+            Camera.clearDepthBuffer();
 
-        Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
+            Shader.startProgram("2d");
 
-        Shader.setUniformMatrix4f("2d", "objectMatrix",
-            Camera.setGuiObjectMatrix(
-                Vector2d(
-                    (Window.getWidth / 2.0) - debug2d.getWidth,
-                    (Window.getHeight / 2.0) - debug2d.getHeight
+            Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
+
+            Shader.setUniformMatrix4f("2d", "objectMatrix",
+                Camera.setGuiObjectMatrix(
+                    Vector2d(
+                        (Window.getWidth / 2.0) - debug2d.getWidth,
+                        (Window.getHeight / 2.0) - debug2d.getHeight
+                    )
                 )
-            )
-        );
+            );
 
-        debug2d.render("2d");
+            debug2d.render("2d");
+
+        }
 
         Window.swapBuffers();
     }
