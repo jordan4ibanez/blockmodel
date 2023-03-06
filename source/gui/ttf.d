@@ -39,7 +39,10 @@ class TTFont {
             throw new Exception(fileLocation ~ " font does not exist!");
         }
 
-        writeln("Hello there I am a font");
+        ubyte[] ttfData = cast(ubyte[])read(fileLocation);
+
+        this.load(ttfData);
+
     }
 
     //! Old constructor
