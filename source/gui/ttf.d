@@ -28,13 +28,12 @@ import std.conv;
 // need to do some print glyphs t it....
 
 
-///
+/// A TTF font held in memory
 struct TtfFont {
 
 	stbtt_fontinfo font;
 
 	/// Loads the font up from a directory
-
     this(string fileLocation) {
         if (!exists(fileLocation)) {
             throw new Exception(fileLocation ~ " font does not exist!");
