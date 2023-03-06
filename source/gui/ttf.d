@@ -17,6 +17,8 @@ module gui.ttf;
 //
 // port to D by adam d. ruppe (v.6) and massively updated ketmar. see the link above for more info about the lib and real author.
 
+// Ported to D GL/VK agnostic again by jordan4ibanez yay
+
 // here's some D convenience functions
 
 // need to do some print glyphs t it....
