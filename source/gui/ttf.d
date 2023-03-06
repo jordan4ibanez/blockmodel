@@ -4539,44 +4539,43 @@ private int stbtt__compute_crossings_x(float x, float y, int nverts, stbtt_verte
    return winding;
 }
 
-private float stbtt__cuberoot( float x )
-{
-   if (x<0)
-      return -cast(float) STBTT_pow(-x,1.0f/3.0f);
-   else
-      return  cast(float) STBTT_pow( x,1.0f/3.0f);
+private float stbtt__cuberoot( float x ) {
+    if (x<0) {
+        return -cast(float) STBTT_pow(-x,1.0f/3.0f);
+    } else {
+        return  cast(float) STBTT_pow( x,1.0f/3.0f);
+    }
 }
 
 // x^3 + c*x^2 + b*x + a = 0
-private int stbtt__solve_cubic(float a, float b, float c, float* r)
-{
-  float s = -a / 3;
-  float p = b - a*a / 3;
-  float q = a * (2*a*a - 9*b) / 27 + c;
-  float p3 = p*p*p;
-  float d = q*q + 4*p3 / 27;
-  if (d >= 0) {
-    float z = cast(float) STBTT_sqrt(d);
-    float u = (-q + z) / 2;
-    float v = (-q - z) / 2;
-    u = stbtt__cuberoot(u);
-    v = stbtt__cuberoot(v);
-    r[0] = s + u + v;
-    return 1;
-  } else {
-     float u = cast(float) STBTT_sqrt(-p/3);
-     float v = cast(float) STBTT_acos(-STBTT_sqrt(-27/p3) * q / 2) / 3; // p3 must be negative, since d is negative
-     float m = cast(float) STBTT_cos(v);
-      float n = cast(float) STBTT_cos(v-3.141592/2)*1.732050808f;
-     r[0] = s + u * 2 * m;
-     r[1] = s - u * (m + n);
-     r[2] = s - u * (m - n);
+private int stbtt__solve_cubic(float a, float b, float c, float* r) {
+    float s = -a / 3;
+    float p = b - a*a / 3;
+    float q = a * (2*a*a - 9*b) / 27 + c;
+    float p3 = p*p*p;
+    float d = q*q + 4*p3 / 27;
+    if (d >= 0) {
+        float z = cast(float) STBTT_sqrt(d);
+        float u = (-q + z) / 2;
+        float v = (-q - z) / 2;
+        u = stbtt__cuberoot(u);
+        v = stbtt__cuberoot(v);
+        r[0] = s + u + v;
+        return 1;
+    } else {
+        float u = cast(float) STBTT_sqrt(-p/3);
+        float v = cast(float) STBTT_acos(-STBTT_sqrt(-27/p3) * q / 2) / 3; // p3 must be negative, since d is negative
+        float m = cast(float) STBTT_cos(v);
+        float n = cast(float) STBTT_cos(v-3.141592/2)*1.732050808f;
+        r[0] = s + u * 2 * m;
+        r[1] = s - u * (m + n);
+        r[2] = s - u * (m - n);
 
-      //STBTT_assert( STBTT_fabs(((r[0]+a)*r[0]+b)*r[0]+c) < 0.05f);  // these asserts may not be safe at all scales, though they're in bezier t parameter units so maybe?
-      //STBTT_assert( STBTT_fabs(((r[1]+a)*r[1]+b)*r[1]+c) < 0.05f);
-      //STBTT_assert( STBTT_fabs(((r[2]+a)*r[2]+b)*r[2]+c) < 0.05f);
-    return 3;
-   }
+        //STBTT_assert( STBTT_fabs(((r[0]+a)*r[0]+b)*r[0]+c) < 0.05f);  // these asserts may not be safe at all scales, though they're in bezier t parameter units so maybe?
+        //STBTT_assert( STBTT_fabs(((r[1]+a)*r[1]+b)*r[1]+c) < 0.05f);
+        //STBTT_assert( STBTT_fabs(((r[2]+a)*r[2]+b)*r[2]+c) < 0.05f);
+        return 3;
+    }
 }
 
 public ubyte * stbtt_GetGlyphSDF(stbtt_fontinfo* info, float scale, int glyph, int padding, ubyte onedge_value, float pixel_dist_scale, int *width, int *height, int *xoff, int *yoff)
