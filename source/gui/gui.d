@@ -4,17 +4,19 @@ import bindbc.opengl;
 
 class GUI {
 
-    Button[string] buttons;
+    private Button[string] buttons;
+    private Text[string] texts;
 
 }
 
 
 private class Button {
+    private GLuint backgroundTexture;
+}
 
-    GLuint backgroundTexture;
-
-    
-
-
-    
+private class Text {
+    private string data;
+    this(string data) {
+        this.data = data;
+    }
 }
