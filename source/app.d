@@ -22,7 +22,7 @@ void main()
     // Window controls OpenGL and GLFW
     Window.initialize();
 
-    TtfFont testFont = new TtfFont("blah");
+    TTFont testFont = new TTFont("fonts/mc.ttf");
 
     bool blah = true;
     if (blah) {
