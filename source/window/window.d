@@ -256,6 +256,11 @@ Vector2d centerMouse() {
 }
 
 void setVsync(int value) {
+    // There is an EXTREME bug with posix (Linux, BSD) that can lock the operating system up.
+    // For now, it will ignore trying to turn off vsync during runtime.
+    if (isPosix()) {
+        return;
+    }
     vsync = value;
     glfwSwapInterval(vsync);
 }
@@ -456,3 +461,10 @@ double getHeight() {
 }
 
 //! ===== End OpenGL Tools =====
+
+
+// This is a simple tool by ADR to tell if the platform is posix.
+bool isPosix() {
+    version(Posix) return true;
+    else return false;
+}
