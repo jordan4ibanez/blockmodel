@@ -1532,12 +1532,16 @@ private int stbtt__isfont(stbtt_uint8[] font) {
 
 /**
     This is scanning each byte of the input data array to find the data
-    So basically let's find "hi" in this (it says "therehi"):
+    So basically let's find "hi" in this ubyte[] (it says "therehi"):
     [116, 104, 101, 114, 101, 104, 105]
      V    V    V    V    V    V    V
      T no|H no|E no|R no|E no|H ye|I FOUND IT!
+
+     The offset is basically, how far into the ubyte[] we start.
+     
+     So 3 would mean we start at: 0,1,2,3 so we start at R in "therehi"
 */
-private stbtt_uint32 stbtt__find_table(stbtt_uint8[] data, stbtt_uint32 fontstart, string tag) {
+private uint findTable(uint[] data, uint fontstart, string tag) {
 
     stbtt_int32 num_tables = ttUSHORT(data[fontstart+4..data.length]);
     stbtt_uint32 tabledir = fontstart + 12;
