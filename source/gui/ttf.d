@@ -306,7 +306,7 @@ STBTT_DEF int  stbtt_PackFontRangesRenderIntoRects(stbtt_pack_context *spc, cons
 
 /// Holds RAW font data inside of a TTFont object
 private class TTFInfo {
-    void* userdata;
+    ubyte[] userdata;
     string fileLocation; // Location of .ttf file
     string name;         // Name of a font
 
