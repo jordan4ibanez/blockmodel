@@ -1114,10 +1114,10 @@ struct stbtt_vertex {
 
 
 // @TODO: don't expose this structure
-struct stbtt__bitmap {
-    int w,h,stride;
-    ubyte *pixels;
-}
+// struct stbtt__bitmap {
+//     int w,h,stride;
+//     ubyte *pixels;
+// }
 
 // rasterize a shape with quadratic beziers into a bitmap
 /+
