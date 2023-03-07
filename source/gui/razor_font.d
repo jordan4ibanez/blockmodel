@@ -26,8 +26,11 @@ File format:
 
 */
 
-/// Stores IMPORTANT font data to be reused by Razor Font - These are stored in static memory in the program
-/// Counts are so we can grab a slice of this information because anything after it WILL be garbage data
+/**
+Stores IMPORTANT font data to be reused by Razor Font - These are stored in static memory in the program
+Counts are so we can grab a slice of this information because anything after it WILL be garbage data
+*/
+/// The current character limit (letters in string)
 private immutable int CHARACTER_LIMIT = 4096;
 /// 4 Vertex positions in a char
 private double[4 * CHARACTER_LIMIT] vertexCache;
@@ -45,8 +48,8 @@ This allows batch rendering to a "canvas" ala vertex positionining
 With this you can shovel one giant lump of data into a vao or whatever you're using.
 This is optional though, you can do whatever you want!
 */
-private double screenWidth  = 0;
-private double screenHeight = 0;
+private double canvasWidth  = 0;
+private double canvasHeight = 0;
 
 /// Stores all fonts
 private RazorFont[string] razorFonts;
@@ -195,7 +198,11 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
 
 //* ============================ BEGIN GRAPHICS DISPATCH ===========================
 
-/// Render at double floating point precision
+void setCanvasWidthHeight(double width, double height) {
+    
+}
+
+/// Render to the canvas. Remember: You must run flush() to collect this canvas.
 RazorFontData debugRenderDouble(string font, const double fontSize, string text) {
 
     // Can't render if that font doesn't exist
