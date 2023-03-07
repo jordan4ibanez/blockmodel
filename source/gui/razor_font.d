@@ -182,10 +182,10 @@ Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugR
 
     foreach (key, character; text) {
 
-        writeln(character);
+        // writeln(character);
 
         if (character == ' ') {
-            writeln("skipping");
+            // writeln("skipping");
 
             typeWriterArm += fontSize;
             continue;
@@ -218,7 +218,7 @@ Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugR
 
         typeWriterArm += characterWidth * fontSize;
 
-        writeln("x pos ", rawVertex[0]);
+        // writeln("x pos ", rawVertex[0]);
 
         vertexData ~= rawVertex;
 
@@ -230,11 +230,9 @@ Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugR
             rawIndices[i] += currentVertex;
         }
 
-        writeln(rawIndices);
+        // writeln(rawIndices);
 
         currentVertex += 4;
-
-
 
         indices ~= rawIndices;
         
