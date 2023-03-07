@@ -5,18 +5,7 @@ import std.file;
 import std.conv;
 
 /// Stores all True Type Fonts into an easily accessable hashmap
-private TTFont[string] buffers;
-
-/// How you create a font
-void createFont(string fileLocation, string name = "") {
-    // Are we gonna use the name or the file location as the TTF key?
-    string key = name == "" ? fileLocation : name;
-    
-    buffers[key] = new TTFont(fileLocation, name);
-}
-
-/// How you get render data from a font
-//Todo;
+private TTFont[string] fonts;
 
 
 /// Stores True Type Font data in raw form
@@ -33,12 +22,13 @@ private class TTFBuffer {
     }
 }
 
-
-/// A TrueType Font held in memory, this whole thing can't be accessed outside this module,
-/// so we don't care about privacy because you can't touch it.
+/**
+    A TrueType Font held in memory, this whole thing can't be accessed outside this module,
+    so we don't care about privacy because you can't touch it.
+    A font is also it's font info, self containerized.
+    Collections are NOT supported. This is a gamedev library not an OS library.
+*/
 private class TTFont {
-    
-    TTFInfo fontInfo;
 
     /// Name of the font
     string name;
@@ -95,6 +85,21 @@ private class TTFont {
     }
 }
 
+/// How you create a font
+void createFont(string fileLocation, string name = "") {
+    // Are we gonna use the name or the file location as the TTF key?
+    string key = name == "" ? fileLocation : name;
+    
+    // We are assembling this font
+    TTFont fontObject = new TTFont(fileLocation, name);
+
+
+    fonts[key] = fontObject;
+
+}
+
+/// How you get render data from a font
+//Todo;
 
 
 //*========================================= FONT LOADING =====================================================
