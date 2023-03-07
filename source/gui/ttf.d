@@ -851,14 +851,16 @@ bool stbtt_tag4 (ubyte[] p, ubyte c0, ubyte c1, ubyte c2, ubyte c3) pure {
 }
 
 bool stbtt_tag (ubyte[] p, string str) {
-    string newString = cast(string) p;
+    string newString = cast(string) p[0..str.length];
     return newString == str;
 }
 
 private bool isFont(ubyte[] font) {
     // check the version number
     if (stbtt_tag4(font, '1',0,0,0)) return true; // TrueType 1
-    if (stbtt_tag(font, "typ1")) return true;     // TrueType with type 1 font -- we don't support this!
+    if (stbtt_tag(font, "typ1")) {
+        throw new Exception("Type 1 fonts are not supported!"); // TrueType with type 1 font -- we don't support this!
+    }
     if (stbtt_tag(font, "OTTO")) return true;     // OpenType with CFF
     if (stbtt_tag4(font, 0,1,0,0)) return true;   // OpenType 1.0
     if (stbtt_tag(font, "true")) return true;     // Apple specification for TrueType fonts
@@ -895,22 +897,12 @@ private uint findTable(ubyte[] data, uint fontstart, string tag) {
 
 
 
-private int stbtt_GetFontOffsetForIndex_internal(ubyte *font_collection, int index) {
+private int stbtt_GetFontOffsetForIndex_internal(ubyte[] fontCollection, int index) {
 
     // if it's just a font, there's only one valid index
-    if (stbtt__isfont(font_collection))
+    if (isFont(fontCollection))
         return index == 0 ? 0 : -1;
-    // check if it's a TTC
-    if (stbtt_tag(font_collection, "ttcf".ptr)) {
-        // version 1?
-        if (ttULONG(font_collection+4) == 0x00010000 || ttULONG(font_collection+4) == 0x00020000) {
-            stbtt_int32 n = ttLONG(font_collection+8);
-            if (index >= n)
-                return -1;
-            return ttULONG(font_collection+12+index*4);
-        }
-    }
-    return -1;
+    throw new Exception("Font collections are not supported!");
 }
 
 
