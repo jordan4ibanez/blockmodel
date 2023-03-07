@@ -258,7 +258,7 @@ class Mesh {
             glDeleteBuffers(1, &this.pbo);
             assert (glIsBuffer(this.pbo) == GL_FALSE);
 
-            writeln("deleted VERTEX POSITIONS");
+            // writeln("deleted VERTEX POSITIONS");
         }
 
         // Delete the texture coordinates vbo
@@ -266,14 +266,16 @@ class Mesh {
             glDisableVertexAttribArray(1);
             glDeleteBuffers(1, &this.tbo);
             assert (glIsBuffer(this.tbo) == GL_FALSE);
-            writeln("deleted TEXTURE COORDINATES");
+
+            // writeln("deleted TEXTURE COORDINATES");
         }
         // Delete the indices vbo
         if (this.bbo != invalid) {
             glDisableVertexAttribArray(2);
             glDeleteBuffers(1, &this.ibo);
             assert (glIsBuffer(this.ibo) == GL_FALSE);
-            writeln("deleted BONES");
+
+            // writeln("deleted BONES");
         }
 
         // Unbind the OpenGL object
