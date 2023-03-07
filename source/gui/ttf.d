@@ -31,6 +31,13 @@ void createFont(string fileLocation, string name = "") {
 /// Stores all True Type Fonts into an easily accessable hashmap
 private TTFont[string] fonts;
 
+/// Allows storing which font type the TTF object is
+enum FontType {
+    INVALID,
+    TRUETYPE,
+    OPENTYPE_CFF,
+    OPENTYPE
+}
 
 /// Stores True Type Font data in raw form
 private class TTFBuffer {
@@ -63,7 +70,10 @@ private class TTFont {
     // Location of .ttf file
     string fileLocation;
 
+    // The raw binary data of the TTF object
     ubyte[] rawData;
+
+    FontType fontType = FontType.INVALID;
 
     // Number of glyphs, needed for range checking
     // int numGlyphs;
@@ -103,7 +113,7 @@ private class TTFont {
             throw new Exception(fileLocation ~ " font does not exist!");
         }
 
-        if (this.name == "") {
+        if (this.name is "") {
             this.name = fileLocation;
         } else {
             this.name = name;
@@ -122,9 +132,54 @@ private class TTFont {
 
         // Now process it
 
+        this.getVersion();
+
+        writeln(this.name, " is ", this.fontType);
+
+    }
+    
+
+    void getVersion() {
+
+        // Store the ubyte data
+        ubyte[] versionInfo = rawData[0..4];
+
+        // TrueType 1
+        if (isEqual(versionInfo, "1000")) {
+            this.fontType = FontType.TRUETYPE;
+            return;
+        }
+
+        // TrueType with type 1 font -- we don't support this!
+        if (isEqual(versionInfo, "typ1")) {
+            throw new Exception("True Type Font with Type 1 is not supported!");
+        }
+
+        // OpenType with CFF
+        if (isEqual(versionInfo, "OTTO")) {
+            this.fontType = fontType.OPENTYPE_CFF;
+            return;
+        }
+
+        // OpenType 1.0
+        if (isEqual(versionInfo, "0100")) {
+            this.fontType = fontType.OPENTYPE;
+            return;
+        }
+
+        // Unknown, cannot continue
+        throw new Exception("True Type Font has an unknown version!");
     }
 
+    bool isEqual(ubyte[] a, string b) {
+    
+        string accumulator = "";
+        foreach (value; a) {
+            accumulator ~= to!string(value);
+        }
 
+        return accumulator == b;
+    }
     
 }
 
