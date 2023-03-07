@@ -3514,210 +3514,205 @@ struct stbtt__point {
    float x,y;
 }
 
-private void stbtt__rasterize(stbtt__bitmap *result, stbtt__point *pts, int *wcount, int windings, float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, void *userdata)
-{
-   float y_scale_inv = invert ? -scale_y : scale_y;
-   stbtt__edge *e;
-   int n,i,j,k,m;
-static if (STBTT_RASTERIZER_VERSION == 1) {
-   int vsubsample = result.h < 8 ? 15 : 5;
-} else static if (STBTT_RASTERIZER_VERSION == 2) {
-   int vsubsample = 1;
-} else {
-  static assert(0, "Unrecognized value of STBTT_RASTERIZER_VERSION");
+private void stbtt__rasterize(stbtt__bitmap *result, stbtt__point *pts, int *wcount, int windings, float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, void *userdata) {
+    float y_scale_inv = invert ? -scale_y : scale_y;
+    stbtt__edge *e;
+    int n,i,j,k,m;
+    static if (STBTT_RASTERIZER_VERSION == 1) {
+    int vsubsample = result.h < 8 ? 15 : 5;
+    } else static if (STBTT_RASTERIZER_VERSION == 2) {
+    int vsubsample = 1;
+    } else {
+    static assert(0, "Unrecognized value of STBTT_RASTERIZER_VERSION");
+    }
+    // vsubsample should divide 255 evenly; otherwise we won't reach full opacity
+
+    // now we have to blow out the windings into explicit edge lists
+    n = 0;
+    for (i=0; i < windings; ++i)
+        n += wcount[i];
+
+    e = cast(stbtt__edge *) STBTT_malloc(cast(uint)(*e).sizeof * (n+1), userdata); // add an extra one as a sentinel
+    if (e is null) return;
+    n = 0;
+
+    m=0;
+    for (i=0; i < windings; ++i) {
+        stbtt__point *p = pts + m;
+        m += wcount[i];
+        j = wcount[i]-1;
+        for (k=0; k < wcount[i]; j=k++) {
+            int a=k,b=j;
+            // skip the edge if horizontal
+            if (p[j].y == p[k].y)
+                continue;
+            // add edge from j to k to the list
+            e[n].invert = 0;
+            if (invert ? p[j].y > p[k].y : p[j].y < p[k].y) {
+                e[n].invert = 1;
+                a=j,b=k;
+            }
+            e[n].x0 = p[a].x * scale_x + shift_x;
+            e[n].y0 = (p[a].y * y_scale_inv + shift_y) * vsubsample;
+            e[n].x1 = p[b].x * scale_x + shift_x;
+            e[n].y1 = (p[b].y * y_scale_inv + shift_y) * vsubsample;
+            ++n;
+        }
+    }
+
+    // now sort the edges by their highest point (should snap to integer, and then by x)
+    //STBTT_sort(e, n, e[0].sizeof, stbtt__edge_compare);
+    stbtt__sort_edges(e, n);
+
+    // now, traverse the scanlines and find the intersections on each scanline, use xor winding rule
+    stbtt__rasterize_sorted_edges(result, e, n, vsubsample, off_x, off_y, userdata);
+
+    STBTT_free(e, userdata);
 }
-   // vsubsample should divide 255 evenly; otherwise we won't reach full opacity
 
-   // now we have to blow out the windings into explicit edge lists
-   n = 0;
-   for (i=0; i < windings; ++i)
-      n += wcount[i];
-
-   e = cast(stbtt__edge *) STBTT_malloc(cast(uint)(*e).sizeof * (n+1), userdata); // add an extra one as a sentinel
-   if (e is null) return;
-   n = 0;
-
-   m=0;
-   for (i=0; i < windings; ++i) {
-      stbtt__point *p = pts + m;
-      m += wcount[i];
-      j = wcount[i]-1;
-      for (k=0; k < wcount[i]; j=k++) {
-         int a=k,b=j;
-         // skip the edge if horizontal
-         if (p[j].y == p[k].y)
-            continue;
-         // add edge from j to k to the list
-         e[n].invert = 0;
-         if (invert ? p[j].y > p[k].y : p[j].y < p[k].y) {
-            e[n].invert = 1;
-            a=j,b=k;
-         }
-         e[n].x0 = p[a].x * scale_x + shift_x;
-         e[n].y0 = (p[a].y * y_scale_inv + shift_y) * vsubsample;
-         e[n].x1 = p[b].x * scale_x + shift_x;
-         e[n].y1 = (p[b].y * y_scale_inv + shift_y) * vsubsample;
-         ++n;
-      }
-   }
-
-   // now sort the edges by their highest point (should snap to integer, and then by x)
-   //STBTT_sort(e, n, e[0].sizeof, stbtt__edge_compare);
-   stbtt__sort_edges(e, n);
-
-   // now, traverse the scanlines and find the intersections on each scanline, use xor winding rule
-   stbtt__rasterize_sorted_edges(result, e, n, vsubsample, off_x, off_y, userdata);
-
-   STBTT_free(e, userdata);
-}
-
-private void stbtt__add_point(stbtt__point *points, int n, float x, float y)
-{
-   if (!points) return; // during first pass, it's unallocated
-   points[n].x = x;
-   points[n].y = y;
+private void stbtt__add_point(stbtt__point *points, int n, float x, float y) {
+    if (!points) return; // during first pass, it's unallocated
+    points[n].x = x;
+    points[n].y = y;
 }
 
 // tesselate until threshhold p is happy... @TODO warped to compensate for non-linear stretching
-private int stbtt__tesselate_curve(stbtt__point *points, int *num_points, float x0, float y0, float x1, float y1, float x2, float y2, float objspace_flatness_squared, int n)
-{
-   // midpoint
-   float mx = (x0 + 2*x1 + x2)/4;
-   float my = (y0 + 2*y1 + y2)/4;
-   // versus directly drawn line
-   float dx = (x0+x2)/2 - mx;
-   float dy = (y0+y2)/2 - my;
-   if (n > 16) // 65536 segments on one curve better be enough!
-      return 1;
-   if (dx*dx+dy*dy > objspace_flatness_squared) { // half-pixel error allowed... need to be smaller if AA
-      stbtt__tesselate_curve(points, num_points, x0,y0, (x0+x1)/2.0f,(y0+y1)/2.0f, mx,my, objspace_flatness_squared,n+1);
-      stbtt__tesselate_curve(points, num_points, mx,my, (x1+x2)/2.0f,(y1+y2)/2.0f, x2,y2, objspace_flatness_squared,n+1);
-   } else {
-      stbtt__add_point(points, *num_points,x2,y2);
-      *num_points = *num_points+1;
-   }
-   return 1;
+private int stbtt__tesselate_curve(stbtt__point *points, int *num_points, float x0, float y0, float x1, float y1, float x2, float y2, float objspace_flatness_squared, int n) {
+    // midpoint
+    float mx = (x0 + 2*x1 + x2)/4;
+    float my = (y0 + 2*y1 + y2)/4;
+    // versus directly drawn line
+    float dx = (x0+x2)/2 - mx;
+    float dy = (y0+y2)/2 - my;
+    if (n > 16) // 65536 segments on one curve better be enough!
+        return 1;
+    if (dx*dx+dy*dy > objspace_flatness_squared) { // half-pixel error allowed... need to be smaller if AA
+        stbtt__tesselate_curve(points, num_points, x0,y0, (x0+x1)/2.0f,(y0+y1)/2.0f, mx,my, objspace_flatness_squared,n+1);
+        stbtt__tesselate_curve(points, num_points, mx,my, (x1+x2)/2.0f,(y1+y2)/2.0f, x2,y2, objspace_flatness_squared,n+1);
+    } else {
+        stbtt__add_point(points, *num_points,x2,y2);
+        *num_points = *num_points+1;
+    }
+    return 1;
 }
 
-private void stbtt__tesselate_cubic(stbtt__point *points, int *num_points, float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, float objspace_flatness_squared, int n)
-{
-   // @TODO this "flatness" calculation is just made-up nonsense that seems to work well enough
-   float dx0 = x1-x0;
-   float dy0 = y1-y0;
-   float dx1 = x2-x1;
-   float dy1 = y2-y1;
-   float dx2 = x3-x2;
-   float dy2 = y3-y2;
-   float dx = x3-x0;
-   float dy = y3-y0;
-   float longlen = cast(float) (STBTT_sqrt(dx0*dx0+dy0*dy0)+STBTT_sqrt(dx1*dx1+dy1*dy1)+STBTT_sqrt(dx2*dx2+dy2*dy2));
-   float shortlen = cast(float) STBTT_sqrt(dx*dx+dy*dy);
-   float flatness_squared = longlen*longlen-shortlen*shortlen;
+private void stbtt__tesselate_cubic(stbtt__point *points, int *num_points, float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, float objspace_flatness_squared, int n) {
+    // @TODO this "flatness" calculation is just made-up nonsense that seems to work well enough
+    float dx0 = x1-x0;
+    float dy0 = y1-y0;
+    float dx1 = x2-x1;
+    float dy1 = y2-y1;
+    float dx2 = x3-x2;
+    float dy2 = y3-y2;
+    float dx = x3-x0;
+    float dy = y3-y0;
+    float longlen = cast(float) (STBTT_sqrt(dx0*dx0+dy0*dy0)+STBTT_sqrt(dx1*dx1+dy1*dy1)+STBTT_sqrt(dx2*dx2+dy2*dy2));
+    float shortlen = cast(float) STBTT_sqrt(dx*dx+dy*dy);
+    float flatness_squared = longlen*longlen-shortlen*shortlen;
 
-   if (n > 16) // 65536 segments on one curve better be enough!
-      return;
+    if (n > 16) // 65536 segments on one curve better be enough!
+        return;
 
-   if (flatness_squared > objspace_flatness_squared) {
-      float x01 = (x0+x1)/2;
-      float y01 = (y0+y1)/2;
-      float x12 = (x1+x2)/2;
-      float y12 = (y1+y2)/2;
-      float x23 = (x2+x3)/2;
-      float y23 = (y2+y3)/2;
+    if (flatness_squared > objspace_flatness_squared) {
+        float x01 = (x0+x1)/2;
+        float y01 = (y0+y1)/2;
+        float x12 = (x1+x2)/2;
+        float y12 = (y1+y2)/2;
+        float x23 = (x2+x3)/2;
+        float y23 = (y2+y3)/2;
 
-      float xa = (x01+x12)/2;
-      float ya = (y01+y12)/2;
-      float xb = (x12+x23)/2;
-      float yb = (y12+y23)/2;
+        float xa = (x01+x12)/2;
+        float ya = (y01+y12)/2;
+        float xb = (x12+x23)/2;
+        float yb = (y12+y23)/2;
 
-      float mx = (xa+xb)/2;
-      float my = (ya+yb)/2;
+        float mx = (xa+xb)/2;
+        float my = (ya+yb)/2;
 
-      stbtt__tesselate_cubic(points, num_points, x0,y0, x01,y01, xa,ya, mx,my, objspace_flatness_squared,n+1);
-      stbtt__tesselate_cubic(points, num_points, mx,my, xb,yb, x23,y23, x3,y3, objspace_flatness_squared,n+1);
-   } else {
-      stbtt__add_point(points, *num_points,x3,y3);
-      *num_points = *num_points+1;
-   }
+        stbtt__tesselate_cubic(points, num_points, x0,y0, x01,y01, xa,ya, mx,my, objspace_flatness_squared,n+1);
+        stbtt__tesselate_cubic(points, num_points, mx,my, xb,yb, x23,y23, x3,y3, objspace_flatness_squared,n+1);
+    } else {
+        stbtt__add_point(points, *num_points,x3,y3);
+        *num_points = *num_points+1;
+    }
 }
 
 // returns number of contours
-private stbtt__point *stbtt_FlattenCurves(stbtt_vertex *vertices, int num_verts, float objspace_flatness, int **contour_lengths, int *num_contours, void *userdata)
-{
-   stbtt__point *points = null;
-   int num_points=0;
+private stbtt__point *stbtt_FlattenCurves(stbtt_vertex *vertices, int num_verts, float objspace_flatness, int **contour_lengths, int *num_contours, void *userdata) {
+    stbtt__point *points = null;
+    int num_points=0;
 
-   float objspace_flatness_squared = objspace_flatness * objspace_flatness;
-   int i,n=0,start=0, pass;
+    float objspace_flatness_squared = objspace_flatness * objspace_flatness;
+    int i,n=0,start=0, pass;
 
-   // count how many "moves" there are to get the contour count
-   for (i=0; i < num_verts; ++i)
-      if (vertices[i].type == STBTT_vmove)
-         ++n;
+    // count how many "moves" there are to get the contour count
+    for (i=0; i < num_verts; ++i)
+        if (vertices[i].type == STBTT_vmove)
+            ++n;
 
-   *num_contours = n;
-   if (n == 0) return null;
+    *num_contours = n;
+    if (n == 0) return null;
 
-   *contour_lengths = cast(int *) STBTT_malloc(cast(uint)(**contour_lengths).sizeof * n, userdata);
+    *contour_lengths = cast(int *) STBTT_malloc(cast(uint)(**contour_lengths).sizeof * n, userdata);
 
-   if (*contour_lengths is null) {
-      *num_contours = 0;
-      return null;
-   }
+    if (*contour_lengths is null) {
+        *num_contours = 0;
+        return null;
+    }
 
-   // make two passes through the points so we don't need to realloc
-   for (pass=0; pass < 2; ++pass) {
-      float x=0,y=0;
-      if (pass == 1) {
-         points = cast(stbtt__point *) STBTT_malloc(num_points * cast(uint)points[0].sizeof, userdata);
-         if (points == null) goto error;
-      }
-      num_points = 0;
-      n= -1;
-      for (i=0; i < num_verts; ++i) {
-         switch (vertices[i].type) {
-            case STBTT_vmove:
-               // start the next contour
-               if (n >= 0)
-                  (*contour_lengths)[n] = num_points - start;
-               ++n;
-               start = num_points;
+    // make two passes through the points so we don't need to realloc
+    for (pass=0; pass < 2; ++pass) {
+        float x=0,y=0;
+        if (pass == 1) {
+            points = cast(stbtt__point *) STBTT_malloc(num_points * cast(uint)points[0].sizeof, userdata);
+            if (points == null) goto error;
+        }
+        num_points = 0;
+        n= -1;
+        for (i=0; i < num_verts; ++i) {
+            switch (vertices[i].type) {
+                case STBTT_vmove:
+                // start the next contour
+                if (n >= 0)
+                    (*contour_lengths)[n] = num_points - start;
+                ++n;
+                start = num_points;
 
-               x = vertices[i].x, y = vertices[i].y;
-               stbtt__add_point(points, num_points++, x,y);
-               break;
-            case STBTT_vline:
-               x = vertices[i].x, y = vertices[i].y;
-               stbtt__add_point(points, num_points++, x, y);
-               break;
-            case STBTT_vcurve:
-               stbtt__tesselate_curve(points, &num_points, x,y,
-                                        vertices[i].cx, vertices[i].cy,
-                                        vertices[i].x,  vertices[i].y,
-                                        objspace_flatness_squared, 0);
-               x = vertices[i].x, y = vertices[i].y;
-               break;
-            case STBTT_vcubic:
-               stbtt__tesselate_cubic(points, &num_points, x,y,
-                                        vertices[i].cx, vertices[i].cy,
-                                        vertices[i].cx1, vertices[i].cy1,
-                                        vertices[i].x,  vertices[i].y,
-                                        objspace_flatness_squared, 0);
-               x = vertices[i].x, y = vertices[i].y;
-               break;
-           default:
-         }
-      }
-      (*contour_lengths)[n] = num_points - start;
-   }
+                x = vertices[i].x, y = vertices[i].y;
+                stbtt__add_point(points, num_points++, x,y);
+                break;
+                case STBTT_vline:
+                x = vertices[i].x, y = vertices[i].y;
+                stbtt__add_point(points, num_points++, x, y);
+                break;
+                case STBTT_vcurve:
+                stbtt__tesselate_curve(points, &num_points, x,y,
+                                            vertices[i].cx, vertices[i].cy,
+                                            vertices[i].x,  vertices[i].y,
+                                            objspace_flatness_squared, 0);
+                x = vertices[i].x, y = vertices[i].y;
+                break;
+                case STBTT_vcubic:
+                stbtt__tesselate_cubic(points, &num_points, x,y,
+                                            vertices[i].cx, vertices[i].cy,
+                                            vertices[i].cx1, vertices[i].cy1,
+                                            vertices[i].x,  vertices[i].y,
+                                            objspace_flatness_squared, 0);
+                x = vertices[i].x, y = vertices[i].y;
+                break;
+            default:
+            }
+        }
+        (*contour_lengths)[n] = num_points - start;
+    }
 
-   return points;
-error:
-   STBTT_free(points, userdata);
-   STBTT_free(*contour_lengths, userdata);
-   *contour_lengths = null;
-   *num_contours = 0;
-   return null;
+    return points;
+    error:
+    STBTT_free(points, userdata);
+    STBTT_free(*contour_lengths, userdata);
+    *contour_lengths = null;
+    *num_contours = 0;
+    return null;
 }
 
 public void stbtt_Rasterize(stbtt__bitmap *result, float flatness_in_pixels, stbtt_vertex *vertices, int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, void *userdata) {
