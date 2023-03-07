@@ -177,6 +177,8 @@ Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugR
 
     // Store how far the arm has moved to the right
     double typeWriterArmX = 0.0;
+    // Store how far the arm has moved down
+    double typeWriterArmY = 0.0;
 
     int currentVertex = 0;
 
@@ -188,6 +190,13 @@ Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugR
             // writeln("skipping");
 
             typeWriterArmX += fontSize;
+            continue;
+        }
+
+        if (character == '\n') {
+            // writeln("skipping down");
+            typeWriterArmY += fontSize;
+            typeWriterArmX = 0.0;
             continue;
         }
 
@@ -213,7 +222,11 @@ Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugR
 
         // Now shift right
         for (int i = 0; i < 8; i += 2) {
-            rawVertex[i] += typeWriterArm;
+            rawVertex[i] += typeWriterArmX;
+        }
+        // Now shift down
+        for (int i = 1; i < 8; i += 2) {
+            rawVertex[i] += typeWriterArmY;
         }
 
         typeWriterArmX += characterWidth * fontSize;
