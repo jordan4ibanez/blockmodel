@@ -1482,22 +1482,24 @@ private TTFBuffer stbtt__cff_index_get(TTFBuffer b, int i) {
 //#define ttCHAR(p)     (* (stbtt_int8 *) (p))
 //#define ttFixed(p)    ttLONG(p)
 stbtt_uint8 ttBYTE (const(void)* p) pure {
-    pragma(inline, true); return *cast(const(stbtt_uint8)*)p;
+    pragma(inline, true);
+    return *cast(const(stbtt_uint8)*)p;
 }
 stbtt_int8 ttCHAR (const(void)* p) pure {
-    pragma(inline, true); return *cast(const(stbtt_int8)*)p;
+    pragma(inline, true);
+    return *cast(const(stbtt_int8)*)p;
 }
 
-private stbtt_uint16 ttUSHORT(stbtt_uint8[] p) {
+private stbtt_uint16 ttUSHORT(ubyte[] p) {
     return p[0]*256 + p[1];
 }
-private stbtt_int16 ttSHORT(stbtt_uint8[] p) {
+private stbtt_int16 ttSHORT(ubyte[] p) {
     return cast(stbtt_int16)(p[0]*256 + p[1]);
 }
-private stbtt_uint32 ttULONG(stbtt_uint8[] p) {
+private stbtt_uint32 ttULONG(ubyte[] p) {
     return (p[0]<<24) + (p[1]<<16) + (p[2]<<8) + p[3];
 }
-private stbtt_int32 ttLONG(stbtt_uint8[] p) {
+private stbtt_int32 ttLONG(ubyte[] p) {
     return (p[0]<<24) + (p[1]<<16) + (p[2]<<8) + p[3];
 }
 
@@ -1538,12 +1540,13 @@ private int stbtt__isfont(stbtt_uint8[] font) {
      T no|H no|E no|R no|E no|H ye|I FOUND IT!
 
      The offset is basically, how far into the ubyte[] we start.
-     
+
      So 3 would mean we start at: 0,1,2,3 so we start at R in "therehi"
 */
 private uint findTable(uint[] data, uint fontstart, string tag) {
 
     stbtt_int32 num_tables = ttUSHORT(data[fontstart+4..data.length]);
+
     stbtt_uint32 tabledir = fontstart + 12;
     stbtt_int32 i;
     for (i=0; i < num_tables; ++i) {
