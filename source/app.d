@@ -36,11 +36,15 @@ void main()
 
     //* End Razor Font testing
 
-    bool blah = true;
-    if (blah) {
-        Window.destroy();
-        return;
-    }
+    // bool blah = true;
+    // if (blah) {
+    //     Window.destroy();
+    //     return;
+    // }
+
+    const auto test = Font.debugRender();
+    writeln("hi there");
+    writeln(test.vertexData);
 
 
 	Window.setTitle("BlockModel Editor");
