@@ -124,7 +124,7 @@ private class RazorFont {
 
     If you do not specify a name, you must call into Razor Font by the fileLocation, literal.
 */
-void createFont(string fileLocation, string name = "") {
+void createFont(string fileLocation, string name = "", bool kerning = false, bool trimming = false) {
 
     // Are we using the fileLocation as the key, or did they specify a name?
     const string key = name == "" ? fileLocation : name;
