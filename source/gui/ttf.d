@@ -686,11 +686,16 @@ T STBTT_fabs(T) (in T x) pure {
 }
 
 // #define your own functions "STBTT_malloc" / "STBTT_free" to avoid malloc.h
+//! We are using a GC lang, why are we using an allocator?
 void* STBTT_malloc (uint size, const(void)* uptr) {
-    pragma(inline, true); import core.stdc.stdlib : malloc; return malloc(size);
+    pragma(inline, true);
+    import core.stdc.stdlib : malloc;
+    return malloc(size);
 }
 void STBTT_free (void *ptr, const(void)* uptr) {
-    pragma(inline, true); import core.stdc.stdlib : free; free(ptr);
+    pragma(inline, true);
+    import core.stdc.stdlib :free;
+    free(ptr);
 }
 /*
 #ifndef STBTT_malloc
@@ -701,15 +706,21 @@ void STBTT_free (void *ptr, const(void)* uptr) {
 */
 
 //alias STBTT_assert = assert;
-
+//! We are using a GC lang, why are we using C style implementation?
 uint STBTT_strlen (const(void)* p) {
-    pragma(inline, true); import core.stdc.string : strlen; return (p !is null ? cast(uint)strlen(cast(const(char)*)p) : 0);
+    pragma(inline, true);
+    import core.stdc.string : strlen;
+    return (p !is null ? cast(uint)strlen(cast(const(char)*)p) : 0);
 }
 void STBTT_memcpy (void* d, const(void)* s, uint count) {
-    pragma(inline, true); import core.stdc.string : memcpy; if (count > 0) memcpy(d, s, count);
+    pragma(inline, true);
+    import core.stdc.string : memcpy;
+    if (count > 0) memcpy(d, s, count);
 }
 void STBTT_memset (void* d, uint v, uint count) {
-    pragma(inline, true); import core.stdc.string : memset; if (count > 0) memset(d, v, count);
+    pragma(inline, true);
+    import core.stdc.string : memset;
+    if (count > 0) memset(d, v, count);
 }
 
 
