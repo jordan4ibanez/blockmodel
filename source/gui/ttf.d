@@ -65,55 +65,55 @@ class TTFont {
 
         ubyte[] ttfData = cast(ubyte[])read(fileLocation);
 
-        this.load(ttfData, name);
+        this.load(ttfData, name, fileLocation);
 
     }
 
     ///
-    void load(ubyte[] data, string name) {
+    void load(ubyte[] data, string name, string fileLocation) {
         //! STAGE 1
-        if (ttfInitializeFont(fontInfo, data, name) == false) {
+        if (ttfInitializeFont(fontInfo, data, name, fileLocation) == false) {
             throw new Exception("Font failed to load!");
         }
     }
 
     /// Note that you must stbtt_FreeBitmap(returnValue.ptr, null); this thing or it will leak!!!!
-    ubyte[] renderCharacter(dchar c, int size, out int width, out int height, float shift_x = 0.0, float shift_y = 0.0) {
-        auto ptr = stbtt_GetCodepointBitmapSubpixel(fontInfo, 0.0,stbtt_ScaleForPixelHeight(fontInfo, size),
-            shift_x, shift_y, c, &width, &height, null,null);
-        return ptr[0 .. width * height];
-    }
+    // ubyte[] renderCharacter(dchar c, int size, out int width, out int height, float shift_x = 0.0, float shift_y = 0.0) {
+        // auto ptr = stbtt_GetCodepointBitmapSubpixel(fontInfo, 0.0,stbtt_ScaleForPixelHeight(fontInfo, size),
+        //     shift_x, shift_y, c, &width, &height, null,null);
+        // return ptr[0 .. width * height];
+    // }
 
     ///
     void getStringSize(in char[] s, int size, out int width, out int height) {
-        float xpos=0;
+        // float xpos=0;
 
-        auto scale = stbtt_ScaleForPixelHeight(fontInfo, size);
-        int ascent, descent, line_gap;
-        stbtt_GetFontVMetrics(fontInfo, &ascent,&descent,&line_gap);
-        auto baseline = cast(int) (ascent*scale);
+        // auto scale = stbtt_ScaleForPixelHeight(fontInfo, size);
+        // int ascent, descent, line_gap;
+        // stbtt_GetFontVMetrics(fontInfo, &ascent,&descent,&line_gap);
+        // auto baseline = cast(int) (ascent*scale);
 
-        import std.math;
+        // import std.math;
 
-        int maxWidth;
+        // int maxWidth;
 
-        foreach(i, dchar ch; s) {
-            int advance,lsb;
-            auto x_shift = xpos - floor(xpos);
-            stbtt_GetCodepointHMetrics(fontInfo, ch, &advance, &lsb);
+        // foreach(i, dchar ch; s) {
+        //     int advance,lsb;
+        //     auto x_shift = xpos - floor(xpos);
+        //     stbtt_GetCodepointHMetrics(fontInfo, ch, &advance, &lsb);
 
-            int x0, y0, x1, y1;
-            stbtt_GetCodepointBitmapBoxSubpixel(fontInfo, ch, scale,scale,x_shift,0, &x0,&y0,&x1,&y1);
+        //     int x0, y0, x1, y1;
+        //     stbtt_GetCodepointBitmapBoxSubpixel(fontInfo, ch, scale,scale,x_shift,0, &x0,&y0,&x1,&y1);
 
-            maxWidth = cast(int)(xpos + x1);
+        //     maxWidth = cast(int)(xpos + x1);
 
-            xpos += (advance * scale);
-            if (i + 1 < s.length)
-                xpos += scale*stbtt_GetCodepointKernAdvance(fontInfo, ch,s[i+1]);
-        }
+        //     xpos += (advance * scale);
+        //     if (i + 1 < s.length)
+        //         xpos += scale*stbtt_GetCodepointKernAdvance(fontInfo, ch,s[i+1]);
+        // }
 
-        width = maxWidth;
-        height = size;
+        // width = maxWidth;
+        // height = size;
     }
 
 	///
@@ -948,10 +948,10 @@ struct stbtt_pack_context {
 // the stack or as a global or etc, but you should treat it as opaque.
 private class TTFInfo {
     void* userdata;
-    ubyte[] data;    // pointer to .ttf file
-    int fontstart;  // offset of start of font
+    string fileLocation; // location of .ttf file
+    string name;         // offset of start of font
 
-    int numGlyphs;  // number of glyphs, needed for range checking
+    int numGlyphs;   // number of glyphs, needed for range checking
 
     int loca,head,glyf,hhea,hmtx,kern,gpos; // table locations as offset from start of .ttf
     int index_map;                          // a cmap mapping for our chosen character encoding
@@ -1314,7 +1314,6 @@ enum { // languageID for STBTT_PLATFORM_ID_MAC
 // //   IMPLEMENTATION
 // //
 // //
-private:
 
 enum STBTT_MAX_OVERSAMPLE = 8; // it also must be POT
 static assert(STBTT_MAX_OVERSAMPLE > 0 && STBTT_MAX_OVERSAMPLE <= 255, "STBTT_MAX_OVERSAMPLE cannot be > 255");
@@ -1547,17 +1546,17 @@ private stbtt_uint32 stbtt__find_table(stbtt_uint8[] data, stbtt_uint32 fontstar
 
 
 //! STAGE 2
-private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name) {
+private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fileLocation) {
 
-    stbtt_uint32 cmap, t;
+    uint cmap, t;
 
-    stbtt_int32 i;
+    int i;
 
-    stbtt_int32 numTables;
+    int numTables;
 
-    info.data = data;
+    info.fileLocation = fileLocation;
 
-    info.fontstart = fontstart;
+    info.name = name;
 
     info.cff = stbtt__new_buf(null, 0);
 
