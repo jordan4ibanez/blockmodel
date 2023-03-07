@@ -258,13 +258,11 @@ RazorFontData debugRenderDouble(string font, const double fontSize, string text)
             vertexPosition *= fontSize;
         }
 
-        // Now shift right
         for (int i = 0; i < 8; i += 2) {
+            // Now shift right
             rawVertex[i] += typeWriterArmX;
-        }
-        // Now shift down
-        for (int i = 1; i < 8; i += 2) {
-            rawVertex[i] += typeWriterArmY;
+            // Now shift down
+            rawVertex[i + 1] += typeWriterArmX;
         }
 
         typeWriterArmX += characterWidth * fontSize;
