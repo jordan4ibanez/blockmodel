@@ -2733,85 +2733,75 @@ private stbtt_int32  stbtt__GetGlyphGPOSInfoAdvance(stbtt_fontinfo* info, int gl
     return 0;
 }
 
-public int  stbtt_GetGlyphKernAdvance(stbtt_fontinfo* info, int g1, int g2)
-{
-   int xAdvance = 0;
+public int  stbtt_GetGlyphKernAdvance(stbtt_fontinfo* info, int g1, int g2) {
+    int xAdvance = 0;
 
-   if (info.gpos)
-      xAdvance += stbtt__GetGlyphGPOSInfoAdvance(info, g1, g2);
+    if (info.gpos)
+        xAdvance += stbtt__GetGlyphGPOSInfoAdvance(info, g1, g2);
 
-   if (info.kern)
-      xAdvance += stbtt__GetGlyphKernInfoAdvance(info, g1, g2);
+    if (info.kern)
+        xAdvance += stbtt__GetGlyphKernInfoAdvance(info, g1, g2);
 
-   return xAdvance;
+    return xAdvance;
 }
 
-public int  stbtt_GetCodepointKernAdvance(stbtt_fontinfo* info, int ch1, int ch2)
-{
-   if (!info.kern && !info.gpos) // if no kerning table, don't waste time looking up both codepoint->glyphs
-      return 0;
-   return stbtt_GetGlyphKernAdvance(info, stbtt_FindGlyphIndex(info,ch1), stbtt_FindGlyphIndex(info,ch2));
+public int  stbtt_GetCodepointKernAdvance(stbtt_fontinfo* info, int ch1, int ch2) {
+    if (!info.kern && !info.gpos) // if no kerning table, don't waste time looking up both codepoint->glyphs
+        return 0;
+    return stbtt_GetGlyphKernAdvance(info, stbtt_FindGlyphIndex(info,ch1), stbtt_FindGlyphIndex(info,ch2));
 }
 
-public void stbtt_GetCodepointHMetrics(const(stbtt_fontinfo)* info, int codepoint, int *advanceWidth, int *leftSideBearing)
-{
-   stbtt_GetGlyphHMetrics(info, stbtt_FindGlyphIndex(info,codepoint), advanceWidth, leftSideBearing);
+public void stbtt_GetCodepointHMetrics(const(stbtt_fontinfo)* info, int codepoint, int *advanceWidth, int *leftSideBearing) {
+    stbtt_GetGlyphHMetrics(info, stbtt_FindGlyphIndex(info,codepoint), advanceWidth, leftSideBearing);
 }
 
-public void stbtt_GetFontVMetrics(const(stbtt_fontinfo)* info, int *ascent, int *descent, int *lineGap)
-{
-   if (ascent ) *ascent  = ttSHORT(info.data+info.hhea + 4);
-   if (descent) *descent = ttSHORT(info.data+info.hhea + 6);
-   if (lineGap) *lineGap = ttSHORT(info.data+info.hhea + 8);
+public void stbtt_GetFontVMetrics(const(stbtt_fontinfo)* info, int *ascent, int *descent, int *lineGap) {
+    if (ascent ) *ascent  = ttSHORT(info.data+info.hhea + 4);
+    if (descent) *descent = ttSHORT(info.data+info.hhea + 6);
+    if (lineGap) *lineGap = ttSHORT(info.data+info.hhea + 8);
 }
 
-public int  stbtt_GetFontVMetricsOS2(stbtt_fontinfo* info, int *typoAscent, int *typoDescent, int *typoLineGap)
-{
-   int tab = stbtt__find_table(info.data, info.fontstart, "OS/2");
-   if (!tab)
-      return 0;
-   if (typoAscent ) *typoAscent  = ttSHORT(info.data+tab + 68);
-   if (typoDescent) *typoDescent = ttSHORT(info.data+tab + 70);
-   if (typoLineGap) *typoLineGap = ttSHORT(info.data+tab + 72);
-   return 1;
+public int  stbtt_GetFontVMetricsOS2(stbtt_fontinfo* info, int *typoAscent, int *typoDescent, int *typoLineGap) {
+    int tab = stbtt__find_table(info.data, info.fontstart, "OS/2");
+    if (!tab)
+        return 0;
+    if (typoAscent ) *typoAscent  = ttSHORT(info.data+tab + 68);
+    if (typoDescent) *typoDescent = ttSHORT(info.data+tab + 70);
+    if (typoLineGap) *typoLineGap = ttSHORT(info.data+tab + 72);
+    return 1;
 }
 
-public int  stbtt_GetFontXHeight(stbtt_fontinfo* info, int *xHeight)
-{
-   int tab = stbtt__find_table(info.data, info.fontstart, "OS/2");
-   if (!tab)
-      return 0;
-   if (xHeight) {
-      auto height = ttSHORT(info.data+tab + 86);
-      if (height == 0) height = ttSHORT(info.data+tab + 2);
-      *xHeight = height;
-   }
-   return 1;
+public int  stbtt_GetFontXHeight(stbtt_fontinfo* info, int *xHeight) {
+    int tab = stbtt__find_table(info.data, info.fontstart, "OS/2");
+    if (!tab)
+        return 0;
+    if (xHeight) {
+        auto height = ttSHORT(info.data+tab + 86);
+        if (height == 0) height = ttSHORT(info.data+tab + 2);
+        *xHeight = height;
+    }
+    return 1;
 }
 
-public void stbtt_GetFontBoundingBox(const(stbtt_fontinfo)* info, int *x0, int *y0, int *x1, int *y1)
-{
-   *x0 = ttSHORT(info.data + info.head + 36);
-   *y0 = ttSHORT(info.data + info.head + 38);
-   *x1 = ttSHORT(info.data + info.head + 40);
-   *y1 = ttSHORT(info.data + info.head + 42);
+public void stbtt_GetFontBoundingBox(const(stbtt_fontinfo)* info, int *x0, int *y0, int *x1, int *y1) {
+    *x0 = ttSHORT(info.data + info.head + 36);
+    *y0 = ttSHORT(info.data + info.head + 38);
+    *x1 = ttSHORT(info.data + info.head + 40);
+    *y1 = ttSHORT(info.data + info.head + 42);
 }
 
-public float stbtt_ScaleForPixelHeight(const(stbtt_fontinfo)* info, float height)
-{
-   int fheight = ttSHORT(info.data + info.hhea + 4) - ttSHORT(info.data + info.hhea + 6);
-   return cast(float) height / fheight;
+public float stbtt_ScaleForPixelHeight(const(stbtt_fontinfo)* info, float height) {
+    int fheight = ttSHORT(info.data + info.hhea + 4) - ttSHORT(info.data + info.hhea + 6);
+    return cast(float) height / fheight;
 }
 
-public float stbtt_ScaleForMappingEmToPixels(const(stbtt_fontinfo)* info, float pixels)
-{
-   int unitsPerEm = ttUSHORT(info.data + info.head + 18);
-   return pixels / unitsPerEm;
+public float stbtt_ScaleForMappingEmToPixels(const(stbtt_fontinfo)* info, float pixels) {
+    int unitsPerEm = ttUSHORT(info.data + info.head + 18);
+    return pixels / unitsPerEm;
 }
 
-public void stbtt_FreeShape(const(stbtt_fontinfo)* info, stbtt_vertex *v)
-{
-   STBTT_free(v, info.userdata);
+public void stbtt_FreeShape(const(stbtt_fontinfo)* info, stbtt_vertex *v) {
+    STBTT_free(v, info.userdata);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2819,37 +2809,33 @@ public void stbtt_FreeShape(const(stbtt_fontinfo)* info, stbtt_vertex *v)
 // antialiasing software rasterizer
 //
 
-public void stbtt_GetGlyphBitmapBoxSubpixel(stbtt_fontinfo* font, int glyph, float scale_x, float scale_y,float shift_x, float shift_y, int *ix0, int *iy0, int *ix1, int *iy1)
-{
-   int x0=0,y0=0,x1,y1; // =0 suppresses compiler warning
-   if (!stbtt_GetGlyphBox(font, glyph, &x0,&y0,&x1,&y1)) {
-      // e.g. space character
-      if (ix0) *ix0 = 0;
-      if (iy0) *iy0 = 0;
-      if (ix1) *ix1 = 0;
-      if (iy1) *iy1 = 0;
-   } else {
-      // move to integral bboxes (treating pixels as little squares, what pixels get touched)?
-      if (ix0) *ix0 = STBTT_ifloor( x0 * scale_x + shift_x);
-      if (iy0) *iy0 = STBTT_ifloor(-y1 * scale_y + shift_y);
-      if (ix1) *ix1 = STBTT_iceil ( x1 * scale_x + shift_x);
-      if (iy1) *iy1 = STBTT_iceil (-y0 * scale_y + shift_y);
-   }
+public void stbtt_GetGlyphBitmapBoxSubpixel(stbtt_fontinfo* font, int glyph, float scale_x, float scale_y,float shift_x, float shift_y, int *ix0, int *iy0, int *ix1, int *iy1) {
+    int x0=0,y0=0,x1,y1; // =0 suppresses compiler warning
+    if (!stbtt_GetGlyphBox(font, glyph, &x0,&y0,&x1,&y1)) {
+        // e.g. space character
+        if (ix0) *ix0 = 0;
+        if (iy0) *iy0 = 0;
+        if (ix1) *ix1 = 0;
+        if (iy1) *iy1 = 0;
+    } else {
+        // move to integral bboxes (treating pixels as little squares, what pixels get touched)?
+        if (ix0) *ix0 = STBTT_ifloor( x0 * scale_x + shift_x);
+        if (iy0) *iy0 = STBTT_ifloor(-y1 * scale_y + shift_y);
+        if (ix1) *ix1 = STBTT_iceil ( x1 * scale_x + shift_x);
+        if (iy1) *iy1 = STBTT_iceil (-y0 * scale_y + shift_y);
+    }
 }
 
-public void stbtt_GetGlyphBitmapBox(stbtt_fontinfo* font, int glyph, float scale_x, float scale_y, int *ix0, int *iy0, int *ix1, int *iy1)
-{
-   stbtt_GetGlyphBitmapBoxSubpixel(font, glyph, scale_x, scale_y,0.0f,0.0f, ix0, iy0, ix1, iy1);
+public void stbtt_GetGlyphBitmapBox(stbtt_fontinfo* font, int glyph, float scale_x, float scale_y, int *ix0, int *iy0, int *ix1, int *iy1) {
+    stbtt_GetGlyphBitmapBoxSubpixel(font, glyph, scale_x, scale_y,0.0f,0.0f, ix0, iy0, ix1, iy1);
 }
 
-public void stbtt_GetCodepointBitmapBoxSubpixel(stbtt_fontinfo* font, int codepoint, float scale_x, float scale_y, float shift_x, float shift_y, int *ix0, int *iy0, int *ix1, int *iy1)
-{
-   stbtt_GetGlyphBitmapBoxSubpixel(font, stbtt_FindGlyphIndex(font,codepoint), scale_x, scale_y,shift_x,shift_y, ix0,iy0,ix1,iy1);
+public void stbtt_GetCodepointBitmapBoxSubpixel(stbtt_fontinfo* font, int codepoint, float scale_x, float scale_y, float shift_x, float shift_y, int *ix0, int *iy0, int *ix1, int *iy1) {
+    stbtt_GetGlyphBitmapBoxSubpixel(font, stbtt_FindGlyphIndex(font,codepoint), scale_x, scale_y,shift_x,shift_y, ix0,iy0,ix1,iy1);
 }
 
-public void stbtt_GetCodepointBitmapBox(stbtt_fontinfo* font, int codepoint, float scale_x, float scale_y, int *ix0, int *iy0, int *ix1, int *iy1)
-{
-   stbtt_GetCodepointBitmapBoxSubpixel(font, codepoint, scale_x, scale_y,0.0f,0.0f, ix0,iy0,ix1,iy1);
+public void stbtt_GetCodepointBitmapBox(stbtt_fontinfo* font, int codepoint, float scale_x, float scale_y, int *ix0, int *iy0, int *ix1, int *iy1) {
+    stbtt_GetCodepointBitmapBoxSubpixel(font, codepoint, scale_x, scale_y,0.0f,0.0f, ix0,iy0,ix1,iy1);
 }
 
 //////////////////////////////////////////////////////////////////////////////
