@@ -28,6 +28,26 @@ import std.conv;
 // need to do some print glyphs to it....
 
 
+// private structure
+//! STAGE 4
+
+//* WAS stbtt__buf
+/// Stores True Type Font data in raw form
+private class TTFBuffer {
+    ubyte[] data;
+    int cursor;
+    int size;
+}
+
+/// Stores all True Type Font Buffers into an easily accessable hashmap
+private TTFBuffer[string] buffers;
+
+
+
+
+
+
+
 /// A TrueType Font held in memory
 class TTFont {
 
@@ -731,14 +751,6 @@ void STBTT_memset (void* d, uint v, uint count) {
 // //
 // //
 
-// private structure
-//! STAGE 4
-struct stbtt__buf {
-    ubyte *data;
-    int cursor;
-    int size;
-}
-
 //////////////////////////////////////////////////////////////////////////////
 //
 // TEXTURE BAKING API
@@ -928,10 +940,10 @@ struct stbtt_pack_context {
 
 // The following structure is defined publically so you can declare one on
 // the stack or as a global or etc, but you should treat it as opaque.
-struct stbtt_fontinfo {
-    void           * userdata;
-    ubyte  * data;              // pointer to .ttf file
-    int              fontstart;         // offset of start of font
+class stbtt_fontinfo {
+    void* userdata;
+    ubyte* data;              // pointer to .ttf file
+    int fontstart;         // offset of start of font
 
     int numGlyphs;                     // number of glyphs, needed for range checking
 
@@ -939,12 +951,13 @@ struct stbtt_fontinfo {
     int index_map;                     // a cmap mapping for our chosen character encoding
     int indexToLocFormat;              // format needed to map from glyph index to glyph
 
-    stbtt__buf cff;                    // cff font data
-    stbtt__buf charstrings;            // the charstring index
-    stbtt__buf gsubrs;                 // global charstring subroutines index
-    stbtt__buf subrs;                  // private charstring subroutines index
-    stbtt__buf fontdicts;              // array of font dicts
-    stbtt__buf fdselect;               // map from glyph to fontdict
+    //! These were stbtt__buf type
+    TTFBuffer cff;                    // cff font data
+    TTFBuffer charstrings;            // the charstring index
+    TTFBuffer gsubrs;                 // global charstring subroutines index
+    TTFBuffer subrs;                  // private charstring subroutines index
+    TTFBuffer fontdicts;              // array of font dicts
+    TTFBuffer fdselect;               // map from glyph to fontdict
 }
 
 //STBTT_DEF int stbtt_InitFont(stbtt_fontinfo *info, const(ubyte)* data, int offset);
@@ -1314,31 +1327,31 @@ enum STBTT_RASTERIZER_VERSION = 2;
 
 // ////////////////////////////////////////////////////////////////////////
 //
-// stbtt__buf helpers to parse data from file
+// TTFBuffer helpers to parse data from file
 //
 
-private stbtt_uint8 stbtt__buf_get8(stbtt__buf *b) {
+private stbtt_uint8 stbtt__buf_get8(TTFBuffer *b) {
     if (b.cursor >= b.size)
         return 0;
     return b.data[b.cursor++];
 }
 
-private stbtt_uint8 stbtt__buf_peek8(stbtt__buf *b) {
+private stbtt_uint8 stbtt__buf_peek8(TTFBuffer *b) {
     if (b.cursor >= b.size)
         return 0;
     return b.data[b.cursor];
 }
 
-private void stbtt__buf_seek(stbtt__buf *b, int o) {
+private void stbtt__buf_seek(TTFBuffer *b, int o) {
     assert(!(o > b.size || o < 0));
     b.cursor = (o > b.size || o < 0) ? b.size : o;
 }
 
-private void stbtt__buf_skip(stbtt__buf *b, int o) {
+private void stbtt__buf_skip(TTFBuffer *b, int o) {
     stbtt__buf_seek(b, b.cursor + o);
 }
 
-private stbtt_uint32 stbtt__buf_get(stbtt__buf *b, int n) {
+private stbtt_uint32 stbtt__buf_get(TTFBuffer *b, int n) {
     stbtt_uint32 v = 0;
     int i;
     assert(n >= 1 && n <= 4);
@@ -1348,8 +1361,8 @@ private stbtt_uint32 stbtt__buf_get(stbtt__buf *b, int n) {
 }
 
 //! STAGE 3
-private stbtt__buf stbtt__new_buf(const(void)* p, size_t size) {
-    stbtt__buf r;
+private TTFBuffer stbtt__new_buf(const(void)* p, size_t size) {
+    TTFBuffer r;
     // bytes 1_073_741_824 aka 1 gb
     assert(size < 0x40000000);
     r.data = cast(stbtt_uint8*) p;
@@ -1360,22 +1373,22 @@ private stbtt__buf stbtt__new_buf(const(void)* p, size_t size) {
 
 //#define stbtt__buf_get16(b)  stbtt__buf_get((b), 2)
 //#define stbtt__buf_get32(b)  stbtt__buf_get((b), 4)
-ushort stbtt__buf_get16 (stbtt__buf *b) {
+ushort stbtt__buf_get16 (TTFBuffer *b) {
     pragma(inline, true); return cast(ushort)stbtt__buf_get(b, 2);
 }
-uint stbtt__buf_get32 (stbtt__buf *b) {
+uint stbtt__buf_get32 (TTFBuffer *b) {
     pragma(inline, true); return cast(uint)stbtt__buf_get(b, 4);
 }
 
-private stbtt__buf stbtt__buf_range(const(stbtt__buf)* b, int o, int s) {
-    stbtt__buf r = stbtt__new_buf(null, 0);
+private TTFBuffer stbtt__buf_range(const(TTFBuffer) b, int o, int s) {
+    TTFBuffer r = stbtt__new_buf(null, 0);
     if (o < 0 || s < 0 || o > b.size || s > b.size - o) return r;
     r.data = cast(ubyte*)b.data + o;
     r.size = s;
     return r;
 }
 
-private stbtt__buf stbtt__cff_get_index(stbtt__buf *b) {
+private TTFBuffer stbtt__cff_get_index(TTFBuffer *b) {
     int count, start, offsize;
     start = b.cursor;
     count = stbtt__buf_get16(b);
@@ -1388,7 +1401,7 @@ private stbtt__buf stbtt__cff_get_index(stbtt__buf *b) {
     return stbtt__buf_range(b, start, b.cursor - start);
 }
 
-private stbtt_uint32 stbtt__cff_int(stbtt__buf *b) {
+private stbtt_uint32 stbtt__cff_int(TTFBuffer *b) {
     int b0 = stbtt__buf_get8(b);
     if (b0 >= 32 && b0 <= 246)       return b0 - 139;
     else if (b0 >= 247 && b0 <= 250) return (b0 - 247)*256 + stbtt__buf_get8(b) + 108;
@@ -1398,7 +1411,7 @@ private stbtt_uint32 stbtt__cff_int(stbtt__buf *b) {
     assert(0);
 }
 
-private void stbtt__cff_skip_operand(stbtt__buf *b) {
+private void stbtt__cff_skip_operand(TTFBuffer *b) {
     int v, b0 = stbtt__buf_peek8(b);
     assert(b0 >= 28);
     if (b0 == 30) {
@@ -1413,7 +1426,7 @@ private void stbtt__cff_skip_operand(stbtt__buf *b) {
     }
 }
 
-private stbtt__buf stbtt__dict_get(stbtt__buf *b, int key) {
+private TTFBuffer stbtt__dict_get(TTFBuffer *b, int key) {
     stbtt__buf_seek(b, 0);
     while (b.cursor < b.size) {
         int start = b.cursor, end, op;
@@ -1427,19 +1440,19 @@ private stbtt__buf stbtt__dict_get(stbtt__buf *b, int key) {
     return stbtt__buf_range(b, 0, 0);
 }
 
-private void stbtt__dict_get_ints(stbtt__buf *b, int key, int outcount, stbtt_uint32 *outstb) {
+private void stbtt__dict_get_ints(TTFBuffer *b, int key, int outcount, stbtt_uint32 *outstb) {
     int i;
-    stbtt__buf operands = stbtt__dict_get(b, key);
+    TTFBuffer operands = stbtt__dict_get(b, key);
     for (i = 0; i < outcount && operands.cursor < operands.size; i++)
         outstb[i] = stbtt__cff_int(&operands);
 }
 
-private int stbtt__cff_index_count(stbtt__buf *b) {
+private int stbtt__cff_index_count(TTFBuffer *b) {
     stbtt__buf_seek(b, 0);
     return stbtt__buf_get16(b);
 }
 
-private stbtt__buf stbtt__cff_index_get(stbtt__buf b, int i) {
+private TTFBuffer stbtt__cff_index_get(TTFBuffer b, int i) {
     int count, offsize, start, end;
     stbtt__buf_seek(&b, 0);
     count = stbtt__buf_get16(&b);
@@ -1557,10 +1570,10 @@ private int stbtt_GetNumberOfFonts_internal(ubyte *font_collection) {
     return 0;
 }
 
-private stbtt__buf stbtt__get_subrs(stbtt__buf cff, stbtt__buf fontdict) {
+private TTFBuffer stbtt__get_subrs(TTFBuffer cff, TTFBuffer fontdict) {
     stbtt_uint32 subrsoff = 0;
     stbtt_uint32[2] private_loc = 0;
-    stbtt__buf pdict;
+    TTFBuffer pdict;
     stbtt__dict_get_ints(&fontdict, 18, 2, private_loc.ptr);
     if (!private_loc[1] || !private_loc[0]) return stbtt__new_buf(null, 0);
     pdict = stbtt__buf_range(&cff, private_loc[1], private_loc[0]);
@@ -1595,7 +1608,7 @@ private int stbtt_InitFont_internal(stbtt_fontinfo *info, ubyte *data, int fonts
         if (!info.loca) return 0;
     } else {
         // initialization for CFF / Type2 fonts (OTF)
-        stbtt__buf b, topdict, topdictidx;
+        TTFBuffer b, topdict, topdictidx;
         stbtt_uint32 cstype = 2, charstrings = 0, fdarrayoff = 0, fdselectoff = 0;
         stbtt_uint32 cff;
 
@@ -2140,7 +2153,7 @@ private void stbtt__csctx_rccurve_to(stbtt__csctx *ctx, float dx1, float dy1, fl
     stbtt__csctx_v(ctx, STBTT_vcubic, cast(int)ctx.x, cast(int)ctx.y, cast(int)cx1, cast(int)cy1, cast(int)cx2, cast(int)cy2);
 }
 
-private stbtt__buf stbtt__get_subr(stbtt__buf idx, int n) {
+private TTFBuffer stbtt__get_subr(TTFBuffer idx, int n) {
     int count = stbtt__cff_index_count(&idx);
     int bias = 107;
     if (count >= 33900)
@@ -2153,8 +2166,8 @@ private stbtt__buf stbtt__get_subr(stbtt__buf idx, int n) {
     return stbtt__cff_index_get(idx, n);
 }
 
-private stbtt__buf stbtt__cid_get_glyph_subrs(stbtt_fontinfo* info, int glyph_index) {
-    stbtt__buf fdselect = info.fdselect;
+private TTFBuffer stbtt__cid_get_glyph_subrs(stbtt_fontinfo* info, int glyph_index) {
+    TTFBuffer fdselect = info.fdselect;
     int nranges, start, end, v, fmt, fdselector = -1, i;
 
     stbtt__buf_seek(&fdselect, 0);
@@ -2185,7 +2198,7 @@ private int stbtt__run_charstring(stbtt_fontinfo* info, int glyph_index, stbtt__
     int has_subrs = 0, clear_stack;
     float[48] s = void;
     stbtt__buf[10] subr_stack = void;
-    stbtt__buf subrs = info.subrs, b;
+    TTFBuffer subrs = info.subrs, b;
     float f;
 
     static int STBTT__CSERR(string s) { pragma(inline, true); return 0; }
