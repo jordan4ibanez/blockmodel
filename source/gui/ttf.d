@@ -1023,19 +1023,19 @@ private class TTFInfo {
 //
 
 //#ifndef STBTT_vmove // you can predefine these to use different values (but why?)
-enum {
-    STBTT_vmove=1,
-    STBTT_vline,
-    STBTT_vcurve,
-    STBTT_vcubic
-}
+// enum {
+//     STBTT_vmove=1,
+//     STBTT_vline,
+//     STBTT_vcurve,
+//     STBTT_vcubic
+// }
 
-//#ifndef stbtt_vertex // you can predefine this to use different values (we share this with other code at RAD)
-alias stbtt_vertex_type = short; // can't use stbtt_int16 because that's not visible in the header file
-struct stbtt_vertex {
-    stbtt_vertex_type x,y,cx,cy,cx1,cy1;
-    ubyte type,padding;
-}
+// //#ifndef stbtt_vertex // you can predefine this to use different values (we share this with other code at RAD)
+// alias stbtt_vertex_type = short; // can't use stbtt_int16 because that's not visible in the header file
+// struct stbtt_vertex {
+//     stbtt_vertex_type x,y,cx,cy,cx1,cy1;
+//     ubyte type,padding;
+// }
 //#endif
 
 //STBTT_DEF int stbtt_IsGlyphEmpty(const(TTFInfo) info, int glyph_index);
