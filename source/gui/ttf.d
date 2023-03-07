@@ -1529,6 +1529,14 @@ private int stbtt__isfont(stbtt_uint8[] font) {
 
 // @OPTIMIZE: binary search
 //! STAGE 5
+
+/**
+    This is scanning each byte of the input data array to find the data
+    So basically let's find "hi" in this (it says "therehi"):
+    [116, 104, 101, 114, 101, 104, 105]
+     V    V    V    V    V    V    V
+     T no|H no|E no|R no|E no|H ye|I FOUND IT!
+*/
 private stbtt_uint32 stbtt__find_table(stbtt_uint8[] data, stbtt_uint32 fontstart, string tag) {
 
     stbtt_int32 num_tables = ttUSHORT(data[fontstart+4..data.length]);
@@ -1550,27 +1558,22 @@ private stbtt_uint32 stbtt__find_table(stbtt_uint8[] data, stbtt_uint32 fontstar
 private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fileLocation) {
 
     uint cmap, t;
-
     int i;
-
     int numTables;
 
     info.fileLocation = fileLocation;
-    info.name = name;
+    info.name         = name;
 
     info.cff = new TTFBuffer([], 0);
 
-
-
-
-    cmap = stbtt__find_table(data, fontstart, "cmap");       //! required
-    info.loca = stbtt__find_table(data, fontstart, "loca");  //! required
-    info.head = stbtt__find_table(data, fontstart, "head");  //! required
-    info.glyf = stbtt__find_table(data, fontstart, "glyf");  //! required
-    info.hhea = stbtt__find_table(data, fontstart, "hhea");  //! required
-    info.hmtx = stbtt__find_table(data, fontstart, "hmtx");  //! required
-    info.kern = stbtt__find_table(data, fontstart, "kern");  //* not required
-    info.gpos = stbtt__find_table(data, fontstart, "GPOS");  //* not required
+    cmap      = stbtt__find_table(data, fontstart, "cmap"); //! required
+    info.loca = stbtt__find_table(data, fontstart, "loca"); //! required
+    info.head = stbtt__find_table(data, fontstart, "head"); //! required
+    info.glyf = stbtt__find_table(data, fontstart, "glyf"); //! required
+    info.hhea = stbtt__find_table(data, fontstart, "hhea"); //! required
+    info.hmtx = stbtt__find_table(data, fontstart, "hmtx"); //! required
+    info.kern = stbtt__find_table(data, fontstart, "kern"); //* not required
+    info.gpos = stbtt__find_table(data, fontstart, "GPOS"); //* not required
 
     if (!cmap || !info.head || !info.hhea || !info.hmtx)
         return 0;
