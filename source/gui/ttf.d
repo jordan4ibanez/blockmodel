@@ -113,7 +113,7 @@ private class TTFont {
             throw new Exception(fileLocation ~ " font does not exist!");
         }
 
-        if (this.name is "") {
+        if (name == "") {
             this.name = fileLocation;
         } else {
             this.name = name;
@@ -171,13 +171,12 @@ private class TTFont {
         throw new Exception("True Type Font has an unknown version!");
     }
 
+    // Allows direct comparison of data
     bool isEqual(ubyte[] a, string b) {
-    
         string accumulator = "";
         foreach (value; a) {
             accumulator ~= to!string(value);
         }
-
         return accumulator == b;
     }
     
