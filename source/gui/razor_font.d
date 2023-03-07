@@ -4,6 +4,7 @@ import std.stdio;
 import std.conv;
 import std.file;
 import std.json;
+import std.typecons;
 import color;
 import png;
 
@@ -158,6 +159,19 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
     // writeln(fontObject.map);
 
 }
+
+//* ============================ BEGIN GRAPHICS DISPATCH ===========================
+
+Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugRender() {
+    double[] blah = [1,2,3];
+    double[] moreBlah = [1,1,1];
+    int[] evenMoreBlah = [1,2,3,4];
+    return tuple!("vertexData", "textureData", "indices")(blah, moreBlah, evenMoreBlah);
+}
+
+
+
+//! ============================ END GRAPHICS DISPATCH =============================
 
 //* ========================= BEGIN GRAPHICS ENCODING ==============================
 
