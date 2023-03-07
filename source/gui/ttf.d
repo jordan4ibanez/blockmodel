@@ -656,22 +656,42 @@ alias stbtt_int32  = int;
 //typedef char stbtt__check_size32[sizeof(stbtt_int32)==4 ? 1 : -1];
 //typedef char stbtt__check_size16[sizeof(stbtt_int16)==2 ? 1 : -1];
 
-int STBTT_ifloor(T) (in T x) pure { pragma(inline, true); import std.math : floor; return cast(int)floor(x); }
-int STBTT_iceil(T) (in T x) pure { pragma(inline, true); import std.math : ceil; return cast(int)ceil(x); }
+int STBTT_ifloor(T) (in T x) pure {
+    pragma(inline, true); import std.math : floor; return cast(int)floor(x);
+}
+int STBTT_iceil(T) (in T x) pure {
+    pragma(inline, true); import std.math : ceil; return cast(int)ceil(x);
+}
 
-T STBTT_sqrt(T) (in T x) pure { pragma(inline, true); import std.math : sqrt; return sqrt(x); }
-T STBTT_pow(T) (in T x, in T y) pure { pragma(inline, true); import std.math : pow; return pow(x, y); }
+T STBTT_sqrt(T) (in T x) pure {
+    pragma(inline, true); import std.math : sqrt; return sqrt(x);
+}
+T STBTT_pow(T) (in T x, in T y) pure {
+    pragma(inline, true); import std.math : pow; return pow(x, y);
+}
 
-T STBTT_fmod(T) (in T x, in T y) { pragma(inline, true); import std.math : fmod; return fmod(x, y); }
+T STBTT_fmod(T) (in T x, in T y) {
+    pragma(inline, true); import std.math : fmod; return fmod(x, y);
+}
 
-T STBTT_cos(T) (in T x) pure { pragma(inline, true); import std.math : cos; return cos(x); }
-T STBTT_acos(T) (in T x) pure { pragma(inline, true); import std.math : acos; return acos(x); }
+T STBTT_cos(T) (in T x) pure {
+    pragma(inline, true); import std.math : cos; return cos(x);
+}
+T STBTT_acos(T) (in T x) pure {
+    pragma(inline, true); import std.math : acos; return acos(x);
+}
 
-T STBTT_fabs(T) (in T x) pure { pragma(inline, true); import std.math : abs; return abs(x); }
+T STBTT_fabs(T) (in T x) pure {
+    pragma(inline, true); import std.math : abs; return abs(x);
+}
 
 // #define your own functions "STBTT_malloc" / "STBTT_free" to avoid malloc.h
-void* STBTT_malloc (uint size, const(void)* uptr) { pragma(inline, true); import core.stdc.stdlib : malloc; return malloc(size); }
-void STBTT_free (void *ptr, const(void)* uptr) { pragma(inline, true); import core.stdc.stdlib : free; free(ptr); }
+void* STBTT_malloc (uint size, const(void)* uptr) {
+    pragma(inline, true); import core.stdc.stdlib : malloc; return malloc(size);
+}
+void STBTT_free (void *ptr, const(void)* uptr) {
+    pragma(inline, true); import core.stdc.stdlib : free; free(ptr);
+}
 /*
 #ifndef STBTT_malloc
 #include <stdlib.h>
@@ -682,9 +702,15 @@ void STBTT_free (void *ptr, const(void)* uptr) { pragma(inline, true); import co
 
 //alias STBTT_assert = assert;
 
-uint STBTT_strlen (const(void)* p) { pragma(inline, true); import core.stdc.string : strlen; return (p !is null ? cast(uint)strlen(cast(const(char)*)p) : 0); }
-void STBTT_memcpy (void* d, const(void)* s, uint count) { pragma(inline, true); import core.stdc.string : memcpy; if (count > 0) memcpy(d, s, count); }
-void STBTT_memset (void* d, uint v, uint count) { pragma(inline, true); import core.stdc.string : memset; if (count > 0) memset(d, v, count); }
+uint STBTT_strlen (const(void)* p) {
+    pragma(inline, true); import core.stdc.string : strlen; return (p !is null ? cast(uint)strlen(cast(const(char)*)p) : 0);
+}
+void STBTT_memcpy (void* d, const(void)* s, uint count) {
+    pragma(inline, true); import core.stdc.string : memcpy; if (count > 0) memcpy(d, s, count);
+}
+void STBTT_memset (void* d, uint v, uint count) {
+    pragma(inline, true); import core.stdc.string : memset; if (count > 0) memset(d, v, count);
+}
 
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -696,9 +722,9 @@ void STBTT_memset (void* d, uint v, uint count) { pragma(inline, true); import c
 
 // private structure
 struct stbtt__buf {
-   ubyte *data;
-   int cursor;
-   int size;
+    ubyte *data;
+    int cursor;
+    int size;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -709,8 +735,8 @@ struct stbtt__buf {
 //
 
 struct stbtt_bakedchar {
-   ushort x0,y0,x1,y1; // coordinates of bbox in bitmap
-   float xoff,yoff,xadvance;
+    ushort x0,y0,x1,y1; // coordinates of bbox in bitmap
+    float xoff,yoff,xadvance;
 }
 
 /+
@@ -727,8 +753,8 @@ STBTT_DEF int stbtt_BakeFontBitmap(const(ubyte)* data, int offset,  // font loca
 // This uses a very crappy packing.
 
 struct stbtt_aligned_quad {
-   float x0,y0,s0,t0; // top-left
-   float x1,y1,s1,t1; // bottom-right
+    float x0,y0,s0,t0; // top-left
+    float x1,y1,s1,t1; // bottom-right
 }
 
 /+
@@ -758,9 +784,9 @@ STBTT_DEF void stbtt_GetBakedQuad(const(stbtt_bakedchar)* chardata, int pw, int 
 // perfectly but better than nothing.
 
 struct stbtt_packedchar {
-   ushort x0,y0,x1,y1; // coordinates of bbox in bitmap
-   float xoff,yoff,xadvance;
-   float xoff2,yoff2;
+    ushort x0,y0,x1,y1; // coordinates of bbox in bitmap
+    float xoff,yoff,xadvance;
+    float xoff2,yoff2;
 }
 
 //typedef struct stbtt_pack_context stbtt_pack_context;
@@ -803,12 +829,12 @@ STBTT_DEF int  stbtt_PackFontRange(stbtt_pack_context *spc, const(ubyte)* fontda
 //       ..., STBTT_POINT_SIZE(20), ... // 'M' is 20 pixels tall
 
 struct stbtt_pack_range {
-   float font_size;
-   int first_unicode_codepoint_in_range;  // if non-zero, then the chars are continuous, and this is the first codepoint
-   int *array_of_unicode_codepoints;       // if non-zero, then this is an array of unicode codepoints
-   int num_chars;
-   stbtt_packedchar *chardata_for_range; // output
-   ubyte h_oversample, v_oversample; // don't set these, they're used internally
+    float font_size;
+    int first_unicode_codepoint_in_range; // if non-zero, then the chars are continuous, and this is the first codepoint
+    int *array_of_unicode_codepoints;     // if non-zero, then this is an array of unicode codepoints
+    int num_chars;
+    stbtt_packedchar *chardata_for_range; // output
+    ubyte h_oversample, v_oversample;     // don't set these, they're used internally
 }
 
 //STBTT_DEF int  stbtt_PackFontRanges(stbtt_pack_context *spc, const(ubyte)* fontdata, int font_index, stbtt_pack_range *ranges, int num_ranges);
@@ -857,15 +883,15 @@ STBTT_DEF int  stbtt_PackFontRangesRenderIntoRects(stbtt_pack_context *spc, cons
 // this is an opaque structure that you shouldn't mess with which holds
 // all the context needed from PackBegin to PackEnd.
 struct stbtt_pack_context {
-   void *user_allocator_context;
-   void *pack_info;
-   int   width;
-   int   height;
-   int   stride_in_bytes;
-   int   padding;
-   uint   h_oversample, v_oversample;
-   ubyte *pixels;
-   void  *nodes;
+    void *user_allocator_context;
+    void *pack_info;
+    int   width;
+    int   height;
+    int   stride_in_bytes;
+    int   padding;
+    uint   h_oversample, v_oversample;
+    ubyte *pixels;
+    void  *nodes;
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -891,22 +917,22 @@ struct stbtt_pack_context {
 // The following structure is defined publically so you can declare one on
 // the stack or as a global or etc, but you should treat it as opaque.
 struct stbtt_fontinfo {
-   void           * userdata;
-   ubyte  * data;              // pointer to .ttf file
-   int              fontstart;         // offset of start of font
+    void           * userdata;
+    ubyte  * data;              // pointer to .ttf file
+    int              fontstart;         // offset of start of font
 
-   int numGlyphs;                     // number of glyphs, needed for range checking
+    int numGlyphs;                     // number of glyphs, needed for range checking
 
-   int loca,head,glyf,hhea,hmtx,kern,gpos; // table locations as offset from start of .ttf
-   int index_map;                     // a cmap mapping for our chosen character encoding
-   int indexToLocFormat;              // format needed to map from glyph index to glyph
+    int loca,head,glyf,hhea,hmtx,kern,gpos; // table locations as offset from start of .ttf
+    int index_map;                     // a cmap mapping for our chosen character encoding
+    int indexToLocFormat;              // format needed to map from glyph index to glyph
 
-   stbtt__buf cff;                    // cff font data
-   stbtt__buf charstrings;            // the charstring index
-   stbtt__buf gsubrs;                 // global charstring subroutines index
-   stbtt__buf subrs;                  // private charstring subroutines index
-   stbtt__buf fontdicts;              // array of font dicts
-   stbtt__buf fdselect;               // map from glyph to fontdict
+    stbtt__buf cff;                    // cff font data
+    stbtt__buf charstrings;            // the charstring index
+    stbtt__buf gsubrs;                 // global charstring subroutines index
+    stbtt__buf subrs;                  // private charstring subroutines index
+    stbtt__buf fontdicts;              // array of font dicts
+    stbtt__buf fdselect;               // map from glyph to fontdict
 }
 
 //STBTT_DEF int stbtt_InitFont(stbtt_fontinfo *info, const(ubyte)* data, int offset);
@@ -988,17 +1014,17 @@ struct stbtt_fontinfo {
 
 //#ifndef STBTT_vmove // you can predefine these to use different values (but why?)
 enum {
-  STBTT_vmove=1,
-  STBTT_vline,
-  STBTT_vcurve,
-  STBTT_vcubic
+    STBTT_vmove=1,
+    STBTT_vline,
+    STBTT_vcurve,
+    STBTT_vcubic
 }
 
 //#ifndef stbtt_vertex // you can predefine this to use different values (we share this with other code at RAD)
 alias stbtt_vertex_type = short; // can't use stbtt_int16 because that's not visible in the header file
 struct stbtt_vertex {
-  stbtt_vertex_type x,y,cx,cy,cx1,cy1;
-  ubyte type,padding;
+    stbtt_vertex_type x,y,cx,cy,cx1,cy1;
+    ubyte type,padding;
 }
 //#endif
 
@@ -1079,8 +1105,8 @@ struct stbtt_vertex {
 
 // @TODO: don't expose this structure
 struct stbtt__bitmap {
-   int w,h,stride;
-   ubyte *pixels;
+    int w,h,stride;
+    ubyte *pixels;
 }
 
 // rasterize a shape with quadratic beziers into a bitmap
