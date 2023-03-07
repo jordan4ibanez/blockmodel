@@ -3720,116 +3720,105 @@ error:
    return null;
 }
 
-public void stbtt_Rasterize(stbtt__bitmap *result, float flatness_in_pixels, stbtt_vertex *vertices, int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, void *userdata)
-{
-   float scale            = scale_x > scale_y ? scale_y : scale_x;
-   int winding_count      = 0;
-   int *winding_lengths   = null;
-   stbtt__point *windings = stbtt_FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, &winding_lengths, &winding_count, userdata);
-   if (windings) {
-      stbtt__rasterize(result, windings, winding_lengths, winding_count, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, userdata);
-      STBTT_free(winding_lengths, userdata);
-      STBTT_free(windings, userdata);
-   }
+public void stbtt_Rasterize(stbtt__bitmap *result, float flatness_in_pixels, stbtt_vertex *vertices, int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, void *userdata) {
+    float scale            = scale_x > scale_y ? scale_y : scale_x;
+    int winding_count      = 0;
+    int *winding_lengths   = null;
+    stbtt__point *windings = stbtt_FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, &winding_lengths, &winding_count, userdata);
+    if (windings) {
+        stbtt__rasterize(result, windings, winding_lengths, winding_count, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, userdata);
+        STBTT_free(winding_lengths, userdata);
+        STBTT_free(windings, userdata);
+    }
 }
 
-public void stbtt_FreeBitmap(ubyte *bitmap, void *userdata)
-{
-   STBTT_free(bitmap, userdata);
+public void stbtt_FreeBitmap(ubyte *bitmap, void *userdata) {
+    STBTT_free(bitmap, userdata);
 }
 
-public ubyte *stbtt_GetGlyphBitmapSubpixel(stbtt_fontinfo* info, float scale_x, float scale_y, float shift_x, float shift_y, int glyph, int *width, int *height, int *xoff, int *yoff)
-{
-   int ix0,iy0,ix1,iy1;
-   stbtt__bitmap gbm;
-   stbtt_vertex *vertices;
-   int num_verts = stbtt_GetGlyphShape(info, glyph, &vertices);
+public ubyte *stbtt_GetGlyphBitmapSubpixel(stbtt_fontinfo* info, float scale_x, float scale_y, float shift_x, float shift_y, int glyph, int *width, int *height, int *xoff, int *yoff) {
+    int ix0,iy0,ix1,iy1;
+    stbtt__bitmap gbm;
+    stbtt_vertex *vertices;
+    int num_verts = stbtt_GetGlyphShape(info, glyph, &vertices);
 
-   if (scale_x == 0) scale_x = scale_y;
-   if (scale_y == 0) {
-      if (scale_x == 0) {
-         STBTT_free(vertices, info.userdata);
-         return null;
-      }
-      scale_y = scale_x;
-   }
+    if (scale_x == 0) scale_x = scale_y;
+    if (scale_y == 0) {
+        if (scale_x == 0) {
+            STBTT_free(vertices, info.userdata);
+            return null;
+        }
+        scale_y = scale_x;
+    }
 
-   stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, &ix0,&iy0,&ix1,&iy1);
+    stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, &ix0,&iy0,&ix1,&iy1);
 
-   // now we get the size
-   gbm.w = (ix1 - ix0);
-   gbm.h = (iy1 - iy0);
-   gbm.pixels = null; // in case we error
+    // now we get the size
+    gbm.w = (ix1 - ix0);
+    gbm.h = (iy1 - iy0);
+    gbm.pixels = null; // in case we error
 
-   if (width ) *width  = gbm.w;
-   if (height) *height = gbm.h;
-   if (xoff  ) *xoff   = ix0;
-   if (yoff  ) *yoff   = iy0;
+    if (width ) *width  = gbm.w;
+    if (height) *height = gbm.h;
+    if (xoff  ) *xoff   = ix0;
+    if (yoff  ) *yoff   = iy0;
 
-   if (gbm.w && gbm.h) {
-      gbm.pixels = cast(ubyte *) STBTT_malloc(gbm.w * gbm.h, info.userdata);
-      if (gbm.pixels) {
-         gbm.stride = gbm.w;
+    if (gbm.w && gbm.h) {
+        gbm.pixels = cast(ubyte *) STBTT_malloc(gbm.w * gbm.h, info.userdata);
+        if (gbm.pixels) {
+            gbm.stride = gbm.w;
 
-         stbtt_Rasterize(&gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.userdata);
-      }
-   }
-   STBTT_free(vertices, info.userdata);
-   return gbm.pixels;
+            stbtt_Rasterize(&gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info.userdata);
+        }
+    }
+    STBTT_free(vertices, info.userdata);
+    return gbm.pixels;
 }
 
-public ubyte *stbtt_GetGlyphBitmap(stbtt_fontinfo* info, float scale_x, float scale_y, int glyph, int *width, int *height, int *xoff, int *yoff)
-{
-   return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y, 0.0f, 0.0f, glyph, width, height, xoff, yoff);
+public ubyte *stbtt_GetGlyphBitmap(stbtt_fontinfo* info, float scale_x, float scale_y, int glyph, int *width, int *height, int *xoff, int *yoff) {
+    return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y, 0.0f, 0.0f, glyph, width, height, xoff, yoff);
 }
 
-public void stbtt_MakeGlyphBitmapSubpixel(stbtt_fontinfo* info, ubyte *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
-{
-   int ix0,iy0;
-   stbtt_vertex *vertices;
-   int num_verts = stbtt_GetGlyphShape(info, glyph, &vertices);
-   stbtt__bitmap gbm;
+public void stbtt_MakeGlyphBitmapSubpixel(stbtt_fontinfo* info, ubyte *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph) {
+    int ix0,iy0;
+    stbtt_vertex *vertices;
+    int num_verts = stbtt_GetGlyphShape(info, glyph, &vertices);
+    stbtt__bitmap gbm;
 
-   stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, &ix0,&iy0, null, null);
-   gbm.pixels = output;
-   gbm.w = out_w;
-   gbm.h = out_h;
-   gbm.stride = out_stride;
+    stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, &ix0,&iy0, null, null);
+    gbm.pixels = output;
+    gbm.w = out_w;
+    gbm.h = out_h;
+    gbm.stride = out_stride;
 
-   if (gbm.w && gbm.h)
-      stbtt_Rasterize(&gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0,iy0, 1, info.userdata);
+    if (gbm.w && gbm.h)
+        stbtt_Rasterize(&gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0,iy0, 1, info.userdata);
 
-   STBTT_free(vertices, info.userdata);
+    STBTT_free(vertices, info.userdata);
 }
 
-public void stbtt_MakeGlyphBitmap(stbtt_fontinfo* info, ubyte *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int glyph)
-{
-   stbtt_MakeGlyphBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f,0.0f, glyph);
+public void stbtt_MakeGlyphBitmap(stbtt_fontinfo* info, ubyte *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int glyph) {
+    stbtt_MakeGlyphBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f,0.0f, glyph);
 }
 
-public ubyte *stbtt_GetCodepointBitmapSubpixel(stbtt_fontinfo* info, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint, int *width, int *height, int *xoff, int *yoff)
-{
-   return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y,shift_x,shift_y, stbtt_FindGlyphIndex(info,codepoint), width,height,xoff,yoff);
+public ubyte *stbtt_GetCodepointBitmapSubpixel(stbtt_fontinfo* info, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint, int *width, int *height, int *xoff, int *yoff) {
+    return stbtt_GetGlyphBitmapSubpixel(info, scale_x, scale_y,shift_x,shift_y, stbtt_FindGlyphIndex(info,codepoint), width,height,xoff,yoff);
 }
 
-public void stbtt_MakeCodepointBitmapSubpixelPrefilter(stbtt_fontinfo* info, ubyte *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int oversample_x, int oversample_y, float *sub_x, float *sub_y, int codepoint)
-{
-   stbtt_MakeGlyphBitmapSubpixelPrefilter(info, output, out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, oversample_x, oversample_y, sub_x, sub_y, stbtt_FindGlyphIndex(info,codepoint));
+public void stbtt_MakeCodepointBitmapSubpixelPrefilter(stbtt_fontinfo* info, ubyte *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int oversample_x, int oversample_y, float *sub_x, float *sub_y, int codepoint) {
+    stbtt_MakeGlyphBitmapSubpixelPrefilter(info, output, out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, oversample_x, oversample_y, sub_x, sub_y, stbtt_FindGlyphIndex(info,codepoint));
 }
 
-public void stbtt_MakeCodepointBitmapSubpixel(stbtt_fontinfo* info, ubyte *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint)
-{
-   stbtt_MakeGlyphBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, stbtt_FindGlyphIndex(info,codepoint));
+public void stbtt_MakeCodepointBitmapSubpixel(stbtt_fontinfo* info, ubyte *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint) {
+    stbtt_MakeGlyphBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, stbtt_FindGlyphIndex(info,codepoint));
 }
 
-public ubyte *stbtt_GetCodepointBitmap(stbtt_fontinfo* info, float scale_x, float scale_y, int codepoint, int *width, int *height, int *xoff, int *yoff)
-{
-   return stbtt_GetCodepointBitmapSubpixel(info, scale_x, scale_y, 0.0f,0.0f, codepoint, width,height,xoff,yoff);
+public ubyte *stbtt_GetCodepointBitmap(stbtt_fontinfo* info, float scale_x, float scale_y, int codepoint, int *width, int *height, int *xoff, int *yoff) {
+    return stbtt_GetCodepointBitmapSubpixel(info, scale_x, scale_y, 0.0f,0.0f, codepoint, width,height,xoff,yoff);
 }
 
-public void stbtt_MakeCodepointBitmap(stbtt_fontinfo* info, ubyte *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int codepoint)
-{
-   stbtt_MakeCodepointBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f,0.0f, codepoint);
+public void stbtt_MakeCodepointBitmap(stbtt_fontinfo* info, ubyte *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int codepoint) {
+    stbtt_MakeCodepointBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f,0.0f, codepoint);
 }
 
 //////////////////////////////////////////////////////////////////////////////
