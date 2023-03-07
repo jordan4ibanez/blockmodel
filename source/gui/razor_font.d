@@ -106,8 +106,10 @@ private class RazorFont {
 
         Accessed as:
         double[] myCoolBlah = map["whatever letter/unicode thing you're getting"];
+
+        The last 2 values specify width and height
     */
-    double[8][string] map;
+    double[10][string] map;
 
     // Stores the map raw as a linear array before processed
     string rawMap;
@@ -160,8 +162,8 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimmingX, bool
     // Store all this on the stack
 
     // Total image size
-    const int palletWidth = fontObject.palletWidth;
-    const int palletHeight = fontObject.palletHeight;
+    const double palletWidth = cast(double)fontObject.palletWidth;
+    const double palletHeight = cast(double)fontObject.palletHeight;
 
     // How many characters (width, then height)
     const int rows = fontObject.rows;
@@ -196,12 +198,14 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimmingX, bool
         // right bottom,
         // right top
 
-        // Now shovel it into a raw array so we can easily use it
-        int[] integerPositions = [
+        // Now shovel it into a raw array so we can easily use it - iPos stands for Integral Positions
+        int[] iPos = [
             intPosX,                  intPosY,                   // Top left
             intPosX,                  intPosY + characterHeight, // Bottom left
             intPosX + characterWidth, intPosY + characterHeight, // Bottom right
-            intPosX + characterWidth, intPosY                    // Top right
+            intPosX + characterWidth, intPosY,                    // Top right
+            
+            characterWidth, characterHeight // Width and height
         ];
 
         // Now calculate limiters
@@ -213,14 +217,27 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimmingX, bool
 
 
         // Now trim it if suggested
-        if (trimming) {
-
+        if (trimmingX) {
+            writeln("trim trim trim");
+            
         }
 
+        // Now calculate REAL graphical texture map
+        double[10] glPositions  = [
+            iPos[0] / palletWidth, iPos[1] / palletHeight, 
+            iPos[2] / palletWidth, iPos[3] / palletHeight,
+            iPos[4] / palletWidth, iPos[5] / palletHeight,
+            iPos[6] / palletWidth, iPos[7] / palletHeight,
 
+            iPos[8], iPos[9]
+        ];
+        writeln("-------------------");
+        writeln(glPositions[0..2]);
+        writeln(glPositions[2..4]);
+        writeln(glPositions[4..6]);
+        writeln(glPositions[6..8]);
 
-
-
+        writeln(glPositions[8..10]);
     }
 }
 
