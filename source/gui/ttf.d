@@ -28,10 +28,8 @@ import std.conv;
 // need to do some print glyphs to it....
 
 
-// private structure
-//! STAGE 4
 
-//* WAS stbtt__buf
+
 /// Stores True Type Font data in raw form
 private class TTFBuffer {
 
@@ -48,12 +46,22 @@ private class TTFBuffer {
     }
 }
 
-/// Stores all True Type Font Buffers into an easily accessable hashmap
-private TTFBuffer[string] buffers;
+/// Stores all True Type Fonts into an easily accessable hashmap
+private TTFont[string] buffers;
+
+/// How you create a font
+void createFont(string fileLocation, string name = "") {
+    string key = name == "" ? fileLocation : name;
+    
+    buffers[key] = new TTFont(fileLocation, name);
+}
+
+/// How you get render data from a font
+//Todo;
 
 
 /// A TrueType Font held in memory
-class TTFont {
+private class TTFont {
 
     // This becomes consumed by the load() method
     TTFInfo fontInfo;
