@@ -165,37 +165,60 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
 
 //* ============================ BEGIN GRAPHICS DISPATCH ===========================
 
-Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugRender(string font, double fontSize) {
+/// Render at double floating point precision
+Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugRenderDouble(string font, const double fontSize, string text) {
 
     double[] vertexData;
     double[] textureData;
     int[] indices;
 
-    // Test character
-    string test = "a";
-
     // Cache the object
     const RazorFont thisFont = razorFonts[font];
 
-    foreach (key, character; test) {
+    // Store how far the arm has moved to the right
+    double typeWriterArm = 0.0;
+
+    int currentVertex = 0;
+
+    foreach (key, character; text) {
+
+        writeln(character);
+
+        if (character == ' ') {
+            writeln("skipping");
+
+            typeWriterArm += fontSize;
+            continue;
+        }
+
         double[10] rawData = thisFont.map[character];
 
         textureData ~= rawData[0..8];
 
         // This is the width and height of the character
-        double[2] size = rawData[8..10];
-
+        double characterWidth = rawData[8];
+        double characterHeight = rawData[9];
         
         double[8] rawVertex = [
             0,0,
             0,1,
             1,1,
-            0,1
+            1,0
         ];
 
+        // Now scale
         foreach (ref double vertexPosition; rawVertex) {
-            vertexPosition *= fontSize;            
+            vertexPosition *= fontSize;
         }
+
+        // Now shift right
+        for (int i = 0; i < 8; i += 2) {
+            rawVertex[i] += typeWriterArm;
+        }
+
+        typeWriterArm += characterWidth * fontSize;
+
+        writeln("x pos ", rawVertex[0]);
 
         vertexData ~= rawVertex;
 
@@ -203,12 +226,23 @@ Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugR
             0,1,2,2,3,0
         ];
 
+        for (int i = 0; i < 6; i++) {
+            rawIndices[i] += currentVertex;
+        }
+
+        writeln(rawIndices);
+
+        currentVertex += 4;
+
+
+
         indices ~= rawIndices;
         
     }
     
+    // writeln("raw", vertexData);
 
-    return tuple!("vertexData", "textureData", "indices")(vertexData, textureData, indices);
+    return Tuple!(double[], "vertexData", double[], "textureData", int[], "indices")(vertexData, textureData, indices);
 }
 
 
@@ -289,7 +323,8 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimmingX, bool
             iPos[4] / palletWidth, iPos[5] / palletHeight,
             iPos[6] / palletWidth, iPos[7] / palletHeight,
 
-            iPos[8], iPos[9]
+            //! This might be backwards!
+            cast(double)iPos[8] / cast(double)characterWidth, cast(double)iPos[9] / cast(double)palletHeight
         ];
         // writeln("-------------------");
         // writeln(glPositions[0..2]);
