@@ -839,15 +839,11 @@ private int ttLONG(ubyte[] p) {
     return (p[0]<<24) + (p[1]<<16) + (p[2]<<8) + p[3];
 }
 
-//#define stbtt_tag4(p,c0,c1,c2,c3) ((p)[0] == (c0) && (p)[1] == (c1) && (p)[2] == (c2) && (p)[3] == (c3))
-//#define stbtt_tag(p,str)           stbtt_tag4(p,str[0],str[1],str[2],str[3])
-
 bool stbtt_tag4 (ubyte[] p, ubyte c0, ubyte c1, ubyte c2, ubyte c3) pure {
-    return
-        p[0] == c0 &&
-        p[1] == c1 &&
-        p[2] == c2 &&
-        p[3] == c3;
+    foreach (key,data; [c0, c1, c2, c3]) {
+        if (p[key] != data) return false;
+    }
+    return true;
 }
 
 bool stbtt_tag (ubyte[] p, string str) {
