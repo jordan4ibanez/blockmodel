@@ -145,8 +145,24 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
     // Now parse the json, and pass it into object
     parseJson(fontObject, jsonLocation);
 
+    // Now encode the linear string as a keymap of raw graphics positions
+    encodeGraphics(fontObject, kerning, trimming);
+
 }
 
+//* ========================= BEGIN GRAPHICS ENCODING ==============================
+
+void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
+    foreach (size_t index, immutable(char) value; fontObject.rawMap) {
+        writeln(index);
+    }
+}
+
+
+
+
+
+//! ========================= END GRAPICS ENCODING ================================ 
 
 
 //* ========================== BEGIN JSON DECODING ==================================
