@@ -14,7 +14,7 @@ import math;
 import delta_time;
 
 //! Development import REMOVE LATER
-import gui.ttf;
+import gui.razor_font;
 
 void main()
 {
