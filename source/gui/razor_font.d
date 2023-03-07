@@ -142,7 +142,7 @@ void createFont(string fileLocation, string name = "") {
     // Create the Font object
     RazorFont fontObject = new RazorFont();
 
-    // Now parse the json
+    // Now parse the json, and pass it into object
     parseJson(fontObject, jsonLocation);
 
 }
