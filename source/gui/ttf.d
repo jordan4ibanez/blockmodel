@@ -4819,36 +4819,32 @@ private stbtt_int32 stbtt__CompareUTF8toUTF16_bigendian_prefix(stbtt_uint8 *s1, 
     return i;
 }
 
-private int stbtt_CompareUTF8toUTF16_bigendian_internal(char *s1, int len1, char *s2, int len2)
-{
+private int stbtt_CompareUTF8toUTF16_bigendian_internal(char *s1, int len1, char *s2, int len2) {
     return len1 == stbtt__CompareUTF8toUTF16_bigendian_prefix(cast(stbtt_uint8*) s1, len1, cast(stbtt_uint8*) s2, len2);
 }
 
 // returns results in whatever encoding you request... but note that 2-byte encodings
 // will be BIG-ENDIAN... use stbtt_CompareUTF8toUTF16_bigendian() to compare
-public const(char)* stbtt_GetFontNameString(stbtt_fontinfo* font, int *length, int platformID, int encodingID, int languageID, int nameID)
-{
+public const(char)* stbtt_GetFontNameString(stbtt_fontinfo* font, int *length, int platformID, int encodingID, int languageID, int nameID) {
    stbtt_int32 i,count,stringOffset;
-   stbtt_uint8 *fc = font.data;
-   stbtt_uint32 offset = font.fontstart;
-   stbtt_uint32 nm = stbtt__find_table(fc, offset, "name");
-   if (!nm) return null;
+    stbtt_uint8 *fc = font.data;
+    stbtt_uint32 offset = font.fontstart;
+    stbtt_uint32 nm = stbtt__find_table(fc, offset, "name");
+    if (!nm) return null;
 
-   count = ttUSHORT(fc+nm+2);
-   stringOffset = nm + ttUSHORT(fc+nm+4);
-   for (i=0; i < count; ++i) {
-      stbtt_uint32 loc = nm + 6 + 12 * i;
-      if (platformID == ttUSHORT(fc+loc+0) && encodingID == ttUSHORT(fc+loc+2)
-          && languageID == ttUSHORT(fc+loc+4) && nameID == ttUSHORT(fc+loc+6)) {
-         *length = ttUSHORT(fc+loc+8);
-         return cast(const(char)* ) (fc+stringOffset+ttUSHORT(fc+loc+10));
-      }
-   }
-   return null;
+    count = ttUSHORT(fc+nm+2);
+    stringOffset = nm + ttUSHORT(fc+nm+4);
+    for (i=0; i < count; ++i) {
+        stbtt_uint32 loc = nm + 6 + 12 * i;
+        if (platformID == ttUSHORT(fc+loc+0) && encodingID == ttUSHORT(fc+loc+2) && languageID == ttUSHORT(fc+loc+4) && nameID == ttUSHORT(fc+loc+6)) {
+            *length = ttUSHORT(fc+loc+8);
+            return cast(const(char)* ) (fc+stringOffset+ttUSHORT(fc+loc+10));
+        }
+    }
+    return null;
 }
 
-private int stbtt__matchpair(stbtt_uint8 *fc, stbtt_uint32 nm, stbtt_uint8 *name, stbtt_int32 nlen, stbtt_int32 target_id, stbtt_int32 next_id)
-{
+private int stbtt__matchpair(stbtt_uint8 *fc, stbtt_uint32 nm, stbtt_uint8 *name, stbtt_int32 nlen, stbtt_int32 target_id, stbtt_int32 next_id) {
    stbtt_int32 i;
    stbtt_int32 count = ttUSHORT(fc+nm+2);
    stbtt_int32 stringOffset = nm + ttUSHORT(fc+nm+4);
