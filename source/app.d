@@ -136,33 +136,6 @@ void main()
 
     float fancyRotation = 0;
 
-    const Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") test = Font.debugRenderDouble("cool", 100, "my cool sentence");
-
-    // writeln("vertex ", test.vertexData);
-    // writeln("texture ", test.textureData);
-    // writeln("indices ", test.indices);
-
-    const(double[]) b = test.vertexData;
-
-    float[] c = to!(float[])(b);
-
-    // float[] vertexTest = cast(float[])test.vertexData;
-    // float[] textureText = cast(float[])test.textureData;
-
-    // writeln(test.vertexData);
-
-    // writeln("Hello I am B", b);
-
-
-    writeln("texture thing ", Texture.getTexture("textures/debug.png"));
-    Mesh myCoolText = new Mesh()
-        .addVertices2d(to!(float[])(test.vertexData))
-        .addIndices(test.indices)
-        .addTextureCoordinates(to!(float[])(test.textureData))
-        .setTexture(Texture.getTexture("fonts/test_font.png"))
-        // .setLineMode(false)
-        .finalize();
-
     Window.setVsync(0);
 
 
@@ -250,6 +223,15 @@ void main()
 
         Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
 
+        const Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") test = Font.debugRenderDouble("cool", 100, "i am debug");
+
+        Mesh myCoolText = new Mesh()
+            .addVertices2d(to!(float[])(test.vertexData))
+            .addIndices(test.indices)
+            .addTextureCoordinates(to!(float[])(test.textureData))
+            .setTexture(Texture.getTexture("fonts/test_font.png"))
+            .finalize();
+
         Shader.setUniformMatrix4f("2d", "objectMatrix",
             Camera.setGuiObjectMatrix(
                 Vector2d(
@@ -260,6 +242,8 @@ void main()
         );
 
         myCoolText.render("2d");
+
+        myCoolText.cleanUp();
 
         Window.swapBuffers();
     }
