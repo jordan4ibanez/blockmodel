@@ -23,6 +23,7 @@ void main()
     Window.initialize();
 
     createFont("fonts/mc.ttf", "mc");
+    createFont("fonts/ubuntu.ttf", "ubuntu");
 
     bool blah = true;
     if (blah) {
