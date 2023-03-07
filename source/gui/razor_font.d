@@ -158,11 +158,14 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
     //!Debug
     // writeln(fontObject.map);
 
+    // Finally add it into the library
+    razorFonts[key] = fontObject;
+
 }
 
 //* ============================ BEGIN GRAPHICS DISPATCH ===========================
 
-Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugRender() {
+Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugRender(string font, double fontSize) {
 
     double[] vertexData;
     double[] textureData;
@@ -171,8 +174,36 @@ Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugR
     // Test character
     string test = "a";
 
-    foreach (key, c; test) {
+    // Cache the object
+    const RazorFont thisFont = razorFonts[font];
 
+    foreach (key, character; test) {
+        double[10] rawData = thisFont.map[character];
+
+        textureData ~= rawData[0..8];
+
+        // This is the width and height of the character
+        double[2] size = rawData[8..10];
+
+        
+        double[8] rawVertex = [
+            0,0,
+            0,1,
+            1,1,
+            0,1
+        ];
+
+        foreach (ref double vertexPosition; rawVertex) {
+            vertexPosition *= fontSize;            
+        }
+
+        vertexData ~= rawVertex;
+
+        int[] rawIndices = [
+            0,1,2,2,3,0
+        ];
+
+        indices ~= rawIndices;
         
     }
     
