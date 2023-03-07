@@ -51,7 +51,8 @@ private TTFBuffer[string] buffers;
 /// A TrueType Font held in memory
 class TTFont {
 
-    stbtt_fontinfo font;
+    // This becomes consumed by the load() method
+    stbtt_fontinfo fontInfo;
 
     /// Loads the font up from a directory
     this(string fileLocation) {
@@ -67,8 +68,10 @@ class TTFont {
 
     ///
     void load(in ubyte[] data) {
-        if(stbtt_InitFont(&font, data.ptr, stbtt_GetFontOffsetForIndex(data.ptr, 0)) == 0)
+        //! STAGE 0
+        if (stbtt_InitFont_internal(&fontInfo, data.ptr, stbtt_GetFontOffsetForIndex(data.ptr, 0)) == 0) {
             throw new Exception("Font failed to load!");
+        }
     }
 
     /// Note that you must stbtt_FreeBitmap(returnValue.ptr, null); this thing or it will leak!!!!
@@ -4904,9 +4907,9 @@ public int stbtt_GetNumberOfFonts(const(ubyte)* data) {
 
 
 //! STAGE 1
-public int stbtt_InitFont(stbtt_fontinfo *info, const(ubyte)* data, int offset) {
-    return stbtt_InitFont_internal(info, cast(ubyte *) data, offset);
-}
+// public int stbtt_InitFont(stbtt_fontinfo *info, const(ubyte)* data, int offset) {
+    // stbtt_InitFont_internal(info, cast(ubyte *) data, offset);
+// }
 
 public int stbtt_FindMatchingFont(const(ubyte)* fontdata, const(char)* name, int flags) {
     return stbtt_FindMatchingFont_internal(cast(ubyte *) fontdata, cast(char *) name, flags);
