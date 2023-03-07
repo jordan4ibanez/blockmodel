@@ -224,8 +224,8 @@ void main()
             Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
 
             const Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") test = Font.debugRenderDouble("cool", 50, "this is a performance test\ncurrently doing multiline\ncurrent fps: " ~ to!string(Window.getFPS) ~
-                "\ni ran out of room on this\nso i had to go to the next line\nbut hopefully you can read all this\ndid i ever tell you about the time\nthat i caught a fish thiiiiiis\nbig"~
-                "it was huge dude, literally could barely\npull the dang thing out of the water");
+                "\ni ran out of room on this\nso i had to go to the next line\nbut hopefully you can read all this\ndid i ever tell you about the time\nthat i caught a fish thiiiiiis\nbig?"~
+                "it was huge dude, literally could \nbarely pull the dang thing out of the\nwater, well it turned out i\nactually caught a boat anchor");
 
             Mesh myCoolText = new Mesh()
                 .addVertices2d(to!(float[])(test.vertexData))
