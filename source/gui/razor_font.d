@@ -30,13 +30,14 @@ private class RazorFont {
     // Pixel space (literally) between characters in pallet
     int border = 0;
 
-    // Number of characters
-    int characterWidth  = 0;
-    int characterHeight = 0;
+    // Number of characters (horizontal, aka Z)
+    int rows    = 0;
+    // Number of characters (vertical, aka Y)
+    int columns = 0;
 
     // Character pallet (individual) in pixels
-    int characterPalletWidth  = 0;
-    int characterPalletHeight = 0;
+    int characterWidth  = 0;
+    int charactertHeight = 0;
     
     // Readonly specifier if kerning was enabled
     bool kerned = false;
@@ -55,7 +56,7 @@ private class RazorFont {
     
     Name is an optional. You will call into Razor Font by this name.
 
-    If you do not specify a name, you must call into RazorFont by the fileLocation, literal.
+    If you do not specify a name, you must call into Razor Font by the fileLocation, literal.
 */
 void createFont(string fileLocation, string name = "") {
 
