@@ -877,13 +877,12 @@ private bool isFont(ubyte[] font) {
 
      So 3 would mean we start at: 0,1,2,3 so we start at R in "therehi"
 */
-private uint findTable(ubyte[] data, uint fontstart, string tag) {
+private uint findTable(ubyte[] data, string tag) {
 
-    int num_tables = ttUSHORT(data[fontstart+4..data.length]);
+    int num_tables = ttUSHORT(data[4..data.length]);
 
-    uint tabledir = fontstart + 12;
-    int i;
-    for (i=0; i < num_tables; ++i) {
+    uint tabledir = 12;
+    for (int i=0; i < num_tables; ++i) {
         uint loc = tabledir + 16*i;
         if (stbtt_tag(data[loc..loc + tag.length], tag))
             return ttULONG(data[loc+8..loc+12]);
@@ -915,14 +914,14 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
 
     info.cff = new TTFBuffer([], 0);
 
-    cmap      = findTable(data, fontstart, "cmap"); //! required
-    info.loca = findTable(data, fontstart, "loca"); //! required
-    info.head = findTable(data, fontstart, "head"); //! required
-    info.glyf = findTable(data, fontstart, "glyf"); //! required
-    info.hhea = findTable(data, fontstart, "hhea"); //! required
-    info.hmtx = findTable(data, fontstart, "hmtx"); //! required
-    info.kern = findTable(data, fontstart, "kern"); //* not required
-    info.gpos = findTable(data, fontstart, "GPOS"); //* not required
+    cmap      = findTable(data, "cmap"); //! required
+    info.loca = findTable(data, "loca"); //! required
+    info.head = findTable(data, "head"); //! required
+    info.glyf = findTable(data, "glyf"); //! required
+    info.hhea = findTable(data, "hhea"); //! required
+    info.hmtx = findTable(data, "hmtx"); //! required
+    info.kern = findTable(data, "kern"); //* not required
+    info.gpos = findTable(data, "GPOS"); //* not required
 
     if (!cmap || !info.head || !info.hhea || !info.hmtx)
         return 0;
@@ -932,10 +931,10 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
     } else {
         // initialization for CFF / Type2 fonts (OTF)
         TTFBuffer b, topdict, topdictidx;
-        stbtt_uint32 cstype = 2, charstrings = 0, fdarrayoff = 0, fdselectoff = 0;
-        stbtt_uint32 cff;
+        uint cstype = 2, charstrings = 0, fdarrayoff = 0, fdselectoff = 0;
+        uint cff;
 
-        cff = findTable(data, fontstart, "CFF ");
+        cff = findTable(data, "CFF ");
         if (!cff) return 0;
 
         info.fontdicts = findTable(null, 0);
@@ -991,7 +990,7 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
     numTables = ttUSHORT(data + cmap + 2);
     info.index_map = 0;
     for (i=0; i < numTables; ++i) {
-        stbtt_uint32 encoding_record = cmap + 4 + 8 * i;
+        uint encoding_record = cmap + 4 + 8 * i;
         // find an encoding we understand:
         switch(ttUSHORT(data+encoding_record)) {
             case STBTT_PLATFORM_ID_MICROSOFT:
@@ -1021,7 +1020,7 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
 
 // public int stbtt_FindGlyphIndex(const(TTFInfo) info, int unicode_codepoint) {
 //     stbtt_uint8 *data = cast(stbtt_uint8*)info.data;
-//     stbtt_uint32 index_map = info.index_map;
+//     uint index_map = info.index_map;
 
 //     stbtt_uint16 format = ttUSHORT(data + index_map + 0);
 //     if (format == 0) { // apple byte encoding
@@ -1030,9 +1029,9 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
 //             return ttBYTE(data + index_map + 6 + unicode_codepoint);
 //         return 0;
 //     } else if (format == 6) {
-//         stbtt_uint32 first = ttUSHORT(data + index_map + 6);
-//         stbtt_uint32 count = ttUSHORT(data + index_map + 8);
-//         if (cast(stbtt_uint32) unicode_codepoint >= first && cast(stbtt_uint32) unicode_codepoint < first+count)
+//         uint first = ttUSHORT(data + index_map + 6);
+//         uint count = ttUSHORT(data + index_map + 8);
+//         if (cast(uint) unicode_codepoint >= first && cast(uint) unicode_codepoint < first+count)
 //             return ttUSHORT(data + index_map + 10 + (unicode_codepoint - first)*2);
 //         return 0;
 //     } else if (format == 2) {
@@ -1044,8 +1043,8 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
 //         stbtt_uint16 rangeShift = ttUSHORT(data+index_map+12) >> 1;
 
 //         // do a binary search of the segments
-//         stbtt_uint32 endCount = index_map + 14;
-//         stbtt_uint32 search = endCount;
+//         uint endCount = index_map + 14;
+//         uint search = endCount;
 
 //         if (unicode_codepoint > 0xffff)
 //             return 0;
@@ -1083,20 +1082,20 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
 //             return ttUSHORT(data + offset + (unicode_codepoint-start)*2 + index_map + 14 + segcount*6 + 2 + 2*item);
 //         }
 //     } else if (format == 12 || format == 13) {
-//         stbtt_uint32 ngroups = ttULONG(data+index_map+12);
+//         uint ngroups = ttULONG(data+index_map+12);
 //         stbtt_int32 low,high;
 //         low = 0; high = cast(stbtt_int32)ngroups;
 //         // Binary search the right group.
 //         while (low < high) {
 //             stbtt_int32 mid = low + ((high-low) >> 1); // rounds down, so low <= mid < high
-//             stbtt_uint32 start_char = ttULONG(data+index_map+16+mid*12);
-//             stbtt_uint32 end_char = ttULONG(data+index_map+16+mid*12+4);
-//             if (cast(stbtt_uint32) unicode_codepoint < start_char)
+//             uint start_char = ttULONG(data+index_map+16+mid*12);
+//             uint end_char = ttULONG(data+index_map+16+mid*12+4);
+//             if (cast(uint) unicode_codepoint < start_char)
 //                 high = mid;
-//             else if (cast(stbtt_uint32) unicode_codepoint > end_char)
+//             else if (cast(uint) unicode_codepoint > end_char)
 //                 low = mid+1;
 //             else {
-//                 stbtt_uint32 start_glyph = ttULONG(data+index_map+16+mid*12+8);
+//                 uint start_glyph = ttULONG(data+index_map+16+mid*12+8);
 //                 if (format == 12)
 //                 return start_glyph + unicode_codepoint-start_char;
 //                 else // format == 13
@@ -1820,7 +1819,7 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
 
 // private int stbtt__GetGlyphKernInfoAdvance(TTFInfo info, int glyph1, int glyph2) {
 //     stbtt_uint8 *data = info.data + info.kern;
-//     stbtt_uint32 needle, straw;
+//     uint needle, straw;
 //     int l, r, m;
 
 //     // we only look at the first table. it must be 'horizontal' and format 0.
@@ -4080,7 +4079,7 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
 //             if (s1[i++] != 0xc0 + (ch >> 6)) return -1;
 //             if (s1[i++] != 0x80 + (ch & 0x3f)) return -1;
 //         } else if (ch >= 0xd800 && ch < 0xdc00) {
-//             stbtt_uint32 c;
+//             uint c;
 //             stbtt_uint16 ch2 = s2[2]*256 + s2[3];
 //             if (i+3 >= len1) return -1;
 //             c = ((ch - 0xd800) << 10) + (ch2 - 0xdc00) + 0x10000;
@@ -4113,14 +4112,14 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
 // public const(char)* stbtt_GetFontNameString(TTFInfo font, int *length, int platformID, int encodingID, int languageID, int nameID) {
 //    stbtt_int32 i,count,stringOffset;
 //     stbtt_uint8 *fc = font.data;
-//     stbtt_uint32 offset = font.fontstart;
-//     stbtt_uint32 nm = stbtt__find_table(fc, offset, "name");
+//     uint offset = font.fontstart;
+//     uint nm = stbtt__find_table(fc, offset, "name");
 //     if (!nm) return null;
 
 //     count = ttUSHORT(fc+nm+2);
 //     stringOffset = nm + ttUSHORT(fc+nm+4);
 //     for (i=0; i < count; ++i) {
-//         stbtt_uint32 loc = nm + 6 + 12 * i;
+//         uint loc = nm + 6 + 12 * i;
 //         if (platformID == ttUSHORT(fc+loc+0) && encodingID == ttUSHORT(fc+loc+2) && languageID == ttUSHORT(fc+loc+4) && nameID == ttUSHORT(fc+loc+6)) {
 //             *length = ttUSHORT(fc+loc+8);
 //             return cast(const(char)* ) (fc+stringOffset+ttUSHORT(fc+loc+10));
@@ -4129,13 +4128,13 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
 //     return null;
 // }
 
-// private int stbtt__matchpair(stbtt_uint8 *fc, stbtt_uint32 nm, stbtt_uint8 *name, stbtt_int32 nlen, stbtt_int32 target_id, stbtt_int32 next_id) {
+// private int stbtt__matchpair(stbtt_uint8 *fc, uint nm, stbtt_uint8 *name, stbtt_int32 nlen, stbtt_int32 target_id, stbtt_int32 next_id) {
 //     stbtt_int32 i;
 //     stbtt_int32 count = ttUSHORT(fc+nm+2);
 //     stbtt_int32 stringOffset = nm + ttUSHORT(fc+nm+4);
 
 //     for (i=0; i < count; ++i) {
-//         stbtt_uint32 loc = nm + 6 + 12 * i;
+//         uint loc = nm + 6 + 12 * i;
 //         stbtt_int32 id = ttUSHORT(fc+loc+6);
 //         if (id == target_id) {
 //             // find the encoding
@@ -4175,9 +4174,9 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
 //     return 0;
 // }
 
-// private int stbtt__matches(stbtt_uint8 *fc, stbtt_uint32 offset, stbtt_uint8 *name, stbtt_int32 flags) {
+// private int stbtt__matches(stbtt_uint8 *fc, uint offset, stbtt_uint8 *name, stbtt_int32 flags) {
 //     stbtt_int32 nlen = cast(stbtt_int32) STBTT_strlen(cast(char *) name);
-//     stbtt_uint32 nm,hd;
+//     uint nm,hd;
 //     if (!stbtt__isfont(fc+offset)) return 0;
 
 //     // check italics/bold/underline flags in macStyle...
