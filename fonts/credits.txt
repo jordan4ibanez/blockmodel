@@ -1,3 +1,1 @@
-MC: https://www.fontspace.com/minecraft-font-f28180 (Public domain)
-
-Ran through this: https://cloudconvert.com/otf-to-ttf
+test_font: jordan4ibanez was here
