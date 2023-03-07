@@ -694,13 +694,13 @@ enum STBTT_RASTERIZER_VERSION = 2;
 // TTFBuffer helpers to parse data from file
 //
 
-private stbtt_uint8 stbtt__buf_get8(TTFBuffer b) {
+private ubyte stbtt__buf_get8(TTFBuffer b) {
     if (b.cursor >= b.size)
         return 0;
     return b.data[b.cursor++];
 }
 
-private stbtt_uint8 stbtt__buf_peek8(TTFBuffer b) {
+private ubyte stbtt__buf_peek8(TTFBuffer b) {
     if (b.cursor >= b.size)
         return 0;
     return b.data[b.cursor];
@@ -715,7 +715,7 @@ private void stbtt__buf_skip(TTFBuffer b, int o) {
     stbtt__buf_seek(b, b.cursor + o);
 }
 
-private stbtt_uint32 stbtt__buf_get(TTFBuffer b, int n) {
+private uint stbtt__buf_get(TTFBuffer b, int n) {
     stbtt_uint32 v = 0;
     int i;
     assert(n >= 1 && n <= 4);
@@ -756,7 +756,7 @@ private TTFBuffer stbtt__cff_get_index(TTFBuffer b) {
     return stbtt__buf_range(b, start, b.cursor - start);
 }
 
-private stbtt_uint32 stbtt__cff_int(TTFBuffer b) {
+private uint stbtt__cff_int(TTFBuffer b) {
     int b0 = stbtt__buf_get8(b);
     if (b0 >= 32 && b0 <= 246)       return b0 - 139;
     else if (b0 >= 247 && b0 <= 250) return (b0 - 247)*256 + stbtt__buf_get8(b) + 108;
@@ -795,7 +795,7 @@ private TTFBuffer stbtt__dict_get(TTFBuffer b, int key) {
     return stbtt__buf_range(b, 0, 0);
 }
 
-private void stbtt__dict_get_ints(TTFBuffer b, int key, int outcount, stbtt_uint32 *outstb) {
+private void stbtt__dict_get_ints(TTFBuffer b, int key, int outcount, uint[] outstb) {
     int i;
     TTFBuffer operands = stbtt__dict_get(b, key);
     for (i = 0; i < outcount && operands.cursor < operands.size; i++)
@@ -831,9 +831,9 @@ private TTFBuffer stbtt__cff_index_get(TTFBuffer b, int i) {
 //#define ttBYTE(p)     (* (stbtt_uint8 *) (p))
 //#define ttCHAR(p)     (* (stbtt_int8 *) (p))
 //#define ttFixed(p)    ttLONG(p)
-stbtt_uint8 ttBYTE (const(void)* p) pure {
+ubyte ttBYTE (ubyte[] p) pure {
     pragma(inline, true);
-    return *cast(const(stbtt_uint8)*)p;
+    return p;
 }
 stbtt_int8 ttCHAR (const(void)* p) pure {
     pragma(inline, true);
