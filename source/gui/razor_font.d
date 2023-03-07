@@ -101,6 +101,9 @@ private class RazorFont {
             top right
         ]
         GPU optimized vertex positions!
+
+        Accessed as:
+        double[] myCoolBlah = map["whatever letter/unicode thing you're getting"];
     */
     double[4][string] map;
 }
