@@ -827,10 +827,10 @@ private TTFBuffer stbtt__cff_index_get(TTFBuffer b, int i) {
 
 
 private ushort ttUSHORT(ubyte[] p) {
-    return p[0]*256 + p[1];
+    return p[256] + p[1];
 }
 private short ttSHORT(ubyte[] p) {
-    return cast(stbtt_int16)(p[0]*256 + p[1]);
+    return p[256] + p[1];
 }
 private uint ttULONG(ubyte[] p) {
     return (p[0]<<24) + (p[1]<<16) + (p[2]<<8) + p[3];
@@ -855,14 +855,14 @@ bool stbtt_tag (ubyte[] p, string str) {
     return newString == str;
 }
 
-private int stbtt__isfont(ubyte[] font) {
+private bool isFont(ubyte[] font) {
     // check the version number
-    if (stbtt_tag4(font, '1',0,0,0)) return 1; // TrueType 1
-    if (stbtt_tag(font, "typ1")) return 1; // TrueType with type 1 font -- we don't support this!
-    if (stbtt_tag(font, "OTTO")) return 1; // OpenType with CFF
-    if (stbtt_tag4(font, 0,1,0,0))   return 1; // OpenType 1.0
-    if (stbtt_tag(font, "true")) return 1; // Apple specification for TrueType fonts
-    return 0;
+    if (stbtt_tag4(font, '1',0,0,0)) return true; // TrueType 1
+    if (stbtt_tag(font, "typ1")) return true;     // TrueType with type 1 font -- we don't support this!
+    if (stbtt_tag(font, "OTTO")) return true;     // OpenType with CFF
+    if (stbtt_tag4(font, 0,1,0,0)) return true;   // OpenType 1.0
+    if (stbtt_tag(font, "true")) return true;     // Apple specification for TrueType fonts
+    return false; // No idea  ¯\_(ツ)_/¯
 }
 
 // @OPTIMIZE: binary search
@@ -879,14 +879,14 @@ private int stbtt__isfont(ubyte[] font) {
 
      So 3 would mean we start at: 0,1,2,3 so we start at R in "therehi"
 */
-private uint findTable(uint[] data, uint fontstart, string tag) {
+private uint findTable(ubyte[] data, uint fontstart, string tag) {
 
-    stbtt_int32 num_tables = ttUSHORT(data[fontstart+4..data.length]);
+    int num_tables = ttUSHORT(data[fontstart+4..data.length]);
 
-    stbtt_uint32 tabledir = fontstart + 12;
-    stbtt_int32 i;
+    uint tabledir = fontstart + 12;
+    int i;
     for (i=0; i < num_tables; ++i) {
-        stbtt_uint32 loc = tabledir + 16*i;
+        uint loc = tabledir + 16*i;
         if (stbtt_tag(data[loc..loc + tag.length], tag))
             return ttULONG(data[loc+8..loc+12]);
     }
@@ -894,6 +894,24 @@ private uint findTable(uint[] data, uint fontstart, string tag) {
 }
 
 
+
+private int stbtt_GetFontOffsetForIndex_internal(ubyte *font_collection, int index) {
+
+    // if it's just a font, there's only one valid index
+    if (stbtt__isfont(font_collection))
+        return index == 0 ? 0 : -1;
+    // check if it's a TTC
+    if (stbtt_tag(font_collection, "ttcf".ptr)) {
+        // version 1?
+        if (ttULONG(font_collection+4) == 0x00010000 || ttULONG(font_collection+4) == 0x00020000) {
+            stbtt_int32 n = ttLONG(font_collection+8);
+            if (index >= n)
+                return -1;
+            return ttULONG(font_collection+12+index*4);
+        }
+    }
+    return -1;
+}
 
 
 
@@ -909,14 +927,14 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
 
     info.cff = new TTFBuffer([], 0);
 
-    cmap      = stbtt__find_table(data, fontstart, "cmap"); //! required
-    info.loca = stbtt__find_table(data, fontstart, "loca"); //! required
-    info.head = stbtt__find_table(data, fontstart, "head"); //! required
-    info.glyf = stbtt__find_table(data, fontstart, "glyf"); //! required
-    info.hhea = stbtt__find_table(data, fontstart, "hhea"); //! required
-    info.hmtx = stbtt__find_table(data, fontstart, "hmtx"); //! required
-    info.kern = stbtt__find_table(data, fontstart, "kern"); //* not required
-    info.gpos = stbtt__find_table(data, fontstart, "GPOS"); //* not required
+    cmap      = findTable(data, fontstart, "cmap"); //! required
+    info.loca = findTable(data, fontstart, "loca"); //! required
+    info.head = findTable(data, fontstart, "head"); //! required
+    info.glyf = findTable(data, fontstart, "glyf"); //! required
+    info.hhea = findTable(data, fontstart, "hhea"); //! required
+    info.hmtx = findTable(data, fontstart, "hmtx"); //! required
+    info.kern = findTable(data, fontstart, "kern"); //* not required
+    info.gpos = findTable(data, fontstart, "GPOS"); //* not required
 
     if (!cmap || !info.head || !info.hhea || !info.hmtx)
         return 0;
@@ -929,11 +947,11 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
         stbtt_uint32 cstype = 2, charstrings = 0, fdarrayoff = 0, fdselectoff = 0;
         stbtt_uint32 cff;
 
-        cff = stbtt__find_table(data, fontstart, "CFF ");
+        cff = findTable(data, fontstart, "CFF ");
         if (!cff) return 0;
 
-        info.fontdicts = stbtt__new_buf(null, 0);
-        info.fdselect = stbtt__new_buf(null, 0);
+        info.fontdicts = findTable(null, 0);
+        info.fdselect = findTable(null, 0);
 
         // @TODO this should use size from table (not 512MB)
         info.cff = stbtt__new_buf(data+cff, 512*1024*1024);
