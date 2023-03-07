@@ -903,28 +903,8 @@ struct stbtt_pack_context {
     void  *nodes;
 }
 
-// ////////////////////////////////////////////////////////////////////////////
-//
-// FONT LOADING
-//
-//
+//*========================================= FONT LOADING =====================================================
 
-//STBTT_DEF int stbtt_GetNumberOfFonts(const(ubyte)* data);
-// This function will determine the number of fonts in a font file.  TrueType
-// collection (.ttc) files may contain multiple fonts, while TrueType font
-// (.ttf) files only contain one font. The number of fonts can be used for
-// indexing with the previous function where the index is between zero and one
-// less than the total fonts. If an error occurs, -1 is returned.
-
-//STBTT_DEF int stbtt_GetFontOffsetForIndex(const(ubyte)* data, int index);
-// Each .ttf/.ttc file may have more than one font. Each font has a sequential
-// index number starting from 0. Call this function to get the font offset for
-// a given index; it returns -1 if the index is out of range. A regular .ttf
-// file will only define one font and it always be at offset 0, so it will
-// return '0' for index 0, and -1 for all other indices.
-
-// The following structure is defined publically so you can declare one on
-// the stack or as a global or etc, but you should treat it as opaque.
 private class TTFInfo {
     void* userdata;
     string fileLocation; // location of .ttf file
@@ -953,9 +933,10 @@ private class TTFInfo {
 // value data with no additional data structures. Returns 0 on failure.
 
 
-// ////////////////////////////////////////////////////////////////////////////
-//
-// CHARACTER TO GLYPH-INDEX CONVERSIOn
+//!================================= END FONT LOADING ==========================================
+
+
+//*================================ CHARACTER TO GLYPH-INDEX CONVERSION =================================
 
 //STBTT_DEF int stbtt_FindGlyphIndex(const(TTFInfo) info, int unicode_codepoint);
 // If you're going to perform multiple operations on the same character
