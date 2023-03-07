@@ -1,6 +1,7 @@
 module gui.razor_font;
 
 import std.stdio;
+import std.conv;
 import std.file;
 import std.json;
 import color;
@@ -153,6 +154,9 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
     // Now encode the linear string as a keymap of raw graphics positions
     encodeGraphics(fontObject, kerning, trimmingX, trimmingY);
 
+    //!Debug
+    // writeln(fontObject.map);
+
 }
 
 //* ========================= BEGIN GRAPHICS ENCODING ==============================
@@ -231,13 +235,16 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimmingX, bool
 
             iPos[8], iPos[9]
         ];
-        writeln("-------------------");
-        writeln(glPositions[0..2]);
-        writeln(glPositions[2..4]);
-        writeln(glPositions[4..6]);
-        writeln(glPositions[6..8]);
+        // writeln("-------------------");
+        // writeln(glPositions[0..2]);
+        // writeln(glPositions[2..4]);
+        // writeln(glPositions[4..6]);
+        // writeln(glPositions[6..8]);
 
-        writeln(glPositions[8..10]);
+        // writeln(glPositions[8..10]);
+
+        // Now dump it into the dictionary
+        fontObject.map[to!string(value)] = glPositions;
     }
 }
 
