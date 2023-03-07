@@ -1,6 +1,8 @@
 module gui.razor_font;
 
 import std.stdio;
+import color;
+import png;
 
 //  ____________________________
 // |         RAZOR FONT         |
@@ -26,7 +28,7 @@ private RazorFont[string] razorFonts;
 private void delegate(string) renderTargetAPICallString = null;
 
 // Allows DIRECT automatic upload into whatever render target (OpenGL, Vulkan, Metal, DX) as RAW data
-private void delegate(ubyte[]) renderTargetAPICallRAW = null;
+private void delegate(ubyte[], int, int) renderTargetAPICallRAW = null;
 
 
 /**
@@ -44,8 +46,9 @@ void setRenderTargetAPICallString(void delegate(string) apiStringFunction) {
 /**
     Allows automatic render target (OpenGL, Vulkan, Metal, DX) DIRECT instantiation.
     This allows the render engine to AUTOMATICALLY upload the image as RAW data.
+    ubyte[] = raw data. int = width. int = height.
 */
-void setRenderTargetAPICallRAW(void delegate(ubyte[]) apiRAWFunction) {
+void setRenderTargetAPICallRAW(void delegate(ubyte[], int, int) apiRAWFunction) {
     if (renderTargetAPICallString !is null) {
         throw new Exception("Razor Font: You already set the STRING api integration function!");
     }
@@ -101,4 +104,26 @@ void createFont(string fileLocation, string name = "") {
     writeln(renderTargetAPICallRAW is null);
     writeln(renderTargetAPICallString is null);
 
+}
+
+void tryCallingRAWApi(string fileLocation) {
+    if (renderTargetAPICallRAW is null) {
+        return;
+    }
+
+    // Use ADR's awesome framework library to convert the png into a raw data stream.
+    TrueColorImage tempImageObject = readPng(fileLocation).getAsTrueColorImage();
+
+    const int width = tempImageObject.width();
+    const int height = tempImageObject.height();
+
+    renderTargetAPICallRAW(tempImageObject.imageData.bytes);
+}
+
+void tryCallingStringApi(string fileLocation) {
+    if (renderTargetAPICallString is null) {
+        return;
+    }
+    
+    renderTargetAPICallString(fileLocation);
 }
