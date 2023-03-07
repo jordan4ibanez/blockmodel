@@ -75,7 +75,7 @@ private class RazorFont {
     int columns = 0;
 
     // Character pallet (individual) in pixels
-    int characterWidth  = 0;
+    int characterWidth   = 0;
     int charactertHeight = 0;
     
     // Readonly specifier if kerning was enabled
@@ -83,6 +83,26 @@ private class RazorFont {
 
     // Readonly specifier if trimming was enabled
     bool trimmed = false;
+
+    // Character map - stored as a linear associative array for O(1) retrieval
+    /**
+        Stores as:
+        [
+            -x -y,
+            -x +y, 
+            +x +y,
+            +x -y
+        ]
+        or this, if it's easier to understand:
+        [
+            top left,
+            bottom left,
+            bottom right,
+            top right
+        ]
+        GPU optimized vertex positions!
+    */
+    double[4][string] map;
 }
 
 /**
@@ -116,21 +136,12 @@ void createFont(string fileLocation, string name = "") {
     RazorFont fontObject = new RazorFont();
 
     // Now parse the json
+
     
 
 }
 
 
-// Makes sure there's data where there should be
-private void checkFilesExist(string pngLocation, string jsonLocation) {
-    if (!exists(pngLocation)) {
-        throw new Exception("Razor Font: " ~ pngLocation ~ " does not exist!");
-    }
-
-    if (!exists(jsonLocation)) {
-        throw new Exception("Razor Font: " ~ jsonLocation ~ " does not exist!");
-    }
-}
 
 //* ========================== BEGIN JSON DECODING ==================================
 // Run through the required data to assemble a font object
@@ -167,3 +178,19 @@ private void tryCallingStringApi(string fileLocation) {
 }
 
 //! ======================= END API AGNOSTIC CALLS ================================
+
+//* ===================== BEGIN ETC FUNCTIONS ===============================
+
+
+// Makes sure there's data where there should be
+private void checkFilesExist(string pngLocation, string jsonLocation) {
+    if (!exists(pngLocation)) {
+        throw new Exception("Razor Font: " ~ pngLocation ~ " does not exist!");
+    }
+
+    if (!exists(jsonLocation)) {
+        throw new Exception("Razor Font: " ~ jsonLocation ~ " does not exist!");
+    }
+}
+
+//! ===================== END ETC FUNCTIONS =====================================
