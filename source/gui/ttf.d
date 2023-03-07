@@ -3838,14 +3838,16 @@ public void stbtt_MakeCodepointBitmap(stbtt_fontinfo* info, ubyte *output, int o
 //
 // This is SUPER-CRAPPY packing to keep source code small
 
-private int stbtt_BakeFontBitmap_internal(ubyte *data, int offset,  // font location (use offset=0 for plain .ttf)
-                                float pixel_height,                     // height of font in pixels
-                                ubyte *pixels, int pw, int ph,  // bitmap to be filled in
-                                int first_char, int num_chars,          // characters to bake
-                                stbtt_bakedchar *chardata,
-				int* ascent, int* descent, int* line_gap
-				)
-{
+private int stbtt_BakeFontBitmap_internal(
+    ubyte *data, int offset,       // font location (use offset=0 for plain .ttf)
+    float pixel_height,            // height of font in pixels
+    ubyte *pixels, int pw, int ph, // bitmap to be filled in
+    int first_char, int num_chars, // characters to bake
+    stbtt_bakedchar *chardata,
+    int* ascent,
+    int* descent,
+    int* line_gap
+) {
     float scale;
     int x,y,bottom_y, i;
     stbtt_fontinfo f;
