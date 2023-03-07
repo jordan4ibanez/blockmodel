@@ -14,7 +14,7 @@ import math;
 import delta_time;
 
 //! Development import REMOVE LATER
-import gui.razor_font;
+import Font = gui.razor_font;
 
 void main()
 {
@@ -22,8 +22,12 @@ void main()
     // Window controls OpenGL and GLFW
     Window.initialize();
 
-    createFont("fonts/mc.ttf", "mc");
-    createFont("fonts/ubuntu.ttf", "ubuntu");
+    Font.setRenderTargetAPICallString(
+        (string input){
+            writeln("hi there I am a debug api thing hello yes");
+        }
+    );
+    Font.createFont("fonts/test_font", "cool");
 
     bool blah = true;
     if (blah) {
