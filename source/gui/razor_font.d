@@ -106,7 +106,7 @@ private class RazorFont {
         Accessed as:
         double[] myCoolBlah = map["whatever letter/unicode thing you're getting"];
     */
-    double[4][string] map;
+    double[8][string] map;
 
     // Stores the map raw as a linear array before processed
     string rawMap;
