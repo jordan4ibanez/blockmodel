@@ -30,13 +30,18 @@ private void delegate(ubyte[]) renderTargetAPICallRAW;
 
 
 /**
-    Allows automatic render target (OpenGL, Vulkan, Metal, DX) instantiation.
+    Allows automatic render target (OpenGL, Vulkan, Metal, DX) passthrough instantiation.
     This can basically pass a file location off to your rendering engine and auto load it into memory.
 */
 void setRenderTargetAPICallString(void delegate(string) apiStringFunction) {
     renderTargetAPICallString = apiStringFunction;
 }
 
+
+/**
+    Allows automatic render target (OpenGL, Vulkan, Metal, DX) DIRECT instantiation.
+    This allows the render engine to AUTOMATICALLY upload the image as RAW data.
+*/
 void setRenderTargetAPICallRAW(void delegate(ubyte[]) apiRAWFunction) {
     renderTargetAPICallRAW = apiRAWFunction;
 }
