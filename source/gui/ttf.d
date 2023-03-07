@@ -3423,95 +3423,92 @@ private void stbtt__rasterize_sorted_edges(stbtt__bitmap *result, stbtt__edge *e
 //#define STBTT__COMPARE(a,b)  ((a).y0 < (b).y0)
 bool STBTT__COMPARE (stbtt__edge *a, stbtt__edge *b) pure { pragma(inline, true); return (a.y0 < b.y0); }
 
-private void stbtt__sort_edges_ins_sort(stbtt__edge *p, int n)
-{
-   int i,j;
-   for (i=1; i < n; ++i) {
-      stbtt__edge t = p[i];
-      stbtt__edge *a = &t;
-      j = i;
-      while (j > 0) {
-         stbtt__edge *b = &p[j-1];
-         int c = STBTT__COMPARE(a,b);
-         if (!c) break;
-         p[j] = p[j-1];
-         --j;
-      }
-      if (i != j)
-         p[j] = t;
-   }
+private void stbtt__sort_edges_ins_sort(stbtt__edge *p, int n) {
+    int i,j;
+    for (i=1; i < n; ++i) {
+        stbtt__edge t = p[i];
+        stbtt__edge *a = &t;
+        j = i;
+        while (j > 0) {
+            stbtt__edge *b = &p[j-1];
+            int c = STBTT__COMPARE(a,b);
+            if (!c) break;
+            p[j] = p[j-1];
+            --j;
+        }
+        if (i != j)
+            p[j] = t;
+    }
 }
 
-private void stbtt__sort_edges_quicksort(stbtt__edge *p, int n)
-{
-   /* threshhold for transitioning to insertion sort */
-   while (n > 12) {
-      stbtt__edge t;
-      int c01,c12,c,m,i,j;
+private void stbtt__sort_edges_quicksort(stbtt__edge *p, int n) {
+    /* threshhold for transitioning to insertion sort */
+    while (n > 12) {
+        stbtt__edge t;
+        int c01,c12,c,m,i,j;
 
-      /* compute median of three */
-      m = n >> 1;
-      c01 = STBTT__COMPARE(&p[0],&p[m]);
-      c12 = STBTT__COMPARE(&p[m],&p[n-1]);
-      /* if 0 >= mid >= end, or 0 < mid < end, then use mid */
-      if (c01 != c12) {
-         /* otherwise, we'll need to swap something else to middle */
-         int z;
-         c = STBTT__COMPARE(&p[0],&p[n-1]);
-         /* 0>mid && mid<n:  0>n => n; 0<n => 0 */
-         /* 0<mid && mid>n:  0>n => 0; 0<n => n */
-         z = (c == c12) ? 0 : n-1;
-         t = p[z];
-         p[z] = p[m];
-         p[m] = t;
-      }
-      /* now p[m] is the median-of-three */
-      /* swap it to the beginning so it won't move around */
-      t = p[0];
-      p[0] = p[m];
-      p[m] = t;
+        /* compute median of three */
+        m = n >> 1;
+        c01 = STBTT__COMPARE(&p[0],&p[m]);
+        c12 = STBTT__COMPARE(&p[m],&p[n-1]);
+        /* if 0 >= mid >= end, or 0 < mid < end, then use mid */
+        if (c01 != c12) {
+            /* otherwise, we'll need to swap something else to middle */
+            int z;
+            c = STBTT__COMPARE(&p[0],&p[n-1]);
+            /* 0>mid && mid<n:  0>n => n; 0<n => 0 */
+            /* 0<mid && mid>n:  0>n => 0; 0<n => n */
+            z = (c == c12) ? 0 : n-1;
+            t = p[z];
+            p[z] = p[m];
+            p[m] = t;
+        }
+        /* now p[m] is the median-of-three */
+        /* swap it to the beginning so it won't move around */
+        t = p[0];
+        p[0] = p[m];
+        p[m] = t;
 
-      /* partition loop */
-      i=1;
-      j=n-1;
-      for(;;) {
-         /* handling of equality is crucial here */
-         /* for sentinels & efficiency with duplicates */
-         for (;;++i) {
-            if (!STBTT__COMPARE(&p[i], &p[0])) break;
-         }
-         for (;;--j) {
-            if (!STBTT__COMPARE(&p[0], &p[j])) break;
-         }
-         /* make sure we haven't crossed */
-         if (i >= j) break;
-         t = p[i];
-         p[i] = p[j];
-         p[j] = t;
+        /* partition loop */
+        i=1;
+        j=n-1;
+        for(;;) {
+            /* handling of equality is crucial here */
+            /* for sentinels & efficiency with duplicates */
+            for (;;++i) {
+                if (!STBTT__COMPARE(&p[i], &p[0])) break;
+            }
+            for (;;--j) {
+                if (!STBTT__COMPARE(&p[0], &p[j])) break;
+            }
+            /* make sure we haven't crossed */
+            if (i >= j) break;
+            t = p[i];
+            p[i] = p[j];
+            p[j] = t;
 
-         ++i;
-         --j;
-      }
-      /* recurse on smaller side, iterate on larger */
-      if (j < (n-i)) {
-         stbtt__sort_edges_quicksort(p,j);
-         p = p+i;
-         n = n-i;
-      } else {
-         stbtt__sort_edges_quicksort(p+i, n-i);
-         n = j;
-      }
-   }
+            ++i;
+            --j;
+        }
+        /* recurse on smaller side, iterate on larger */
+        if (j < (n-i)) {
+            stbtt__sort_edges_quicksort(p,j);
+            p = p+i;
+            n = n-i;
+        } else {
+            stbtt__sort_edges_quicksort(p+i, n-i);
+            n = j;
+        }
+    }
 }
 
-private void stbtt__sort_edges(stbtt__edge *p, int n)
-{
-   stbtt__sort_edges_quicksort(p, n);
-   stbtt__sort_edges_ins_sort(p, n);
+private void stbtt__sort_edges(stbtt__edge *p, int n) {
+    stbtt__sort_edges_quicksort(p, n);
+    stbtt__sort_edges_ins_sort(p, n);
 }
 
 struct stbtt__point {
-   float x,y;
+    float x,y;
 }
 
 private void stbtt__rasterize(stbtt__bitmap *result, stbtt__point *pts, int *wcount, int windings, float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, void *userdata) {
@@ -3519,11 +3516,11 @@ private void stbtt__rasterize(stbtt__bitmap *result, stbtt__point *pts, int *wco
     stbtt__edge *e;
     int n,i,j,k,m;
     static if (STBTT_RASTERIZER_VERSION == 1) {
-    int vsubsample = result.h < 8 ? 15 : 5;
+        int vsubsample = result.h < 8 ? 15 : 5;
     } else static if (STBTT_RASTERIZER_VERSION == 2) {
-    int vsubsample = 1;
+        int vsubsample = 1;
     } else {
-    static assert(0, "Unrecognized value of STBTT_RASTERIZER_VERSION");
+        static assert(0, "Unrecognized value of STBTT_RASTERIZER_VERSION");
     }
     // vsubsample should divide 255 evenly; otherwise we won't reach full opacity
 
