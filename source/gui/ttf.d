@@ -142,10 +142,10 @@ T STBTT_fabs(T) (in T x) pure {
 // If you use this API, you only have to call two functions ever.
 //
 
-struct stbtt_bakedchar {
-    ushort x0,y0,x1,y1; // coordinates of bbox in bitmap
-    float xoff,yoff,xadvance;
-}
+// struct stbtt_bakedchar {
+//     ushort x0,y0,x1,y1; // coordinates of bbox in bitmap
+//     float xoff,yoff,xadvance;
+// }
 
 /+
 STBTT_DEF int stbtt_BakeFontBitmap(const(ubyte)* data, int offset,  // font location (use offset=0 for plain .ttf)
@@ -160,10 +160,10 @@ STBTT_DEF int stbtt_BakeFontBitmap(const(ubyte)* data, int offset,  // font loca
 // if return is 0, no characters fit and no rows were used
 // This uses a very crappy packing.
 
-struct stbtt_aligned_quad {
-    float x0,y0,s0,t0; // top-left
-    float x1,y1,s1,t1; // bottom-right
-}
+// struct stbtt_aligned_quad {
+//     float x0,y0,s0,t0; // top-left
+//     float x1,y1,s1,t1; // bottom-right
+// }
 
 /+
 STBTT_DEF void stbtt_GetBakedQuad(const(stbtt_bakedchar)* chardata, int pw, int ph,  // same data as above
@@ -191,11 +191,11 @@ STBTT_DEF void stbtt_GetBakedQuad(const(stbtt_bakedchar)* chardata, int pw, int 
 // This provides options for packing multiple fonts into one atlas, not
 // perfectly but better than nothing.
 
-struct stbtt_packedchar {
-    ushort x0,y0,x1,y1; // coordinates of bbox in bitmap
-    float xoff,yoff,xadvance;
-    float xoff2,yoff2;
-}
+// struct stbtt_packedchar {
+//     ushort x0,y0,x1,y1; // coordinates of bbox in bitmap
+//     float xoff,yoff,xadvance;
+//     float xoff2,yoff2;
+// }
 
 //typedef struct stbtt_pack_context stbtt_pack_context;
 //typedef struct TTFInfo TTFInfo;
@@ -236,14 +236,14 @@ STBTT_DEF int  stbtt_PackFontRange(stbtt_pack_context *spc, const(ubyte)* fontda
 //       ...,                  20 , ... // font max minus min y is 20 pixels tall
 //       ..., STBTT_POINT_SIZE(20), ... // 'M' is 20 pixels tall
 
-struct stbtt_pack_range {
-    float font_size;
-    int first_unicode_codepoint_in_range; // if non-zero, then the chars are continuous, and this is the first codepoint
-    int *array_of_unicode_codepoints;     // if non-zero, then this is an array of unicode codepoints
-    int num_chars;
-    stbtt_packedchar *chardata_for_range; // output
-    ubyte h_oversample, v_oversample;     // don't set these, they're used internally
-}
+// struct stbtt_pack_range {
+//     float font_size;
+//     int first_unicode_codepoint_in_range; // if non-zero, then the chars are continuous, and this is the first codepoint
+//     int *array_of_unicode_codepoints;     // if non-zero, then this is an array of unicode codepoints
+//     int num_chars;
+//     stbtt_packedchar *chardata_for_range; // output
+//     ubyte h_oversample, v_oversample;     // don't set these, they're used internally
+// }
 
 //STBTT_DEF int  stbtt_PackFontRanges(stbtt_pack_context *spc, const(ubyte)* fontdata, int font_index, stbtt_pack_range *ranges, int num_ranges);
 // Creates character bitmaps from multiple ranges of characters stored in
@@ -290,17 +290,17 @@ STBTT_DEF int  stbtt_PackFontRangesRenderIntoRects(stbtt_pack_context *spc, cons
 
 // this is an opaque structure that you shouldn't mess with which holds
 // all the context needed from PackBegin to PackEnd.
-struct stbtt_pack_context {
-    void *user_allocator_context;
-    void *pack_info;
-    int   width;
-    int   height;
-    int   stride_in_bytes;
-    int   padding;
-    uint   h_oversample, v_oversample;
-    ubyte *pixels;
-    void  *nodes;
-}
+// struct stbtt_pack_context {
+//     void *user_allocator_context;
+//     void *pack_info;
+//     int   width;
+//     int   height;
+//     int   stride_in_bytes;
+//     int   padding;
+//     uint   h_oversample, v_oversample;
+//     ubyte *pixels;
+//     void  *nodes;
+// }
 
 //*========================================= FONT LOADING =====================================================
 
