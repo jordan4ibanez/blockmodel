@@ -111,7 +111,7 @@ private class RazorFont {
 
         The last 2 values specify width and height
     */
-    double[10][string] map;
+    double[10][char] map;
 
     // Stores the map raw as a linear array before processed
     string rawMap;
@@ -163,10 +163,21 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
 //* ============================ BEGIN GRAPHICS DISPATCH ===========================
 
 Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugRender() {
-    double[] blah = [1,2,3];
-    double[] moreBlah = [1,1,1];
-    int[] evenMoreBlah = [1,2,3,4];
-    return tuple!("vertexData", "textureData", "indices")(blah, moreBlah, evenMoreBlah);
+
+    double[] vertexData;
+    double[] textureData;
+    int[] indices;
+
+    // Test character
+    string test = "a";
+
+    foreach (key, c; test) {
+
+        
+    }
+    
+
+    return tuple!("vertexData", "textureData", "indices")(vertexData, textureData, indices);
 }
 
 
@@ -258,7 +269,7 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimmingX, bool
         // writeln(glPositions[8..10]);
 
         // Now dump it into the dictionary
-        fontObject.map[to!string(value)] = glPositions;
+        fontObject.map[value] = glPositions;
     }
 }
 
