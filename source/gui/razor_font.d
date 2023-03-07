@@ -1,5 +1,7 @@
 module gui.razor_font;
 
+import std.stdio;
+
 //  ____________________________
 // |         RAZOR FONT         |
 // |____________________________|
@@ -19,6 +21,19 @@ File format:
 */
 
 private RazorFont[string] razorFonts;
+
+// Allows an automatic upload into whatever render target (OpenGL, Vulkan, Metal, DX)
+private void delegate(string) renderTargetAPICall;
+
+/**
+    Allows automatic render target (OpenGL, Vulkan, Metal, DX) instantiation.
+    This can basically pass a file location off to your rendering engine and auto load it into memory.
+*/
+void setRenderTargetAPICallString(void delegate(string) apiFunction) {
+    renderTargetAPICall = apiFunction;
+}
+
+
 
 // A simple font container
 private class RazorFont {
@@ -52,12 +67,17 @@ private class RazorFont {
     You do not specify an extension.
 
     So if you have: cool.png and cool.json
-    You would call this as createFont("fonts/cool")
+    You would call this as: createFont("fonts/cool")
     
     Name is an optional. You will call into Razor Font by this name.
 
     If you do not specify a name, you must call into Razor Font by the fileLocation, literal.
 */
 void createFont(string fileLocation, string name = "") {
+
+    // Are we using the fileLocation as the key, or did they specify a name?
+    string key = name == "" ? fileLocation : name;
+
+
 
 }
