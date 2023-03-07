@@ -95,10 +95,10 @@ private class RazorFont {
         ]
         or this, if it's easier to understand:
         [
-            top left,
+            top    left,
             bottom left,
             bottom right,
-            top right
+            top    right
         ]
         GPU optimized vertex positions!
 
