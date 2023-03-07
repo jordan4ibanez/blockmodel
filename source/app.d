@@ -223,7 +223,7 @@ void main()
 
         Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
 
-        const Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") test = Font.debugRenderDouble("cool", 100, "i am debug");
+        const Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") test = Font.debugRenderDouble("cool", 50, "i am debug! fps: " ~ to!string(Window.getFPS));
 
         Mesh myCoolText = new Mesh()
             .addVertices2d(to!(float[])(test.vertexData))
