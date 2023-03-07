@@ -31,9 +31,9 @@ import std.conv;
 /// A TrueType Font held in memory
 class TTFont {
 
-	stbtt_fontinfo font;
+    stbtt_fontinfo font;
 
-	/// Loads the font up from a directory
+    /// Loads the font up from a directory
     this(string fileLocation) {
         if (!exists(fileLocation)) {
             throw new Exception(fileLocation ~ " font does not exist!");
@@ -45,50 +45,50 @@ class TTFont {
 
     }
 
-	///
-	void load(in ubyte[] data) {
-   		if(stbtt_InitFont(&font, data.ptr, stbtt_GetFontOffsetForIndex(data.ptr, 0)) == 0)
-			throw new Exception("Font failed to load!");
-	}
+    ///
+    void load(in ubyte[] data) {
+        if(stbtt_InitFont(&font, data.ptr, stbtt_GetFontOffsetForIndex(data.ptr, 0)) == 0)
+            throw new Exception("Font failed to load!");
+    }
 
-	/// Note that you must stbtt_FreeBitmap(returnValue.ptr, null); this thing or it will leak!!!!
-	ubyte[] renderCharacter(dchar c, int size, out int width, out int height, float shift_x = 0.0, float shift_y = 0.0) {
-   		auto ptr = stbtt_GetCodepointBitmapSubpixel(&font, 0.0,stbtt_ScaleForPixelHeight(&font, size),
-			shift_x, shift_y, c, &width, &height, null,null);
-		return ptr[0 .. width * height];
-	}
+    /// Note that you must stbtt_FreeBitmap(returnValue.ptr, null); this thing or it will leak!!!!
+    ubyte[] renderCharacter(dchar c, int size, out int width, out int height, float shift_x = 0.0, float shift_y = 0.0) {
+        auto ptr = stbtt_GetCodepointBitmapSubpixel(&font, 0.0,stbtt_ScaleForPixelHeight(&font, size),
+            shift_x, shift_y, c, &width, &height, null,null);
+        return ptr[0 .. width * height];
+    }
 
-	///
-	void getStringSize(in char[] s, int size, out int width, out int height) {
-		float xpos=0;
+    ///
+    void getStringSize(in char[] s, int size, out int width, out int height) {
+        float xpos=0;
 
-		auto scale = stbtt_ScaleForPixelHeight(&font, size);
-		int ascent, descent, line_gap;
-		stbtt_GetFontVMetrics(&font, &ascent,&descent,&line_gap);
-		auto baseline = cast(int) (ascent*scale);
+        auto scale = stbtt_ScaleForPixelHeight(&font, size);
+        int ascent, descent, line_gap;
+        stbtt_GetFontVMetrics(&font, &ascent,&descent,&line_gap);
+        auto baseline = cast(int) (ascent*scale);
 
-		import std.math;
+        import std.math;
 
-		int maxWidth;
+        int maxWidth;
 
-		foreach(i, dchar ch; s) {
-			int advance,lsb;
-			auto x_shift = xpos - floor(xpos);
-			stbtt_GetCodepointHMetrics(&font, ch, &advance, &lsb);
+        foreach(i, dchar ch; s) {
+            int advance,lsb;
+            auto x_shift = xpos - floor(xpos);
+            stbtt_GetCodepointHMetrics(&font, ch, &advance, &lsb);
 
-			int x0, y0, x1, y1;
-			stbtt_GetCodepointBitmapBoxSubpixel(&font, ch, scale,scale,x_shift,0, &x0,&y0,&x1,&y1);
+            int x0, y0, x1, y1;
+            stbtt_GetCodepointBitmapBoxSubpixel(&font, ch, scale,scale,x_shift,0, &x0,&y0,&x1,&y1);
 
-			maxWidth = cast(int)(xpos + x1);
+            maxWidth = cast(int)(xpos + x1);
 
-			xpos += (advance * scale);
-			if (i + 1 < s.length)
-				xpos += scale*stbtt_GetCodepointKernAdvance(&font, ch,s[i+1]);
-		}
+            xpos += (advance * scale);
+            if (i + 1 < s.length)
+                xpos += scale*stbtt_GetCodepointKernAdvance(&font, ch,s[i+1]);
+        }
 
-   		width = maxWidth;
-		height = size;
-	}
+        width = maxWidth;
+        height = size;
+    }
 
 	///
 	// ubyte[] renderString(in char[] s, int size, out int width, out int height) {
