@@ -12,6 +12,7 @@ import matrix_4d;
 import blockmodel.blockmodel;
 import math;
 import delta_time;
+import std.typecons;
 
 //! Development import REMOVE LATER
 import Font = gui.razor_font;
@@ -22,6 +23,10 @@ void main()
     // Window controls OpenGL and GLFW
     Window.initialize();
     Window.setTitle("BlockModel Editor");
+
+    Texture.addTexture("textures/xyz_compass.png");
+    Texture.addTexture("textures/debug_character.png");
+    Texture.addTexture("textures/debug.png");
 
     //! Start Razor Font testing
 
@@ -43,19 +48,10 @@ void main()
     //     return;
     // }
 
-    const auto test = Font.debugRender("cool", 100);
-
-    Mesh debugText = new Mesh()
-        .addVertices2d(cast(float[])test.vertexData)
-        .addTextureCoordinates(cast(float[])test.textureData)
-        .addIndices(test.indices)
-        .setTexture(Texture.getTexture("fonts/test_font.png"))
-        .finalize();
+    
 	
 
-    Texture.addTexture("textures/xyz_compass.png");
-    Texture.addTexture("textures/debug_character.png");
-    Texture.addTexture("textures/debug.png");
+    
     
     // Controls blockmodel rendering
     Shader.create("model", "shaders/model_vertex.vs", "shaders/model_fragment.fs");
@@ -127,7 +123,7 @@ void main()
             d,0
         ])
         .addIndices([
-            0,1,2, 2,3,0
+            0,1,2,2,3,0
         ])
         .addTextureCoordinates([
             0,0,
@@ -139,6 +135,33 @@ void main()
         .finalize();
 
     float fancyRotation = 0;
+
+    const Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") test = Font.debugRenderDouble("cool", 100, "my cool sentence");
+
+    // writeln("vertex ", test.vertexData);
+    // writeln("texture ", test.textureData);
+    // writeln("indices ", test.indices);
+
+    const(double[]) b = test.vertexData;
+
+    float[] c = to!(float[])(b);
+
+    // float[] vertexTest = cast(float[])test.vertexData;
+    // float[] textureText = cast(float[])test.textureData;
+
+    // writeln(test.vertexData);
+
+    // writeln("Hello I am B", b);
+
+
+    writeln("texture thing ", Texture.getTexture("textures/debug.png"));
+    Mesh myCoolText = new Mesh()
+        .addVertices2d(to!(float[])(test.vertexData))
+        .addIndices(test.indices)
+        .addTextureCoordinates(to!(float[])(test.textureData))
+        .setTexture(Texture.getTexture("fonts/test_font.png"))
+        // .setLineMode(false)
+        .finalize();
 
     Window.setVsync(0);
 
@@ -230,13 +253,13 @@ void main()
         Shader.setUniformMatrix4f("2d", "objectMatrix",
             Camera.setGuiObjectMatrix(
                 Vector2d(
-                    (Window.getWidth / 2.0) - debug2d.getWidth,
-                    (Window.getHeight / 2.0) - debug2d.getHeight
+                    -Window.getWidth() / 2,
+                    -Window.getHeight() / 2
                 )
             )
         );
 
-        debugText.render("2d");
+        myCoolText.render("2d");
 
         Window.swapBuffers();
     }
