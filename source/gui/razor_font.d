@@ -176,7 +176,7 @@ Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugR
     const RazorFont thisFont = razorFonts[font];
 
     // Store how far the arm has moved to the right
-    double typeWriterArm = 0.0;
+    double typeWriterArmX = 0.0;
 
     int currentVertex = 0;
 
@@ -187,7 +187,7 @@ Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugR
         if (character == ' ') {
             // writeln("skipping");
 
-            typeWriterArm += fontSize;
+            typeWriterArmX += fontSize;
             continue;
         }
 
@@ -216,7 +216,7 @@ Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugR
             rawVertex[i] += typeWriterArm;
         }
 
-        typeWriterArm += characterWidth * fontSize;
+        typeWriterArmX += characterWidth * fontSize;
 
         // writeln("x pos ", rawVertex[0]);
 
