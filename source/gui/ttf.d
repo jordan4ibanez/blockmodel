@@ -716,7 +716,7 @@ private void stbtt__buf_skip(TTFBuffer b, int o) {
 }
 
 private uint stbtt__buf_get(TTFBuffer b, int n) {
-    stbtt_uint32 v = 0;
+    uint v = 0;
     int i;
     assert(n >= 1 && n <= 4);
     for (i = 0; i < n; i++)
@@ -736,7 +736,7 @@ uint stbtt__buf_get32 (TTFBuffer b) {
 }
 
 private TTFBuffer stbtt__buf_range(TTFBuffer b, int o, int s) {
-    TTFBuffer r = stbtt__new_buf(null, 0);
+    TTFBuffer r = new TTFBuffer([], 0);
     if (o < 0 || s < 0 || o > b.size || s > b.size - o) return r;
     r.data = b.data[0..o];
     r.size = s;
@@ -825,31 +825,17 @@ private TTFBuffer stbtt__cff_index_get(TTFBuffer b, int i) {
 // accessors to parse data from file
 //
 
-// on platforms that don't allow misaligned reads, if we want to allow
-// truetype fonts that aren't padded to alignment, define ALLOW_UNALIGNED_TRUETYPE
 
-//#define ttBYTE(p)     (* (stbtt_uint8 *) (p))
-//#define ttCHAR(p)     (* (stbtt_int8 *) (p))
-//#define ttFixed(p)    ttLONG(p)
-ubyte ttBYTE (ubyte[] p) pure {
-    pragma(inline, true);
-    return p;
-}
-stbtt_int8 ttCHAR (const(void)* p) pure {
-    pragma(inline, true);
-    return *cast(const(stbtt_int8)*)p;
-}
-
-private stbtt_uint16 ttUSHORT(ubyte[] p) {
+private ushort ttUSHORT(ubyte[] p) {
     return p[0]*256 + p[1];
 }
-private stbtt_int16 ttSHORT(ubyte[] p) {
+private short ttSHORT(ubyte[] p) {
     return cast(stbtt_int16)(p[0]*256 + p[1]);
 }
-private stbtt_uint32 ttULONG(ubyte[] p) {
+private uint ttULONG(ubyte[] p) {
     return (p[0]<<24) + (p[1]<<16) + (p[2]<<8) + p[3];
 }
-private stbtt_int32 ttLONG(ubyte[] p) {
+private int ttLONG(ubyte[] p) {
     return (p[0]<<24) + (p[1]<<16) + (p[2]<<8) + p[3];
 }
 
@@ -869,7 +855,7 @@ bool stbtt_tag (ubyte[] p, string str) {
     return newString == str;
 }
 
-private int stbtt__isfont(stbtt_uint8[] font) {
+private int stbtt__isfont(ubyte[] font) {
     // check the version number
     if (stbtt_tag4(font, '1',0,0,0)) return 1; // TrueType 1
     if (stbtt_tag(font, "typ1")) return 1; // TrueType with type 1 font -- we don't support this!
