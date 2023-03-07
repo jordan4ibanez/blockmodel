@@ -172,8 +172,26 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
     const int border = fontObject.border;
 
 
-    foreach (size_t index, immutable(char) value; fontObject.rawMap) {
-        writeln(index);
+    foreach (size_t i, immutable(char) value; fontObject.rawMap) {
+
+        const int index = cast(int) i;
+
+
+
+        const int currentRow = (index % rows);
+        const int currentColum = index / columns;
+
+        // const int borderOffsetX = border * currentRow;
+        // const int borderOffsetY = border * currentColum;
+
+        int intPosX = (characterWidth + border) * currentRow;
+        int intPosY = (characterHeight + border) * currentColum;
+
+        writeln(intPosX, " ", intPosY);
+
+
+
+
     }
 }
 
