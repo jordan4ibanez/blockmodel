@@ -24,10 +24,10 @@ void main()
 
     //! Start Razor Font testing
 
-    
+
     Font.setRenderTargetAPICallString(
         (string input){
-            writeln("hi there I am a debug api thing hello yes");
+            Texture.addTexture(input);
         }
     );
     Font.createFont("fonts/test_font", "cool");
