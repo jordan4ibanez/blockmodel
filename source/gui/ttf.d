@@ -94,23 +94,6 @@ private class TTFont {
 version = STB_RECT_PACK_VERSION;
 
 
-// ////////////////////////////////////////////////////////////////////////////
-// ////////////////////////////////////////////////////////////////////////////
-// //
-// //   INTEGRATION WITH YOUR CODEBASE
-// //
-// //   The following sections allow you to supply alternate definitions
-// //   of C library functions used by stb_truetype, e.g. if you don't
-// //   link with the C runtime library.
-
-// #define your own (u)stbtt_int8/16/32 before including to override this
-alias stbtt_uint8  = ubyte;
-alias stbtt_int8   = byte;
-alias stbtt_uint16 = ushort;
-alias stbtt_int16  = short;
-alias stbtt_uint32 = uint;
-alias stbtt_int32  = int;
-
 //typedef char stbtt__check_size32[sizeof(stbtt_int32)==4 ? 1 : -1];
 //typedef char stbtt__check_size16[sizeof(stbtt_int16)==2 ? 1 : -1];
 
