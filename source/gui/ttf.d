@@ -521,8 +521,6 @@ import std.file;
 // STB_TTF FOLLOWS
 
 
-nothrow @trusted @nogc:
-
 version = STB_RECT_PACK_VERSION;
 
 // ////////////////////////////////////////////////////////////////////////////
