@@ -2857,72 +2857,69 @@ public void stbtt_GetCodepointBitmapBox(stbtt_fontinfo* font, int codepoint, flo
 //  Rasterizer
 
 struct stbtt__hheap_chunk {
-   stbtt__hheap_chunk *next;
+    stbtt__hheap_chunk *next;
 }
 
 struct stbtt__hheap {
-   stbtt__hheap_chunk *head;
-   void   *first_free;
-   int    num_remaining_in_head_chunk;
+    stbtt__hheap_chunk *head;
+    void   *first_free;
+    int    num_remaining_in_head_chunk;
 }
 
-private void *stbtt__hheap_alloc(stbtt__hheap *hh, size_t size, void *userdata)
-{
-   if (hh.first_free) {
-      void *p = hh.first_free;
-      hh.first_free = * cast(void **) p;
-      return p;
-   } else {
-      if (hh.num_remaining_in_head_chunk == 0) {
-         int count = (size < 32 ? 2000 : size < 128 ? 800 : 100);
-         stbtt__hheap_chunk *c = cast(stbtt__hheap_chunk *) STBTT_malloc(cast(uint)(stbtt__hheap_chunk.sizeof + size * count), userdata);
-         if (c == null)
-            return null;
-         c.next = hh.head;
-         hh.head = c;
-         hh.num_remaining_in_head_chunk = count;
-      }
-      --hh.num_remaining_in_head_chunk;
-      return cast(char *) (hh.head) + cast(uint)stbtt__hheap_chunk.sizeof + size * hh.num_remaining_in_head_chunk;
-   }
+private void *stbtt__hheap_alloc(stbtt__hheap *hh, size_t size, void *userdata) {
+    if (hh.first_free) {
+        void *p = hh.first_free;
+        hh.first_free = * cast(void **) p;
+        return p;
+    } else {
+        if (hh.num_remaining_in_head_chunk == 0) {
+            int count = (size < 32 ? 2000 : size < 128 ? 800 : 100);
+            stbtt__hheap_chunk *c = cast(stbtt__hheap_chunk *) STBTT_malloc(cast(uint)(stbtt__hheap_chunk.sizeof + size * count), userdata);
+            if (c == null)
+                return null;
+            c.next = hh.head;
+            hh.head = c;
+            hh.num_remaining_in_head_chunk = count;
+        }
+        --hh.num_remaining_in_head_chunk;
+        return cast(char *) (hh.head) + cast(uint)stbtt__hheap_chunk.sizeof + size * hh.num_remaining_in_head_chunk;
+    }
 }
 
-private void stbtt__hheap_free(stbtt__hheap *hh, void *p)
-{
-   *cast(void **) p = hh.first_free;
-   hh.first_free = p;
+private void stbtt__hheap_free(stbtt__hheap *hh, void *p) {
+    *cast(void **) p = hh.first_free;
+    hh.first_free = p;
 }
 
-private void stbtt__hheap_cleanup(stbtt__hheap *hh, void *userdata)
-{
-   stbtt__hheap_chunk *c = hh.head;
-   while (c) {
-      stbtt__hheap_chunk *n = c.next;
-      STBTT_free(c, userdata);
-      c = n;
-   }
+private void stbtt__hheap_cleanup(stbtt__hheap *hh, void *userdata) {
+    stbtt__hheap_chunk *c = hh.head;
+    while (c) {
+        stbtt__hheap_chunk *n = c.next;
+        STBTT_free(c, userdata);
+        c = n;
+    }
 }
 
 struct stbtt__edge {
-   float x0,y0, x1,y1;
-   int invert;
+    float x0,y0, x1,y1;
+    int invert;
 }
 
 
 struct stbtt__active_edge {
-   stbtt__active_edge *next;
-   static if (STBTT_RASTERIZER_VERSION == 1) {
-     int x,dx;
-     float ey;
-     int direction;
-   } else static if (STBTT_RASTERIZER_VERSION == 2) {
-     float fx,fdx,fdy;
-     float direction;
-     float sy;
-     float ey;
-   } else {
-     static assert(0, "Unrecognized value of STBTT_RASTERIZER_VERSION");
-   }
+    stbtt__active_edge *next;
+    static if (STBTT_RASTERIZER_VERSION == 1) {
+        int x,dx;
+        float ey;
+        int direction;
+    } else static if (STBTT_RASTERIZER_VERSION == 2) {
+        float fx,fdx,fdy;
+        float direction;
+        float sy;
+        float ey;
+    } else {
+        static assert(0, "Unrecognized value of STBTT_RASTERIZER_VERSION");
+    }
 }
 
 static if (STBTT_RASTERIZER_VERSION == 1) {
