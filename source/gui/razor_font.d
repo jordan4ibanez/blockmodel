@@ -83,7 +83,8 @@ private class RazorFont {
     bool kerned = false;
 
     // Readonly specifier if trimming was enabled
-    bool trimmed = false;
+    bool trimmedX = false;
+    bool trimmedY = false;
 
     // Character map - stored as a linear associative array for O(1) retrieval
     /**
@@ -123,8 +124,10 @@ private class RazorFont {
     Name is an optional. You will call into Razor Font by this name.
 
     If you do not specify a name, you must call into Razor Font by the fileLocation, literal.
+
+    You can trim the height (X) or width (Y) or both if you want.
 */
-void createFont(string fileLocation, string name = "", bool kerning = false, bool trimming = false) {
+void createFont(string fileLocation, string name = "", bool kerning = false, bool trimmingX = false, bool trimmingY = false) {
 
     // Are we using the fileLocation as the key, or did they specify a name?
     const string key = name == "" ? fileLocation : name;
@@ -146,13 +149,13 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
     parseJson(fontObject, jsonLocation);
 
     // Now encode the linear string as a keymap of raw graphics positions
-    encodeGraphics(fontObject, kerning, trimming);
+    encodeGraphics(fontObject, kerning, trimmingX, trimmingY);
 
 }
 
 //* ========================= BEGIN GRAPHICS ENCODING ==============================
 
-void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
+void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimmingX, bool trimmingY) {
     
     // Store all this on the stack
 
@@ -174,20 +177,46 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
 
     foreach (size_t i, immutable(char) value; fontObject.rawMap) {
 
+        // Turn off annoying casting suggestions
         const int index = cast(int) i;
 
-
-
+        // Now get where the typewriter is
         const int currentRow = (index % rows);
         const int currentColum = index / columns;
 
-        // const int borderOffsetX = border * currentRow;
-        // const int borderOffsetY = border * currentColum;
-
+        // Now get literal pixel position (top left)
         int intPosX = (characterWidth + border) * currentRow;
         int intPosY = (characterHeight + border) * currentColum;
 
-        writeln(intPosX, " ", intPosY);
+        //! I'm not sure what's going to be the easiest way to go about this
+        //! So I'm dividing my dividends
+        
+        // left  top,
+        // left  bottom,
+        // right bottom,
+        // right top
+
+        // Now shovel it into a raw array so we can easily use it
+        int[] integerPositions = [
+            intPosX,                  intPosY,                   // Top left
+            intPosX,                  intPosY + characterHeight, // Bottom left
+            intPosX + characterWidth, intPosY + characterHeight, // Bottom right
+            intPosX + characterWidth, intPosY                    // Top right
+        ];
+
+        // Now calculate limiters
+        const int minX = intPosX;
+        const int maxX = intPosX + characterWidth;
+
+        const int minY = intPosY;
+        const int maxY = intPosY + characterHeight;
+
+
+        // Now trim it if suggested
+        if (trimming) {
+
+        }
+
 
 
 
