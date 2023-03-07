@@ -4845,123 +4845,119 @@ public const(char)* stbtt_GetFontNameString(stbtt_fontinfo* font, int *length, i
 }
 
 private int stbtt__matchpair(stbtt_uint8 *fc, stbtt_uint32 nm, stbtt_uint8 *name, stbtt_int32 nlen, stbtt_int32 target_id, stbtt_int32 next_id) {
-   stbtt_int32 i;
-   stbtt_int32 count = ttUSHORT(fc+nm+2);
-   stbtt_int32 stringOffset = nm + ttUSHORT(fc+nm+4);
+    stbtt_int32 i;
+    stbtt_int32 count = ttUSHORT(fc+nm+2);
+    stbtt_int32 stringOffset = nm + ttUSHORT(fc+nm+4);
 
-   for (i=0; i < count; ++i) {
-      stbtt_uint32 loc = nm + 6 + 12 * i;
-      stbtt_int32 id = ttUSHORT(fc+loc+6);
-      if (id == target_id) {
-         // find the encoding
-         stbtt_int32 platform = ttUSHORT(fc+loc+0), encoding = ttUSHORT(fc+loc+2), language = ttUSHORT(fc+loc+4);
+    for (i=0; i < count; ++i) {
+        stbtt_uint32 loc = nm + 6 + 12 * i;
+        stbtt_int32 id = ttUSHORT(fc+loc+6);
+        if (id == target_id) {
+            // find the encoding
+            stbtt_int32 platform = ttUSHORT(fc+loc+0), encoding = ttUSHORT(fc+loc+2), language = ttUSHORT(fc+loc+4);
 
-         // is this a Unicode encoding?
-         if (platform == 0 || (platform == 3 && encoding == 1) || (platform == 3 && encoding == 10)) {
-            stbtt_int32 slen = ttUSHORT(fc+loc+8);
-            stbtt_int32 off = ttUSHORT(fc+loc+10);
+            // is this a Unicode encoding?
+            if (platform == 0 || (platform == 3 && encoding == 1) || (platform == 3 && encoding == 10)) {
+                stbtt_int32 slen = ttUSHORT(fc+loc+8);
+                stbtt_int32 off = ttUSHORT(fc+loc+10);
 
-            // check if there's a prefix match
-            stbtt_int32 matchlen = stbtt__CompareUTF8toUTF16_bigendian_prefix(name, nlen, fc+stringOffset+off,slen);
-            if (matchlen >= 0) {
-               // check for target_id+1 immediately following, with same encoding & language
-               if (i+1 < count && ttUSHORT(fc+loc+12+6) == next_id && ttUSHORT(fc+loc+12) == platform && ttUSHORT(fc+loc+12+2) == encoding && ttUSHORT(fc+loc+12+4) == language) {
-                  slen = ttUSHORT(fc+loc+12+8);
-                  off = ttUSHORT(fc+loc+12+10);
-                  if (slen == 0) {
-                     if (matchlen == nlen)
+                // check if there's a prefix match
+                stbtt_int32 matchlen = stbtt__CompareUTF8toUTF16_bigendian_prefix(name, nlen, fc+stringOffset+off,slen);
+                if (matchlen >= 0) {
+                // check for target_id+1 immediately following, with same encoding & language
+                if (i+1 < count && ttUSHORT(fc+loc+12+6) == next_id && ttUSHORT(fc+loc+12) == platform && ttUSHORT(fc+loc+12+2) == encoding && ttUSHORT(fc+loc+12+4) == language) {
+                    slen = ttUSHORT(fc+loc+12+8);
+                    off = ttUSHORT(fc+loc+12+10);
+                    if (slen == 0) {
+                        if (matchlen == nlen)
+                            return 1;
+                    } else if (matchlen < nlen && name[matchlen] == ' ') {
+                        ++matchlen;
+                        if (stbtt_CompareUTF8toUTF16_bigendian_internal(cast(char*) (name+matchlen), nlen-matchlen, cast(char*)(fc+stringOffset+off),slen))
+                            return 1;
+                    }
+                } else {
+                    // if nothing immediately following
+                    if (matchlen == nlen)
                         return 1;
-                  } else if (matchlen < nlen && name[matchlen] == ' ') {
-                     ++matchlen;
-                     if (stbtt_CompareUTF8toUTF16_bigendian_internal(cast(char*) (name+matchlen), nlen-matchlen, cast(char*)(fc+stringOffset+off),slen))
-                        return 1;
-                  }
-               } else {
-                  // if nothing immediately following
-                  if (matchlen == nlen)
-                     return 1;
-               }
+                }
+                }
             }
-         }
 
-         // @TODO handle other encodings
-      }
-   }
-   return 0;
+            // @TODO handle other encodings
+        }
+    }
+    return 0;
 }
 
 private int stbtt__matches(stbtt_uint8 *fc, stbtt_uint32 offset, stbtt_uint8 *name, stbtt_int32 flags)
 {
-   stbtt_int32 nlen = cast(stbtt_int32) STBTT_strlen(cast(char *) name);
-   stbtt_uint32 nm,hd;
-   if (!stbtt__isfont(fc+offset)) return 0;
+    stbtt_int32 nlen = cast(stbtt_int32) STBTT_strlen(cast(char *) name);
+    stbtt_uint32 nm,hd;
+    if (!stbtt__isfont(fc+offset)) return 0;
 
-   // check italics/bold/underline flags in macStyle...
-   if (flags) {
-      hd = stbtt__find_table(fc, offset, "head");
-      if ((ttUSHORT(fc+hd+44) & 7) != (flags & 7)) return 0;
-   }
+    // check italics/bold/underline flags in macStyle...
+    if (flags) {
+        hd = stbtt__find_table(fc, offset, "head");
+        if ((ttUSHORT(fc+hd+44) & 7) != (flags & 7)) return 0;
+    }
 
-   nm = stbtt__find_table(fc, offset, "name");
-   if (!nm) return 0;
+    nm = stbtt__find_table(fc, offset, "name");
+    if (!nm) return 0;
 
-   if (flags) {
-      // if we checked the macStyle flags, then just check the family and ignore the subfamily
-      if (stbtt__matchpair(fc, nm, name, nlen, 16, -1))  return 1;
-      if (stbtt__matchpair(fc, nm, name, nlen,  1, -1))  return 1;
-      if (stbtt__matchpair(fc, nm, name, nlen,  3, -1))  return 1;
-   } else {
-      if (stbtt__matchpair(fc, nm, name, nlen, 16, 17))  return 1;
-      if (stbtt__matchpair(fc, nm, name, nlen,  1,  2))  return 1;
-      if (stbtt__matchpair(fc, nm, name, nlen,  3, -1))  return 1;
-   }
+    if (flags) {
+        // if we checked the macStyle flags, then just check the family and ignore the subfamily
+        if (stbtt__matchpair(fc, nm, name, nlen, 16, -1))  return 1;
+        if (stbtt__matchpair(fc, nm, name, nlen,  1, -1))  return 1;
+        if (stbtt__matchpair(fc, nm, name, nlen,  3, -1))  return 1;
+    } else {
+        if (stbtt__matchpair(fc, nm, name, nlen, 16, 17))  return 1;
+        if (stbtt__matchpair(fc, nm, name, nlen,  1,  2))  return 1;
+        if (stbtt__matchpair(fc, nm, name, nlen,  3, -1))  return 1;
+    }
 
-   return 0;
+    return 0;
 }
 
 private int stbtt_FindMatchingFont_internal(ubyte *font_collection, char *name_utf8, stbtt_int32 flags)
 {
-   stbtt_int32 i;
-   for (i=0;;++i) {
-      stbtt_int32 off = stbtt_GetFontOffsetForIndex(font_collection, i);
-      if (off < 0) return off;
-      if (stbtt__matches(cast(stbtt_uint8 *) font_collection, off, cast(stbtt_uint8*) name_utf8, flags))
-         return off;
-   }
+    stbtt_int32 i;
+    for (i=0;;++i) {
+        stbtt_int32 off = stbtt_GetFontOffsetForIndex(font_collection, i);
+        if (off < 0) return off;
+        if (stbtt__matches(cast(stbtt_uint8 *) font_collection, off, cast(stbtt_uint8*) name_utf8, flags))
+            return off;
+    }
 }
 
-public int stbtt_BakeFontBitmap(const(ubyte)* data, int offset,
-                                float pixel_height, ubyte *pixels, int pw, int ph,
-                                int first_char, int num_chars, stbtt_bakedchar *chardata,
-				int* ascent = null, int* descent = null, int* line_gap = null
-				)
+public int stbtt_BakeFontBitmap(const(ubyte)* data, int offset, float pixel_height, ubyte *pixels, int pw, int ph, int first_char, int num_chars, stbtt_bakedchar *chardata, int* ascent = null, int* descent = null, int* line_gap = null)
 {
-   return stbtt_BakeFontBitmap_internal(cast(ubyte *) data, offset, pixel_height, pixels, pw, ph, first_char, num_chars, chardata, ascent, descent, line_gap);
+    return stbtt_BakeFontBitmap_internal(cast(ubyte *) data, offset, pixel_height, pixels, pw, ph, first_char, num_chars, chardata, ascent, descent, line_gap);
 }
 
 public int stbtt_GetFontOffsetForIndex(const(ubyte)* data, int index)
 {
-   return stbtt_GetFontOffsetForIndex_internal(cast(ubyte *) data, index);
+    return stbtt_GetFontOffsetForIndex_internal(cast(ubyte *) data, index);
 }
 
 public int stbtt_GetNumberOfFonts(const(ubyte)* data)
 {
-   return stbtt_GetNumberOfFonts_internal(cast(ubyte *) data);
+    return stbtt_GetNumberOfFonts_internal(cast(ubyte *) data);
 }
 
 public int stbtt_InitFont(stbtt_fontinfo *info, const(ubyte)* data, int offset)
 {
-   return stbtt_InitFont_internal(info, cast(ubyte *) data, offset);
+    return stbtt_InitFont_internal(info, cast(ubyte *) data, offset);
 }
 
 public int stbtt_FindMatchingFont(const(ubyte)* fontdata, const(char)* name, int flags)
 {
-   return stbtt_FindMatchingFont_internal(cast(ubyte *) fontdata, cast(char *) name, flags);
+    return stbtt_FindMatchingFont_internal(cast(ubyte *) fontdata, cast(char *) name, flags);
 }
 
 public int stbtt_CompareUTF8toUTF16_bigendian(const(char)* s1, int len1, const(char)* s2, int len2)
 {
-   return stbtt_CompareUTF8toUTF16_bigendian_internal(cast(char *) s1, len1, cast(char *) s2, len2);
+    return stbtt_CompareUTF8toUTF16_bigendian_internal(cast(char *) s1, len1, cast(char *) s2, len2);
 }
 
 
