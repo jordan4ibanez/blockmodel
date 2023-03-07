@@ -26,7 +26,15 @@ File format:
 
 */
 
+/// Stores all fonts
 private RazorFont[string] razorFonts;
+
+/// A simple struct to get the font data for the shader
+struct RazorFontData {
+    double[] vertexPositions;
+    double[] textureCoordinates;
+    int[]    indices;
+}
 
 // Allows an automatic upload into whatever render target (OpenGL, Vulkan, Metal, DX) as a string file location
 private void delegate(string) renderTargetAPICallString = null;
@@ -166,7 +174,12 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
 //* ============================ BEGIN GRAPHICS DISPATCH ===========================
 
 /// Render at double floating point precision
-Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugRenderDouble(string font, const double fontSize, string text) {
+RazorFontData debugRenderDouble(string font, const double fontSize, string text) {
+
+    // Can't render if that font doesn't exist
+    if (font !in razorFonts) {
+        throw new Exception(font ~ " is not a registered font!");
+    }
 
     double[] vertexData;
     double[] textureData;
@@ -253,7 +266,7 @@ Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") debugR
     
     // writeln("raw", vertexData);
 
-    return Tuple!(double[], "vertexData", double[], "textureData", int[], "indices")(vertexData, textureData, indices);
+    return RazorFontData(vertexData, textureData, indices);
 }
 
 
