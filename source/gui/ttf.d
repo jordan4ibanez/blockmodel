@@ -3323,96 +3323,96 @@ static if (STBTT_RASTERIZER_VERSION == 1) {
     }
 
     // directly AA rasterize edges w/o supersampling
-    private void stbtt__rasterize_sorted_edges(stbtt__bitmap *result, stbtt__edge *e, int n, int vsubsample, int off_x, int off_y, void *userdata)
-    {
-    stbtt__hheap hh = stbtt__hheap( null, null, 0 );
-    stbtt__active_edge *active = null;
-    int y,j=0, i;
-    float[129] scanline_data = void;
-    float *scanline, scanline2;
+    private void stbtt__rasterize_sorted_edges(stbtt__bitmap *result, stbtt__edge *e, int n, int vsubsample, int off_x, int off_y, void *userdata) {
+        stbtt__hheap hh = stbtt__hheap( null, null, 0 );
+        stbtt__active_edge *active = null;
+        int y,j=0, i;
+        float[129] scanline_data = void;
+        float *scanline, scanline2;
 
-    //STBTT__NOTUSED(vsubsample);
+        //STBTT__NOTUSED(vsubsample);
 
-    if (result.w > 64)
-        scanline = cast(float *) STBTT_malloc((result.w*2+1) * cast(uint)float.sizeof, userdata);
-    else
-        scanline = scanline_data.ptr;
+        if (result.w > 64)
+            scanline = cast(float *) STBTT_malloc((result.w*2+1) * cast(uint)float.sizeof, userdata);
+        else
+            scanline = scanline_data.ptr;
 
-    scanline2 = scanline + result.w;
+        scanline2 = scanline + result.w;
 
-    y = off_y;
-    e[n].y0 = cast(float) (off_y + result.h) + 1;
+        y = off_y;
+        e[n].y0 = cast(float) (off_y + result.h) + 1;
 
-    while (j < result.h) {
-        // find center of pixel for this scanline
-        float scan_y_top    = y + 0.0f;
-        float scan_y_bottom = y + 1.0f;
-        stbtt__active_edge **step = &active;
+        while (j < result.h) {
+            // find center of pixel for this scanline
+            float scan_y_top    = y + 0.0f;
+            float scan_y_bottom = y + 1.0f;
+            stbtt__active_edge **step = &active;
 
-        STBTT_memset(scanline , 0, result.w*cast(uint)scanline[0].sizeof);
-        STBTT_memset(scanline2, 0, (result.w+1)*cast(uint)scanline[0].sizeof);
+            STBTT_memset(scanline , 0, result.w*cast(uint)scanline[0].sizeof);
+            STBTT_memset(scanline2, 0, (result.w+1)*cast(uint)scanline[0].sizeof);
 
-        // update all active edges;
-        // remove all active edges that terminate before the top of this scanline
-        while (*step) {
-            stbtt__active_edge * z = *step;
-            if (z.ey <= scan_y_top) {
-                *step = z.next; // delete from list
-                assert(z.direction);
-                z.direction = 0;
-                stbtt__hheap_free(&hh, z);
-            } else {
-                step = &((*step).next); // advance through list
-            }
-        }
-
-        // insert all edges that start before the bottom of this scanline
-        while (e.y0 <= scan_y_bottom) {
-            if (e.y0 != e.y1) {
-                stbtt__active_edge *z = stbtt__new_active(&hh, e, off_x, scan_y_top, userdata);
-                if (z != null) {
-                assert(z.ey >= scan_y_top);
-                // insert at front
-                z.next = active;
-                active = z;
+            // update all active edges;
+            // remove all active edges that terminate before the top of this scanline
+            while (*step) {
+                stbtt__active_edge * z = *step;
+                if (z.ey <= scan_y_top) {
+                    *step = z.next; // delete from list
+                    assert(z.direction);
+                    z.direction = 0;
+                    stbtt__hheap_free(&hh, z);
+                } else {
+                    step = &((*step).next); // advance through list
                 }
             }
-            ++e;
-        }
 
-        // now process all active edges
-        if (active)
-            stbtt__fill_active_edges_new(scanline, scanline2+1, result.w, active, scan_y_top);
-
-        {
-            float sum = 0;
-            for (i=0; i < result.w; ++i) {
-                float k;
-                int m;
-                sum += scanline2[i];
-                k = scanline[i] + sum;
-                k = cast(float) STBTT_fabs(k)*255 + 0.5f;
-                m = cast(int) k;
-                if (m > 255) m = 255;
-                result.pixels[j*result.stride + i] = cast(ubyte) m;
+            // insert all edges that start before the bottom of this scanline
+            while (e.y0 <= scan_y_bottom) {
+                if (e.y0 != e.y1) {
+                    stbtt__active_edge *z = stbtt__new_active(&hh, e, off_x, scan_y_top, userdata);
+                    if (z != null) {
+                    assert(z.ey >= scan_y_top);
+                    // insert at front
+                    z.next = active;
+                    active = z;
+                    }
+                }
+                ++e;
             }
+
+            // now process all active edges
+            if (active)
+                stbtt__fill_active_edges_new(scanline, scanline2+1, result.w, active, scan_y_top);
+
+            {
+                float sum = 0;
+                for (i=0; i < result.w; ++i) {
+                    float k;
+                    int m;
+                    sum += scanline2[i];
+                    k = scanline[i] + sum;
+                    k = cast(float) STBTT_fabs(k)*255 + 0.5f;
+                    m = cast(int) k;
+                    if (m > 255) m = 255;
+                    result.pixels[j*result.stride + i] = cast(ubyte) m;
+                }
+            }
+            // advance all the edges
+            step = &active;
+            while (*step) {
+                stbtt__active_edge *z = *step;
+                z.fx += z.fdx; // advance to position for current scanline
+                step = &((*step).next); // advance through list
+            }
+
+            ++y;
+            ++j;
         }
-        // advance all the edges
-        step = &active;
-        while (*step) {
-            stbtt__active_edge *z = *step;
-            z.fx += z.fdx; // advance to position for current scanline
-            step = &((*step).next); // advance through list
+
+        stbtt__hheap_cleanup(&hh, userdata);
+
+        if (scanline !is scanline_data.ptr) {
+            STBTT_free(scanline, userdata);
         }
-
-        ++y;
-        ++j;
-    }
-
-    stbtt__hheap_cleanup(&hh, userdata);
-
-    if (scanline !is scanline_data.ptr)
-        STBTT_free(scanline, userdata);
     }
 } else {
   static assert(0, "Unrecognized value of STBTT_RASTERIZER_VERSION");
