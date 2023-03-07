@@ -22,16 +22,25 @@ File format:
 
 private RazorFont[string] razorFonts;
 
-// Allows an automatic upload into whatever render target (OpenGL, Vulkan, Metal, DX)
-private void delegate(string) renderTargetAPICall;
+// Allows an automatic upload into whatever render target (OpenGL, Vulkan, Metal, DX) as a string file location
+private void delegate(string) renderTargetAPICallString;
+
+// Allows DIRECT automatic upload into whatever render target (OpenGL, Vulkan, Metal, DX) as RAW data
+private void delegate(ubyte[]) renderTargetAPICallRAW;
+
 
 /**
     Allows automatic render target (OpenGL, Vulkan, Metal, DX) instantiation.
     This can basically pass a file location off to your rendering engine and auto load it into memory.
 */
-void setRenderTargetAPICallString(void delegate(string) apiFunction) {
-    renderTargetAPICall = apiFunction;
+void setRenderTargetAPICallString(void delegate(string) apiStringFunction) {
+    renderTargetAPICallString = apiStringFunction;
 }
+
+void setRenderTargetAPICallRAW(void delegate(ubyte[]) apiRAWFunction) {
+    renderTargetAPICallRAW = apiRAWFunction;
+}
+
 
 
 
