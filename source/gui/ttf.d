@@ -43,21 +43,24 @@ private class TTFBuffer {
 private TTFBuffer[string] buffers;
 
 
-
-
-
-
-
 /// A TrueType Font held in memory
 class TTFont {
 
     // This becomes consumed by the load() method
     TTFInfo fontInfo;
 
-    /// Loads the font up from a directory
-    this(string fileLocation) {
+    string name;
+
+    /// Loads the font up from a directory with an optional name assignment
+    this(string fileLocation, string name = "") {
         if (!exists(fileLocation)) {
             throw new Exception(fileLocation ~ " font does not exist!");
+        }
+
+        if (this.name == "") {
+            this.name = fileLocation;
+        } else {
+            this.name = name;
         }
 
         ubyte[] ttfData = cast(ubyte[])read(fileLocation);
@@ -67,16 +70,16 @@ class TTFont {
     }
 
     ///
-    void load(in ubyte[] data) {
-        //! STAGE 0
-        if (stbtt_InitFont_internal(&fontInfo, data.ptr, stbtt_GetFontOffsetForIndex(data.ptr, 0)) == 0) {
+    void load(ubyte[] data) {
+        //! STAGE 1
+        if (stbtt_InitFont_internal(fontInfo, data, stbtt_GetFontOffsetForIndex(data.ptr, 0)) == 0) {
             throw new Exception("Font failed to load!");
         }
     }
 
     /// Note that you must stbtt_FreeBitmap(returnValue.ptr, null); this thing or it will leak!!!!
     ubyte[] renderCharacter(dchar c, int size, out int width, out int height, float shift_x = 0.0, float shift_y = 0.0) {
-        auto ptr = stbtt_GetCodepointBitmapSubpixel(&font, 0.0,stbtt_ScaleForPixelHeight(&font, size),
+        auto ptr = stbtt_GetCodepointBitmapSubpixel(fontInfo, 0.0,stbtt_ScaleForPixelHeight(fontInfo, size),
             shift_x, shift_y, c, &width, &height, null,null);
         return ptr[0 .. width * height];
     }
@@ -85,9 +88,9 @@ class TTFont {
     void getStringSize(in char[] s, int size, out int width, out int height) {
         float xpos=0;
 
-        auto scale = stbtt_ScaleForPixelHeight(&font, size);
+        auto scale = stbtt_ScaleForPixelHeight(fontInfo, size);
         int ascent, descent, line_gap;
-        stbtt_GetFontVMetrics(&font, &ascent,&descent,&line_gap);
+        stbtt_GetFontVMetrics(fontInfo, &ascent,&descent,&line_gap);
         auto baseline = cast(int) (ascent*scale);
 
         import std.math;
@@ -97,16 +100,16 @@ class TTFont {
         foreach(i, dchar ch; s) {
             int advance,lsb;
             auto x_shift = xpos - floor(xpos);
-            stbtt_GetCodepointHMetrics(&font, ch, &advance, &lsb);
+            stbtt_GetCodepointHMetrics(fontInfo, ch, &advance, &lsb);
 
             int x0, y0, x1, y1;
-            stbtt_GetCodepointBitmapBoxSubpixel(&font, ch, scale,scale,x_shift,0, &x0,&y0,&x1,&y1);
+            stbtt_GetCodepointBitmapBoxSubpixel(fontInfo, ch, scale,scale,x_shift,0, &x0,&y0,&x1,&y1);
 
             maxWidth = cast(int)(xpos + x1);
 
             xpos += (advance * scale);
             if (i + 1 < s.length)
-                xpos += scale*stbtt_GetCodepointKernAdvance(&font, ch,s[i+1]);
+                xpos += scale*stbtt_GetCodepointKernAdvance(fontInfo, ch,s[i+1]);
         }
 
         width = maxWidth;
@@ -943,9 +946,9 @@ struct stbtt_pack_context {
 
 // The following structure is defined publically so you can declare one on
 // the stack or as a global or etc, but you should treat it as opaque.
-class TTFInfo {
+private class TTFInfo {
     void* userdata;
-    ubyte* data;    // pointer to .ttf file
+    ubyte[] data;    // pointer to .ttf file
     int fontstart;  // offset of start of font
 
     int numGlyphs;  // number of glyphs, needed for range checking
@@ -1333,28 +1336,28 @@ enum STBTT_RASTERIZER_VERSION = 2;
 // TTFBuffer helpers to parse data from file
 //
 
-private stbtt_uint8 stbtt__buf_get8(TTFBuffer *b) {
+private stbtt_uint8 stbtt__buf_get8(TTFBuffer b) {
     if (b.cursor >= b.size)
         return 0;
     return b.data[b.cursor++];
 }
 
-private stbtt_uint8 stbtt__buf_peek8(TTFBuffer *b) {
+private stbtt_uint8 stbtt__buf_peek8(TTFBuffer b) {
     if (b.cursor >= b.size)
         return 0;
     return b.data[b.cursor];
 }
 
-private void stbtt__buf_seek(TTFBuffer *b, int o) {
+private void stbtt__buf_seek(TTFBuffer b, int o) {
     assert(!(o > b.size || o < 0));
     b.cursor = (o > b.size || o < 0) ? b.size : o;
 }
 
-private void stbtt__buf_skip(TTFBuffer *b, int o) {
+private void stbtt__buf_skip(TTFBuffer b, int o) {
     stbtt__buf_seek(b, b.cursor + o);
 }
 
-private stbtt_uint32 stbtt__buf_get(TTFBuffer *b, int n) {
+private stbtt_uint32 stbtt__buf_get(TTFBuffer b, int n) {
     stbtt_uint32 v = 0;
     int i;
     assert(n >= 1 && n <= 4);
@@ -1364,34 +1367,36 @@ private stbtt_uint32 stbtt__buf_get(TTFBuffer *b, int n) {
 }
 
 //! STAGE 3
-private TTFBuffer stbtt__new_buf(const(void)* p, size_t size) {
+private TTFBuffer stbtt__new_buf(ubyte[] p, int size) {
     TTFBuffer r;
     // bytes 1_073_741_824 aka 1 gb
     assert(size < 0x40000000);
-    r.data = cast(stbtt_uint8*) p;
-    r.size = cast(int) size;
+    r.data = p;
+    r.size = size;
     r.cursor = 0;
     return r;
 }
 
 //#define stbtt__buf_get16(b)  stbtt__buf_get((b), 2)
 //#define stbtt__buf_get32(b)  stbtt__buf_get((b), 4)
-ushort stbtt__buf_get16 (TTFBuffer *b) {
-    pragma(inline, true); return cast(ushort)stbtt__buf_get(b, 2);
+ushort stbtt__buf_get16 (TTFBuffer b) {
+    pragma(inline, true);
+    return cast(ushort)stbtt__buf_get(b, 2);
 }
-uint stbtt__buf_get32 (TTFBuffer *b) {
-    pragma(inline, true); return cast(uint)stbtt__buf_get(b, 4);
+uint stbtt__buf_get32 (TTFBuffer b) {
+    pragma(inline, true);
+    return cast(uint)stbtt__buf_get(b, 4);
 }
 
-private TTFBuffer stbtt__buf_range(const(TTFBuffer) b, int o, int s) {
+private TTFBuffer stbtt__buf_range(TTFBuffer b, int o, int s) {
     TTFBuffer r = stbtt__new_buf(null, 0);
     if (o < 0 || s < 0 || o > b.size || s > b.size - o) return r;
-    r.data = cast(ubyte*)b.data + o;
+    r.data = b.data[0..o];
     r.size = s;
     return r;
 }
 
-private TTFBuffer stbtt__cff_get_index(TTFBuffer *b) {
+private TTFBuffer stbtt__cff_get_index(TTFBuffer b) {
     int count, start, offsize;
     start = b.cursor;
     count = stbtt__buf_get16(b);
@@ -1404,7 +1409,7 @@ private TTFBuffer stbtt__cff_get_index(TTFBuffer *b) {
     return stbtt__buf_range(b, start, b.cursor - start);
 }
 
-private stbtt_uint32 stbtt__cff_int(TTFBuffer *b) {
+private stbtt_uint32 stbtt__cff_int(TTFBuffer b) {
     int b0 = stbtt__buf_get8(b);
     if (b0 >= 32 && b0 <= 246)       return b0 - 139;
     else if (b0 >= 247 && b0 <= 250) return (b0 - 247)*256 + stbtt__buf_get8(b) + 108;
@@ -1414,7 +1419,7 @@ private stbtt_uint32 stbtt__cff_int(TTFBuffer *b) {
     assert(0);
 }
 
-private void stbtt__cff_skip_operand(TTFBuffer *b) {
+private void stbtt__cff_skip_operand(TTFBuffer b) {
     int v, b0 = stbtt__buf_peek8(b);
     assert(b0 >= 28);
     if (b0 == 30) {
@@ -1429,7 +1434,7 @@ private void stbtt__cff_skip_operand(TTFBuffer *b) {
     }
 }
 
-private TTFBuffer stbtt__dict_get(TTFBuffer *b, int key) {
+private TTFBuffer stbtt__dict_get(TTFBuffer b, int key) {
     stbtt__buf_seek(b, 0);
     while (b.cursor < b.size) {
         int start = b.cursor, end, op;
@@ -1443,29 +1448,29 @@ private TTFBuffer stbtt__dict_get(TTFBuffer *b, int key) {
     return stbtt__buf_range(b, 0, 0);
 }
 
-private void stbtt__dict_get_ints(TTFBuffer *b, int key, int outcount, stbtt_uint32 *outstb) {
+private void stbtt__dict_get_ints(TTFBuffer b, int key, int outcount, stbtt_uint32 *outstb) {
     int i;
     TTFBuffer operands = stbtt__dict_get(b, key);
     for (i = 0; i < outcount && operands.cursor < operands.size; i++)
-        outstb[i] = stbtt__cff_int(&operands);
+        outstb[i] = stbtt__cff_int(operands);
 }
 
-private int stbtt__cff_index_count(TTFBuffer *b) {
+private int stbtt__cff_index_count(TTFBuffer b) {
     stbtt__buf_seek(b, 0);
     return stbtt__buf_get16(b);
 }
 
 private TTFBuffer stbtt__cff_index_get(TTFBuffer b, int i) {
     int count, offsize, start, end;
-    stbtt__buf_seek(&b, 0);
-    count = stbtt__buf_get16(&b);
-    offsize = stbtt__buf_get8(&b);
+    stbtt__buf_seek(b, 0);
+    count = stbtt__buf_get16(b);
+    offsize = stbtt__buf_get8(b);
     assert(i >= 0 && i < count);
     assert(offsize >= 1 && offsize <= 4);
-    stbtt__buf_skip(&b, i*offsize);
-    start = stbtt__buf_get(&b, offsize);
-    end = stbtt__buf_get(&b, offsize);
-    return stbtt__buf_range(&b, 2+(count+1)*offsize+start, end - start);
+    stbtt__buf_skip(b, i*offsize);
+    start = stbtt__buf_get(b, offsize);
+    end = stbtt__buf_get(b, offsize);
+    return stbtt__buf_range(b, 2+(count+1)*offsize+start, end - start);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1486,108 +1491,63 @@ stbtt_int8 ttCHAR (const(void)* p) pure {
     pragma(inline, true); return *cast(const(stbtt_int8)*)p;
 }
 
-private stbtt_uint16 ttUSHORT(const(stbtt_uint8)* p) {
+private stbtt_uint16 ttUSHORT(stbtt_uint8[] p) {
     return p[0]*256 + p[1];
 }
-private stbtt_int16 ttSHORT(const(stbtt_uint8)* p) {
+private stbtt_int16 ttSHORT(stbtt_uint8[] p) {
     return cast(stbtt_int16)(p[0]*256 + p[1]);
 }
-private stbtt_uint32 ttULONG(const(stbtt_uint8)* p) {
+private stbtt_uint32 ttULONG(stbtt_uint8[] p) {
     return (p[0]<<24) + (p[1]<<16) + (p[2]<<8) + p[3];
 }
-private stbtt_int32 ttLONG(const(stbtt_uint8)* p) {
+private stbtt_int32 ttLONG(stbtt_uint8[] p) {
     return (p[0]<<24) + (p[1]<<16) + (p[2]<<8) + p[3];
 }
 
 //#define stbtt_tag4(p,c0,c1,c2,c3) ((p)[0] == (c0) && (p)[1] == (c1) && (p)[2] == (c2) && (p)[3] == (c3))
 //#define stbtt_tag(p,str)           stbtt_tag4(p,str[0],str[1],str[2],str[3])
 
-bool stbtt_tag4 (const(void)* p, ubyte c0, ubyte c1, ubyte c2, ubyte c3) pure {
+bool stbtt_tag4 (ubyte[] p, ubyte c0, ubyte c1, ubyte c2, ubyte c3) pure {
     return
-        (cast(const(ubyte)*)p)[0] == c0 &&
-        (cast(const(ubyte)*)p)[1] == c1 &&
-        (cast(const(ubyte)*)p)[2] == c2 &&
-        (cast(const(ubyte)*)p)[3] == c3;
+        p[0] == c0 &&
+        p[1] == c1 &&
+        p[2] == c2 &&
+        p[3] == c3;
 }
 
-bool stbtt_tag (const(void)* p, const(void)* str) {
-    //stbtt_tag4(p,str[0],str[1],str[2],str[3])
-    import core.stdc.string : memcmp;
-    return (memcmp(p, str, 4) == 0);
+bool stbtt_tag (ubyte[] p, string str) {
+    string newString = cast(string) p;
+    return newString == str;
 }
 
-private int stbtt__isfont(stbtt_uint8 *font) {
+private int stbtt__isfont(stbtt_uint8[] font) {
     // check the version number
     if (stbtt_tag4(font, '1',0,0,0)) return 1; // TrueType 1
-    if (stbtt_tag(font, "typ1".ptr)) return 1; // TrueType with type 1 font -- we don't support this!
-    if (stbtt_tag(font, "OTTO".ptr)) return 1; // OpenType with CFF
+    if (stbtt_tag(font, "typ1")) return 1; // TrueType with type 1 font -- we don't support this!
+    if (stbtt_tag(font, "OTTO")) return 1; // OpenType with CFF
     if (stbtt_tag4(font, 0,1,0,0))   return 1; // OpenType 1.0
-    if (stbtt_tag(font, "true".ptr)) return 1; // Apple specification for TrueType fonts
+    if (stbtt_tag(font, "true")) return 1; // Apple specification for TrueType fonts
     return 0;
 }
 
 // @OPTIMIZE: binary search
 //! STAGE 5
-private stbtt_uint32 stbtt__find_table(stbtt_uint8 *data, stbtt_uint32 fontstart, const(char)* tag) {
-    stbtt_int32 num_tables = ttUSHORT(data+fontstart+4);
+private stbtt_uint32 stbtt__find_table(stbtt_uint8[] data, stbtt_uint32 fontstart, string tag) {
+
+    stbtt_int32 num_tables = ttUSHORT(data[fontstart+4..data.length]);
     stbtt_uint32 tabledir = fontstart + 12;
     stbtt_int32 i;
     for (i=0; i < num_tables; ++i) {
         stbtt_uint32 loc = tabledir + 16*i;
-        if (stbtt_tag(data+loc+0, tag))
-            return ttULONG(data+loc+8);
+        if (stbtt_tag(data[loc..loc + tag.length], tag))
+            return ttULONG(data[loc+8..loc+12]);
     }
     return 0;
 }
 
-private int stbtt_GetFontOffsetForIndex_internal(ubyte *font_collection, int index) {
-    // if it's just a font, there's only one valid index
-    if (stbtt__isfont(font_collection))
-        return index == 0 ? 0 : -1;
-
-    // check if it's a TTC
-    if (stbtt_tag(font_collection, "ttcf".ptr)) {
-        // version 1?
-        if (ttULONG(font_collection+4) == 0x00010000 || ttULONG(font_collection+4) == 0x00020000) {
-            stbtt_int32 n = ttLONG(font_collection+8);
-            if (index >= n)
-                return -1;
-            return ttULONG(font_collection+12+index*4);
-        }
-    }
-    return -1;
-}
-
-private int stbtt_GetNumberOfFonts_internal(ubyte *font_collection) {
-    // if it's just a font, there's only one valid font
-    if (stbtt__isfont(font_collection))
-        return 1;
-
-    // check if it's a TTC
-    if (stbtt_tag(font_collection, "ttcf".ptr)) {
-        // version 1?
-        if (ttULONG(font_collection+4) == 0x00010000 || ttULONG(font_collection+4) == 0x00020000) {
-            return ttLONG(font_collection+8);
-        }
-    }
-    return 0;
-}
-
-private TTFBuffer stbtt__get_subrs(TTFBuffer cff, TTFBuffer fontdict) {
-    stbtt_uint32 subrsoff = 0;
-    stbtt_uint32[2] private_loc = 0;
-    TTFBuffer pdict;
-    stbtt__dict_get_ints(&fontdict, 18, 2, private_loc.ptr);
-    if (!private_loc[1] || !private_loc[0]) return stbtt__new_buf(null, 0);
-    pdict = stbtt__buf_range(&cff, private_loc[1], private_loc[0]);
-    stbtt__dict_get_ints(&pdict, 19, 1, &subrsoff);
-    if (!subrsoff) return stbtt__new_buf(null, 0);
-    stbtt__buf_seek(&cff, private_loc[1]+subrsoff);
-    return stbtt__cff_get_index(&cff);
-}
 
 //! STAGE 2
-private int stbtt_InitFont_internal(TTFInfo info, ubyte *data, int fontstart) {
+private int stbtt_InitFont_internal(TTFInfo info, ubyte[] data, int fontstart) {
     stbtt_uint32 cmap, t;
     stbtt_int32 i,numTables;
 
@@ -4904,12 +4864,6 @@ public int stbtt_GetFontOffsetForIndex(const(ubyte)* data, int index) {
 public int stbtt_GetNumberOfFonts(const(ubyte)* data) {
     return stbtt_GetNumberOfFonts_internal(cast(ubyte *) data);
 }
-
-
-//! STAGE 1
-// public int stbtt_InitFont(TTFInfo info, const(ubyte)* data, int offset) {
-    // stbtt_InitFont_internal(info, cast(ubyte *) data, offset);
-// }
 
 public int stbtt_FindMatchingFont(const(ubyte)* fontdata, const(char)* name, int flags) {
     return stbtt_FindMatchingFont_internal(cast(ubyte *) fontdata, cast(char *) name, flags);
