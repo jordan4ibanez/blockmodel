@@ -44,3 +44,19 @@ private class RazorFont {
     // Readonly specifier if trimming was enabled
     bool trimmed = false;
 }
+
+/**
+    Create a font from your PNG JSON pairing in the directory.
+
+    You do not specify an extension.
+
+    So if you have: cool.png and cool.json
+    You would call this as createFont("fonts/cool")
+    
+    Name is an optional. You will call into Razor Font by this name.
+
+    If you do not specify a name, you must call into RazorFont by the fileLocation, literal.
+*/
+void createFont(string fileLocation, string name = "") {
+
+}
