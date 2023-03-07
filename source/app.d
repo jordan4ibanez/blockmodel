@@ -22,12 +22,18 @@ void main()
     // Window controls OpenGL and GLFW
     Window.initialize();
 
+    //! Start Razor Font testing
+
+    
     Font.setRenderTargetAPICallString(
         (string input){
             writeln("hi there I am a debug api thing hello yes");
         }
     );
     Font.createFont("fonts/test_font", "cool");
+
+
+    //* End Razor Font testing
 
     bool blah = true;
     if (blah) {
