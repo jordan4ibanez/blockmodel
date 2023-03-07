@@ -34,9 +34,18 @@ import std.conv;
 //* WAS stbtt__buf
 /// Stores True Type Font data in raw form
 private class TTFBuffer {
+
     ubyte[] data;
     int cursor;
     int size;
+
+    this(ubyte[] p, int size) {
+        // bytes 1_073_741_824 aka 1 gb (pretty much)
+        assert(size < 0x40000000);
+        this.data = p;
+        this.size = size;
+        this.cursor = 0;
+    }
 }
 
 /// Stores all True Type Font Buffers into an easily accessable hashmap
@@ -1365,17 +1374,6 @@ private stbtt_uint32 stbtt__buf_get(TTFBuffer b, int n) {
     return v;
 }
 
-//! STAGE 3
-private TTFBuffer stbtt__new_buf(ubyte[] p, int size) {
-    TTFBuffer r;
-    // bytes 1_073_741_824 aka 1 gb
-    assert(size < 0x40000000);
-    r.data = p;
-    r.size = size;
-    r.cursor = 0;
-    return r;
-}
-
 //#define stbtt__buf_get16(b)  stbtt__buf_get((b), 2)
 //#define stbtt__buf_get32(b)  stbtt__buf_get((b), 4)
 ushort stbtt__buf_get16 (TTFBuffer b) {
@@ -1545,6 +1543,9 @@ private stbtt_uint32 stbtt__find_table(stbtt_uint8[] data, stbtt_uint32 fontstar
 }
 
 
+
+
+
 //! STAGE 2
 private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fileLocation) {
 
@@ -1555,10 +1556,11 @@ private int ttfInitializeFont(TTFInfo info, ubyte[] data, string name, string fi
     int numTables;
 
     info.fileLocation = fileLocation;
-
     info.name = name;
 
-    info.cff = stbtt__new_buf(null, 0);
+    info.cff = new TTFBuffer([], 0);
+
+
 
 
     cmap = stbtt__find_table(data, fontstart, "cmap");       //! required
