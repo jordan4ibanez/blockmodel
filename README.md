@@ -1,7 +1,7 @@
 # blockmodel
  A model format for voxel games.
 
-
+Discord link: https://discord.gg/dRPyvubfyg
 
 # Spec:
 
