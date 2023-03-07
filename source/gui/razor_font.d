@@ -107,6 +107,9 @@ private class RazorFont {
         double[] myCoolBlah = map["whatever letter/unicode thing you're getting"];
     */
     double[4][string] map;
+
+    // Stores the map raw as a linear array before processed
+    string rawMap;
 }
 
 /**
@@ -157,34 +160,42 @@ void parseJson(ref RazorFont fontObject, const string jsonLocation) {
         switch(key) {
             case "pallet_width": {
                 assert(value.type == JSONType.integer);
+                fontObject.palletWidth = cast(int)value.integer;
                 break;
             }
             case "pallet_height": {
                 assert(value.type == JSONType.integer);
+                fontObject.palletHeight = cast(int)value.integer;
                 break;
             }
             case "border": {
                 assert(value.type == JSONType.integer);
+                fontObject.border = cast(int)value.integer;
                 break;
             }
             case "rows": {
                 assert(value.type == JSONType.integer);
+                fontObject.rows = cast(int)value.integer;
                 break;
             }
             case "columns": {
                 assert(value.type == JSONType.integer);
+                fontObject.columns = cast(int)value.integer;
                 break;
             }
             case "character_width": {
                 assert(value.type == JSONType.integer);
+                fontObject.characterWidth = cast(int)value.integer;
                 break;
             }
             case "charactert_height": {
                 assert(value.type == JSONType.integer);
+                fontObject.charactertHeight = cast(int)value.integer;
                 break;
             }
             case "character_map": {
                 assert(value.type == JSONType.string);
+                fontObject.rawMap = value.str;
                 break;
             }
             default: // Unknown
