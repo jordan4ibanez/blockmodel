@@ -1,6 +1,7 @@
 module gui.razor_font;
 
 import std.stdio;
+import std.file;
 import color;
 import png;
 
@@ -99,14 +100,35 @@ private class RazorFont {
 void createFont(string fileLocation, string name = "") {
 
     // Are we using the fileLocation as the key, or did they specify a name?
-    string key = name == "" ? fileLocation : name;
+    const string key = name == "" ? fileLocation : name;
+
+    const string pngLocation = fileLocation ~ ".png";
+    const string jsonLocation = fileLocation ~ ".json";
+
+    checkFilesExist(pngLocation, jsonLocation);
 
     writeln(renderTargetAPICallRAW is null);
     writeln(renderTargetAPICallString is null);
 
+    // Automate existing engine integration
+    tryCallingRAWApi(pngLocation);
+    tryCallingStringApi(pngLocation);
 }
 
-void tryCallingRAWApi(string fileLocation) {
+
+// Makes sure there's data where there should be
+private void checkFilesExist(string pngLocation, string jsonLocation) {
+    if (!exists(pngLocation)) {
+        throw new Exception("Razor Font: " ~ pngLocation ~ " does not exist!");
+    }
+
+    if (!exists(jsonLocation)) {
+        throw new Exception("Razor Font: " ~ jsonLocation ~ " does not exist!");
+    }
+}
+
+// Attempts to automate the api RAW call
+private void tryCallingRAWApi(string fileLocation) {
     if (renderTargetAPICallRAW is null) {
         return;
     }
@@ -117,10 +139,11 @@ void tryCallingRAWApi(string fileLocation) {
     const int width = tempImageObject.width();
     const int height = tempImageObject.height();
 
-    renderTargetAPICallRAW(tempImageObject.imageData.bytes);
+    renderTargetAPICallRAW(tempImageObject.imageData.bytes, width, height);
 }
 
-void tryCallingStringApi(string fileLocation) {
+// Attemps to automate the api String call
+private void tryCallingStringApi(string fileLocation) {
     if (renderTargetAPICallString is null) {
         return;
     }
