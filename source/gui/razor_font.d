@@ -105,14 +105,19 @@ void createFont(string fileLocation, string name = "") {
     const string pngLocation = fileLocation ~ ".png";
     const string jsonLocation = fileLocation ~ ".json";
 
+    // Make sure the files exist
     checkFilesExist(pngLocation, jsonLocation);
-
-    writeln(renderTargetAPICallRAW is null);
-    writeln(renderTargetAPICallString is null);
 
     // Automate existing engine integration
     tryCallingRAWApi(pngLocation);
     tryCallingStringApi(pngLocation);
+
+    // Create the Font object
+    RazorFont fontObject = new RazorFont();
+
+    // Now parse the json
+    
+
 }
 
 
@@ -127,6 +132,16 @@ private void checkFilesExist(string pngLocation, string jsonLocation) {
     }
 }
 
+//* ========================== BEGIN JSON DECODING ==================================
+// Run through the required data to assemble a font object
+void parseJson(ref RazorFont fontObject, const string jsonLocation) {
+    
+}
+
+
+//!============================ END JSON DECODING ==================================
+
+//* ========================== BEGIN API AGNOSTIC CALLS ============================
 // Attempts to automate the api RAW call
 private void tryCallingRAWApi(string fileLocation) {
     if (renderTargetAPICallRAW is null) {
@@ -150,3 +165,5 @@ private void tryCallingStringApi(string fileLocation) {
     
     renderTargetAPICallString(fileLocation);
 }
+
+//! ======================= END API AGNOSTIC CALLS ================================

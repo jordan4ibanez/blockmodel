@@ -30,6 +30,7 @@ void main()
             Texture.addTexture(input);
         }
     );
+
     Font.createFont("fonts/test_font", "cool");
 
 
