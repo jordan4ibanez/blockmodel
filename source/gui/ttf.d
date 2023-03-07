@@ -4,22 +4,6 @@ import std.stdio;
 import std.file;
 import std.conv;
 
-/// Stores True Type Font data in raw form
-private class TTFBuffer {
-
-    ubyte[] data;
-    int cursor;
-    int size;
-
-    this(ubyte[] p, int size) {
-        // bytes 1_073_741_824 aka 1 gb (pretty much)
-        assert(size < 0x40000000);
-        this.data = p;
-        this.size = size;
-        this.cursor = 0;
-    }
-}
-
 /// Stores all True Type Fonts into an easily accessable hashmap
 private TTFont[string] buffers;
 
@@ -35,18 +19,70 @@ void createFont(string fileLocation, string name = "") {
 //Todo;
 
 
+/// Stores True Type Font data in raw form
+private class TTFBuffer {
+
+    ubyte[] data;
+    int cursor;
+    int size;
+
+    this(ubyte[] p, int size) {
+        this.data = p;
+        this.size = size;
+        this.cursor = 0;
+    }
+}
+
+
 /// A TrueType Font held in memory, this whole thing can't be accessed outside this module,
 /// so we don't care about privacy because you can't touch it.
 private class TTFont {
-
-    /// This becomes consumed by the load() method
+    
     TTFInfo fontInfo;
 
     /// Name of the font
     string name;
 
+    /// Customizable user data
+    ubyte[] userdata;
+
+    // Location of .ttf file
+    string fileLocation;
+
+    // Number of glyphs, needed for range checking
+    // int numGlyphs;
+
+    // Table locations as offset from start of .ttf
+    // int loca;
+    // int head;
+    // int glyf;
+    // int hhea;
+    // int hmtx;
+    // int kern;
+    // int gpos;
+
+
+    // A cmap mapping for our chosen character encoding
+    // int index_map;
+    // Format needed to map from glyph index to glyph
+    // int indexToLocFormat;
+    
+    // Cff font data
+    // TTFBuffer cff;
+    // // The charstring index
+    // TTFBuffer charstrings;
+    // // Global charstring subroutines index
+    // TTFBuffer gsubrs;
+    // // Private charstring subroutines index
+    // TTFBuffer subrs;
+    // // Array of font dicts
+    // TTFBuffer fontdicts;
+    // // Map from glyph to fontdict
+    // TTFBuffer fdselect;
+
     /// Loads the font up from a directory with an optional name assignment
     this(string fileLocation, string name = "") {
+
         if (!exists(fileLocation)) {
             throw new Exception(fileLocation ~ " font does not exist!");
         }
@@ -56,11 +92,6 @@ private class TTFont {
         } else {
             this.name = name;
         }
-
-        ubyte[] ttfData = cast(ubyte[])read(fileLocation);
-
-        this.load(ttfData, name, fileLocation);
-
     }
 }
 
@@ -68,25 +99,6 @@ private class TTFont {
 
 //*========================================= FONT LOADING =====================================================
 
-/// Holds RAW font data inside of a TTFont object
-private class TTFInfo {
-    ubyte[] userdata;
-    string fileLocation; // Location of .ttf file
-    string name;         // Name of a font
-
-    int numGlyphs;       // Number of glyphs, needed for range checking
-
-    int loca, head, glyf, hhea, hmtx, kern, gpos; // table locations as offset from start of .ttf
-    int index_map;                                // a cmap mapping for our chosen character encoding
-    int indexToLocFormat;                         // format needed to map from glyph index to glyph
-    
-    TTFBuffer cff;                    // cff font data
-    TTFBuffer charstrings;            // the charstring index
-    TTFBuffer gsubrs;                 // global charstring subroutines index
-    TTFBuffer subrs;                  // private charstring subroutines index
-    TTFBuffer fontdicts;              // array of font dicts
-    TTFBuffer fdselect;               // map from glyph to fontdict
-}
 
 //!================================= END FONT LOADING ==========================================
 
@@ -97,14 +109,17 @@ enum {
     MACSTYLE_UNDERSCORE = 4,
     MACSTYLE_NONE       = 8,   // <= not same as 0, this makes us check the bitfield is 0
 }
-enum { // platformID
+
+// PlatformID
+enum {
     PLATFORM_ID_UNICODE   = 0,
     PLATFORM_ID_MAC       = 1,
     PLATFORM_ID_ISO       = 2,
     PLATFORM_ID_MICROSOFT = 3
 }
 
-enum { // encodingID for PLATFORM_ID_UNICODE
+// EncodingID for PLATFORM_ID_UNICODE
+enum {
     UNICODE_EID_UNICODE_1_0      = 0,
     UNICODE_EID_UNICODE_1_1      = 1,
     UNICODE_EID_ISO_10646        = 2,
@@ -112,22 +127,28 @@ enum { // encodingID for PLATFORM_ID_UNICODE
     UNICODE_EID_UNICODE_2_0_FULL = 4
 }
 
-enum { // encodingID for PLATFORM_ID_MICROSOFT
+// EncodingID for PLATFORM_ID_MICROSOFT
+enum {
     MS_EID_SYMBOL       = 0,
     MS_EID_UNICODE_BMP  = 1,
     MS_EID_SHIFTJIS     = 2,
     MS_EID_UNICODE_FULL = 10
 }
 
-enum { // encodingID for PLATFORM_ID_MAC; same as Script Manager codes
+// EncodingID for PLATFORM_ID_MAC; same as Script Manager codes
+enum {
     MAC_EID_ROMAN        = 0,   MAC_EID_ARABIC  = 4,
     MAC_EID_JAPANESE     = 1,   MAC_EID_HEBREW  = 5,
     MAC_EID_CHINESE_TRAD = 2,   MAC_EID_GREEK   = 6,
     MAC_EID_KOREAN       = 3,   MAC_EID_RUSSIAN = 7
 }
 
-enum { // languageID for PLATFORM_ID_MICROSOFT; same as LCID...
-       // problematic because there are e.g. 16 english LCIDs and 16 arabic LCIDs
+
+/**
+    LanguageID for PLATFORM_ID_MICROSOFT; same as LCID
+    Problematic because there are e.g. 16 english LCIDs and 16 arabic LCIDs
+*/
+enum {
     MS_LANG_ENGLISH = 0x0409,   MS_LANG_ITALIAN  = 0x0410,
     MS_LANG_CHINESE = 0x0804,   MS_LANG_JAPANESE = 0x0411,
     MS_LANG_DUTCH   = 0x0413,   MS_LANG_KOREAN   = 0x0412,
@@ -136,7 +157,8 @@ enum { // languageID for PLATFORM_ID_MICROSOFT; same as LCID...
     MS_LANG_HEBREW  = 0x040d,   MS_LANG_SWEDISH  = 0x041D
 }
 
-enum { // languageID for PLATFORM_ID_MAC
+// LanguageID for PLATFORM_ID_MAC
+enum {
     MAC_LANG_ENGLISH = 0,    MAC_LANG_JAPANESE           = 11,
     MAC_LANG_ARABIC  = 12,   MAC_LANG_KOREAN             = 23,
     MAC_LANG_DUTCH   = 4,    MAC_LANG_RUSSIAN            = 32,
