@@ -2926,53 +2926,51 @@ struct stbtt__active_edge {
 }
 
 static if (STBTT_RASTERIZER_VERSION == 1) {
-enum STBTT_FIXSHIFT   = 10;
-enum STBTT_FIX        = (1 << STBTT_FIXSHIFT);
-enum STBTT_FIXMASK    = (STBTT_FIX-1);
+    enum STBTT_FIXSHIFT   = 10;
+    enum STBTT_FIX        = (1 << STBTT_FIXSHIFT);
+    enum STBTT_FIXMASK    = (STBTT_FIX-1);
 
-private stbtt__active_edge *stbtt__new_active(stbtt__hheap *hh, stbtt__edge *e, int off_x, float start_point, void *userdata)
-{
-   stbtt__active_edge *z = void;
-   z = cast(stbtt__active_edge *) stbtt__hheap_alloc(hh, cast(uint)(*z).sizeof, userdata);
-   float dxdy = (e.x1 - e.x0) / (e.y1 - e.y0);
-   assert(z != null);
-   if (!z) return z;
+    private stbtt__active_edge *stbtt__new_active(stbtt__hheap *hh, stbtt__edge *e, int off_x, float start_point, void *userdata) {
+        stbtt__active_edge *z = void;
+        z = cast(stbtt__active_edge *) stbtt__hheap_alloc(hh, cast(uint)(*z).sizeof, userdata);
+        float dxdy = (e.x1 - e.x0) / (e.y1 - e.y0);
+        assert(z != null);
+        if (!z) return z;
 
-   // round dx down to avoid overshooting
-   if (dxdy < 0)
-      z.dx = -STBTT_ifloor(STBTT_FIX * -dxdy);
-   else
-      z.dx = STBTT_ifloor(STBTT_FIX * dxdy);
+        // round dx down to avoid overshooting
+        if (dxdy < 0)
+            z.dx = -STBTT_ifloor(STBTT_FIX * -dxdy);
+        else
+            z.dx = STBTT_ifloor(STBTT_FIX * dxdy);
 
-   z.x = STBTT_ifloor(STBTT_FIX * e.x0 + z.dx * (start_point - e.y0)); // use z->dx so when we offset later it's by the same amount
-   z.x -= off_x * STBTT_FIX;
+        z.x = STBTT_ifloor(STBTT_FIX * e.x0 + z.dx * (start_point - e.y0)); // use z->dx so when we offset later it's by the same amount
+        z.x -= off_x * STBTT_FIX;
 
-   z.ey = e.y1;
-   z.next = 0;
-   z.direction = e.invert ? 1 : -1;
-   return z;
-}
+        z.ey = e.y1;
+        z.next = 0;
+        z.direction = e.invert ? 1 : -1;
+        return z;
+    }
 } else static if (STBTT_RASTERIZER_VERSION == 2) {
-private stbtt__active_edge *stbtt__new_active(stbtt__hheap *hh, stbtt__edge *e, int off_x, float start_point, void *userdata)
-{
-   stbtt__active_edge *z = void;
-   z = cast(stbtt__active_edge *) stbtt__hheap_alloc(hh, cast(uint)(*z).sizeof, userdata);
-   float dxdy = (e.x1 - e.x0) / (e.y1 - e.y0);
-   assert(z != null);
-   //STBTT_assert(e->y0 <= start_point);
-   if (!z) return z;
-   z.fdx = dxdy;
-   z.fdy = dxdy != 0.0f ? (1.0f/dxdy) : 0.0f;
-   z.fx = e.x0 + dxdy * (start_point - e.y0);
-   z.fx -= off_x;
-   z.direction = e.invert ? 1.0f : -1.0f;
-   z.sy = e.y0;
-   z.ey = e.y1;
-   z.next = null;
-   return z;
-}
+    private stbtt__active_edge *stbtt__new_active(stbtt__hheap *hh, stbtt__edge *e, int off_x, float start_point, void *userdata) {
+        stbtt__active_edge *z = void;
+        z = cast(stbtt__active_edge *) stbtt__hheap_alloc(hh, cast(uint)(*z).sizeof, userdata);
+        float dxdy = (e.x1 - e.x0) / (e.y1 - e.y0);
+        assert(z != null);
+        //STBTT_assert(e->y0 <= start_point);
+        if (!z) return z;
+        z.fdx = dxdy;
+        z.fdy = dxdy != 0.0f ? (1.0f/dxdy) : 0.0f;
+        z.fx = e.x0 + dxdy * (start_point - e.y0);
+        z.fx -= off_x;
+        z.direction = e.invert ? 1.0f : -1.0f;
+        z.sy = e.y0;
+        z.ey = e.y1;
+        z.next = null;
+        return z;
+    }
 } else {
-  static assert(0, "Unrecognized value of STBTT_RASTERIZER_VERSION");
+    static assert(0, "Unrecognized value of STBTT_RASTERIZER_VERSION");
 }
 
 static if (STBTT_RASTERIZER_VERSION == 1) {
