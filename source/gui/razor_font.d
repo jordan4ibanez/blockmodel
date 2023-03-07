@@ -23,10 +23,10 @@ File format:
 private RazorFont[string] razorFonts;
 
 // Allows an automatic upload into whatever render target (OpenGL, Vulkan, Metal, DX) as a string file location
-private void delegate(string) renderTargetAPICallString;
+private void delegate(string) renderTargetAPICallString = null;
 
 // Allows DIRECT automatic upload into whatever render target (OpenGL, Vulkan, Metal, DX) as RAW data
-private void delegate(ubyte[]) renderTargetAPICallRAW;
+private void delegate(ubyte[]) renderTargetAPICallRAW = null;
 
 
 /**
@@ -34,6 +34,9 @@ private void delegate(ubyte[]) renderTargetAPICallRAW;
     This can basically pass a file location off to your rendering engine and auto load it into memory.
 */
 void setRenderTargetAPICallString(void delegate(string) apiStringFunction) {
+    if (renderTargetAPICallRAW !is null) {
+        throw new Exception("Razor Font: You already set the RAW api integration function!");
+    }
     renderTargetAPICallString = apiStringFunction;
 }
 
@@ -43,6 +46,9 @@ void setRenderTargetAPICallString(void delegate(string) apiStringFunction) {
     This allows the render engine to AUTOMATICALLY upload the image as RAW data.
 */
 void setRenderTargetAPICallRAW(void delegate(ubyte[]) apiRAWFunction) {
+    if (renderTargetAPICallString !is null) {
+        throw new Exception("Razor Font: You already set the STRING api integration function!");
+    }
     renderTargetAPICallRAW = apiRAWFunction;
 }
 
@@ -92,6 +98,7 @@ void createFont(string fileLocation, string name = "") {
     // Are we using the fileLocation as the key, or did they specify a name?
     string key = name == "" ? fileLocation : name;
 
-
+    writeln(renderTargetAPICallRAW is null);
+    writeln(renderTargetAPICallString is null);
 
 }
