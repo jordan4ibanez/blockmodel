@@ -134,11 +134,6 @@ void main()
         .setTexture(Texture.getTexture("textures/debug.png"))
         .finalize();
 
-    Shader.create("font", "shaders/font_vertex.vs", "shaders/font_fragment.fs");
-    Shader.createUniform("font", "cameraMatrix");
-    Shader.createUniform("font", "objectMatrix");
-    Shader.createUniform("font", "textureSampler");
-
     float fancyRotation = 0;
 
     Window.setVsync(0);
