@@ -37,28 +37,6 @@ void main()
         }
     );
 
-    Font.RazorFontData test = Font.debugRenderDouble("cool", 20, "test"); 
-
-    // Mesh myCoolText = new Mesh()
-    //     .addVertices2d(to!(float[])(test.vertexData))
-    //     .addIndices(test.indices)
-    //     .addTextureCoordinates(to!(float[])(test.textureData))
-    //     .setTexture(Texture.getTexture("fonts/test_font.png"))
-    //     .finalize();
-
-    // Shader.setUniformMatrix4f("2d", "objectMatrix",
-    //     Camera.setGuiObjectMatrix(
-    //         Vector2d(
-    //             -Window.getWidth() / 2,
-    //             -Window.getHeight() / 2
-    //         )
-    //     )
-    // );
-
-    // myCoolText.render("2d");
-
-    // myCoolText.cleanUp();
-
     Font.createFont("fonts/test_font", "cool", false, false, false);
 
 
@@ -156,6 +134,11 @@ void main()
         .setTexture(Texture.getTexture("textures/debug.png"))
         .finalize();
 
+    Shader.create("font", "shaders/font_vertex.vs", "shaders/font_fragment.fs");
+    Shader.createUniform("font", "cameraMatrix");
+    Shader.createUniform("font", "objectMatrix");
+    Shader.createUniform("font", "textureSampler");
+
     float fancyRotation = 0;
 
     Window.setVsync(0);
@@ -239,11 +222,38 @@ void main()
         
 
             // Now render this font
-            // Camera.clearDepthBuffer();
+            Camera.clearDepthBuffer();
 
-            // Shader.startProgram("2d");
+            Shader.startProgram("2d");
 
-            // Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
+            Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
+
+            string accumulator;
+            foreach (i; 0..100) {
+                accumulator ~= "this is a test of my font rendering engine thing so cool wooo yeah :) here is some more text\n";
+            }
+
+            Font.RazorFontData fontData = Font.debugRenderDouble("cool", 20, accumulator); 
+
+            Mesh myCoolText = new Mesh()
+                .addVertices2d(to!(float[])(fontData.vertexPositions))
+                .addIndices(fontData.indices)
+                .addTextureCoordinates(to!(float[])(fontData.textureCoordinates))
+                .setTexture(Texture.getTexture("fonts/test_font.png"))
+                .finalize();
+
+            Shader.setUniformMatrix4f("2d", "objectMatrix",
+                Camera.setGuiObjectMatrix(
+                    Vector2d(
+                        -Window.getWidth() / 2,
+                        -Window.getHeight() / 2
+                    )
+                )
+            );
+
+            myCoolText.render("2d");
+
+            myCoolText.cleanUp();
         }
 
         Window.swapBuffers();
