@@ -732,6 +732,7 @@ void STBTT_memset (void* d, uint v, uint count) {
 // //
 
 // private structure
+//! STAGE 4
 struct stbtt__buf {
     ubyte *data;
     int cursor;
@@ -1346,8 +1347,10 @@ private stbtt_uint32 stbtt__buf_get(stbtt__buf *b, int n) {
     return v;
 }
 
+//! STAGE 3
 private stbtt__buf stbtt__new_buf(const(void)* p, size_t size) {
     stbtt__buf r;
+    // bytes 1_073_741_824 aka 1 gb
     assert(size < 0x40000000);
     r.data = cast(stbtt_uint8*) p;
     r.size = cast(int) size;
@@ -1508,6 +1511,7 @@ private int stbtt__isfont(stbtt_uint8 *font) {
 }
 
 // @OPTIMIZE: binary search
+//! STAGE 5
 private stbtt_uint32 stbtt__find_table(stbtt_uint8 *data, stbtt_uint32 fontstart, const(char)* tag) {
     stbtt_int32 num_tables = ttUSHORT(data+fontstart+4);
     stbtt_uint32 tabledir = fontstart + 12;
@@ -1566,6 +1570,7 @@ private stbtt__buf stbtt__get_subrs(stbtt__buf cff, stbtt__buf fontdict) {
     return stbtt__cff_get_index(&cff);
 }
 
+//! STAGE 2
 private int stbtt_InitFont_internal(stbtt_fontinfo *info, ubyte *data, int fontstart) {
     stbtt_uint32 cmap, t;
     stbtt_int32 i,numTables;
@@ -4884,6 +4889,8 @@ public int stbtt_GetNumberOfFonts(const(ubyte)* data) {
     return stbtt_GetNumberOfFonts_internal(cast(ubyte *) data);
 }
 
+
+//! STAGE 1
 public int stbtt_InitFont(stbtt_fontinfo *info, const(ubyte)* data, int offset) {
     return stbtt_InitFont_internal(info, cast(ubyte *) data, offset);
 }
