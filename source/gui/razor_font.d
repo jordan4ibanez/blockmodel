@@ -26,6 +26,28 @@ File format:
 
 */
 
+/// Stores IMPORTANT font data to be reused by Razor Font - These are stored in static memory in the program
+/// Counts are so we can grab a slice of this information because anything after it WILL be garbage data
+private immutable int CHARACTER_LIMIT = 4096;
+/// 4 Vertex positions in a char
+private double[4 * CHARACTER_LIMIT] vertexCache;
+/// 8 (4 vec2) texture coordinate positions in a char
+private double[8 * CHARACTER_LIMIT] textureCoordinateCache;
+/// 6 (2 tris) indices in a char
+private int[6 * CHARACTER_LIMIT] indicesCache;
+/// The count of each of these so we can grab a slice of data fresh out of the oven, delicious!
+private int vertexCount = 0;
+private int textureCoordinateCount = 0;
+private int indicesCount = 0;
+
+/**
+This allows batch rendering to a "canvas" ala vertex positionining
+With this you can shovel one giant lump of data into a vao or whatever you're using.
+This is optional though, you can do whatever you want!
+*/
+private double screenWidth  = 0;
+private double screenHeight = 0;
+
 /// Stores all fonts
 private RazorFont[string] razorFonts;
 
