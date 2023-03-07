@@ -39,9 +39,9 @@ private double[8 * CHARACTER_LIMIT] textureCoordinateCache;
 /// 6 (2 tris) indices in a char
 private int[6 * CHARACTER_LIMIT] indicesCache;
 /// The count of each of these so we can grab a slice of data fresh out of the oven, delicious!
-private int vertexCount = 0;
+private int vertexCount            = 0;
 private int textureCoordinateCount = 0;
-private int indicesCount = 0;
+private int indicesCount           = 0;
 
 /**
 This allows batch rendering to a "canvas" ala vertex positionining
