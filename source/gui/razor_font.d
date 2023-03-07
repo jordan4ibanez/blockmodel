@@ -63,7 +63,7 @@ void setRenderTargetAPICallRAW(void delegate(ubyte[], int, int) apiRAWFunction) 
 // A simple font container
 private class RazorFont {
 
-    // Font base pallet width
+    // Font base pallet width (in pixels)
     int palletWidth  = 0;
     int palletHeight = 0;
 
@@ -153,6 +153,25 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
 //* ========================= BEGIN GRAPHICS ENCODING ==============================
 
 void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
+    
+    // Store all this on the stack
+
+    // Total image size
+    const int palletWidth = fontObject.palletWidth;
+    const int palletHeight = fontObject.palletHeight;
+
+    // How many characters (width, then height)
+    const int rows = fontObject.rows;
+    const int columns = fontObject.columns;
+
+    // How wide and tall are the characters in pixels
+    const int characterWidth = fontObject.characterWidth;
+    const int characterHeight = fontObject.charactertHeight;
+
+    // The border between the characters in pixels
+    const int border = fontObject.border;
+
+
     foreach (size_t index, immutable(char) value; fontObject.rawMap) {
         writeln(index);
     }
