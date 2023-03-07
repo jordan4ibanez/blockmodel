@@ -69,8 +69,8 @@ private void delegate(ubyte[], int, int) renderTargetAPICallRAW = null;
 
 
 /**
-    Allows automatic render target (OpenGL, Vulkan, Metal, DX) passthrough instantiation.
-    This can basically pass a file location off to your rendering engine and auto load it into memory.
+Allows automatic render target (OpenGL, Vulkan, Metal, DX) passthrough instantiation.
+This can basically pass a file location off to your rendering engine and auto load it into memory.
 */
 void setRenderTargetAPICallString(void delegate(string) apiStringFunction) {
     if (renderTargetAPICallRAW !is null) {
@@ -81,9 +81,9 @@ void setRenderTargetAPICallString(void delegate(string) apiStringFunction) {
 
 
 /**
-    Allows automatic render target (OpenGL, Vulkan, Metal, DX) DIRECT instantiation.
-    This allows the render engine to AUTOMATICALLY upload the image as RAW data.
-    ubyte[] = raw data. int = width. int = height.
+Allows automatic render target (OpenGL, Vulkan, Metal, DX) DIRECT instantiation.
+This allows the render engine to AUTOMATICALLY upload the image as RAW data.
+ubyte[] = raw data. int = width. int = height.
 */
 void setRenderTargetAPICallRAW(void delegate(ubyte[], int, int) apiRAWFunction) {
     if (renderTargetAPICallString !is null) {
@@ -123,26 +123,26 @@ private class RazorFont {
 
     // Character map - stored as a linear associative array for O(1) retrieval
     /**
-        Stores as:
-        [
-            -x -y,
-            -x +y, 
-            +x +y,
-            +x -y
-        ]
-        or this, if it's easier to understand:
-        [
-            top    left,
-            bottom left,
-            bottom right,
-            top    right
-        ]
-        GPU optimized vertex positions!
+    Stores as:
+    [
+        -x -y,
+        -x +y, 
+        +x +y,
+        +x -y
+    ]
+    or this, if it's easier to understand:
+    [
+        top    left,
+        bottom left,
+        bottom right,
+        top    right
+    ]
+    GPU optimized vertex positions!
 
-        Accessed as:
-        double[] myCoolBlah = map["whatever letter/unicode thing you're getting"];
+    Accessed as:
+    double[] myCoolBlah = map["whatever letter/unicode thing you're getting"];
 
-        The last 2 values specify width and height
+    The last 2 values specify width and height
     */
     double[10][char] map;
 
@@ -151,18 +151,18 @@ private class RazorFont {
 }
 
 /**
-    Create a font from your PNG JSON pairing in the directory.
+Create a font from your PNG JSON pairing in the directory.
 
-    You do not specify an extension.
+You do not specify an extension.
 
-    So if you have: cool.png and cool.json
-    You would call this as: createFont("fonts/cool")
-    
-    Name is an optional. You will call into Razor Font by this name.
+So if you have: cool.png and cool.json
+You would call this as: createFont("fonts/cool")
 
-    If you do not specify a name, you must call into Razor Font by the fileLocation, literal.
+Name is an optional. You will call into Razor Font by this name.
 
-    You can trim the height (X) or width (Y) or both if you want.
+If you do not specify a name, you must call into Razor Font by the fileLocation, literal.
+
+You can trim the height (X) or width (Y) or both if you want.
 */
 void createFont(string fileLocation, string name = "", bool kerning = false, bool trimmingX = false, bool trimmingY = false) {
 
