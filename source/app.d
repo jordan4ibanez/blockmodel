@@ -21,6 +21,7 @@ void main()
 
     // Window controls OpenGL and GLFW
     Window.initialize();
+    Window.setTitle("BlockModel Editor");
 
     //! Start Razor Font testing
 
@@ -42,12 +43,15 @@ void main()
     //     return;
     // }
 
-    const auto test = Font.debugRender();
-    writeln("hi there");
-    writeln(test.vertexData);
+    const auto test = Font.debugRender("cool", 100);
 
-
-	Window.setTitle("BlockModel Editor");
+    Mesh debugText = new Mesh()
+        .addVertices2d(cast(float[])test.vertexData)
+        .addTextureCoordinates(cast(float[])test.textureData)
+        .addIndices(test.indices)
+        .setTexture(Texture.getTexture("fonts/test_font.png"))
+        .finalize();
+	
 
     Texture.addTexture("textures/xyz_compass.png");
     Texture.addTexture("textures/debug_character.png");
@@ -140,7 +144,7 @@ void main()
 
 
 
-    while (Window.shouldClose()) {
+    while (!Window.shouldClose()) {
         // Calculating the delta goes first, we want this to be as accurate as possible.
         calculateDelta();
         // Poll events is hugging the entry point to the scope
@@ -157,7 +161,7 @@ void main()
 
         Window.clear(1);
 
-        if (false) {
+        if (true) {
             Camera.clearDepthBuffer();
             Camera.setRotation(Vector3d(0,0,0));
 
@@ -215,6 +219,24 @@ void main()
             debug2d.render("2d");
 
         }
+
+        // Now render this font
+        Camera.clearDepthBuffer();
+
+        Shader.startProgram("2d");
+
+        Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
+
+        Shader.setUniformMatrix4f("2d", "objectMatrix",
+            Camera.setGuiObjectMatrix(
+                Vector2d(
+                    (Window.getWidth / 2.0) - debug2d.getWidth,
+                    (Window.getHeight / 2.0) - debug2d.getHeight
+                )
+            )
+        );
+
+        debugText.render("2d");
 
         Window.swapBuffers();
     }
