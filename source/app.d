@@ -157,7 +157,7 @@ void main()
 
         Window.clear(1);
 
-        if (true) {
+        if (false) {
             Camera.clearDepthBuffer();
             Camera.setRotation(Vector3d(0,0,0));
 
@@ -214,36 +214,37 @@ void main()
 
             debug2d.render("2d");
 
-        }
+        
 
-        // Now render this font
-        Camera.clearDepthBuffer();
+            // Now render this font
+            Camera.clearDepthBuffer();
 
-        Shader.startProgram("2d");
+            Shader.startProgram("2d");
 
-        Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
+            Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
 
-        const Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") test = Font.debugRenderDouble("cool", 50, "i am debug! fps: " ~ to!string(Window.getFPS));
+            const Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") test = Font.debugRenderDouble("cool", 50, "i am debug! fps: " ~ to!string(Window.getFPS));
 
-        Mesh myCoolText = new Mesh()
-            .addVertices2d(to!(float[])(test.vertexData))
-            .addIndices(test.indices)
-            .addTextureCoordinates(to!(float[])(test.textureData))
-            .setTexture(Texture.getTexture("fonts/test_font.png"))
-            .finalize();
+            Mesh myCoolText = new Mesh()
+                .addVertices2d(to!(float[])(test.vertexData))
+                .addIndices(test.indices)
+                .addTextureCoordinates(to!(float[])(test.textureData))
+                .setTexture(Texture.getTexture("fonts/test_font.png"))
+                .finalize();
 
-        Shader.setUniformMatrix4f("2d", "objectMatrix",
-            Camera.setGuiObjectMatrix(
-                Vector2d(
-                    -Window.getWidth() / 2,
-                    -Window.getHeight() / 2
+            Shader.setUniformMatrix4f("2d", "objectMatrix",
+                Camera.setGuiObjectMatrix(
+                    Vector2d(
+                        -Window.getWidth() / 2,
+                        -Window.getHeight() / 2
+                    )
                 )
-            )
-        );
+            );
 
-        myCoolText.render("2d");
+            myCoolText.render("2d");
 
-        myCoolText.cleanUp();
+            myCoolText.cleanUp();
+        }
 
         Window.swapBuffers();
     }
