@@ -4,6 +4,30 @@ import std.stdio;
 import std.file;
 import std.conv;
 
+
+//* ========================== API ===================================
+
+// This is at the top because this file could get huge
+/// How you create a font
+void createFont(string fileLocation, string name = "") {
+    // Are we gonna use the name or the file location as the TTF key?
+    string key = name == "" ? fileLocation : name;
+    
+    // We are assembling this font
+    TTFont fontObject = new TTFont(fileLocation, name);
+
+
+    fonts[key] = fontObject;
+
+}
+
+/// How you get render data from a font
+//Todo;
+
+//! ========================= END API ================================
+
+
+//* ========================= INTERNAL ===============================
 /// Stores all True Type Fonts into an easily accessable hashmap
 private TTFont[string] fonts;
 
@@ -38,6 +62,8 @@ private class TTFont {
 
     // Location of .ttf file
     string fileLocation;
+
+    ubyte[] rawData;
 
     // Number of glyphs, needed for range checking
     // int numGlyphs;
@@ -82,24 +108,32 @@ private class TTFont {
         } else {
             this.name = name;
         }
+
+        this.fileLocation = fileLocation;
+
+        // Start the chain of loader functions
+        this.load();
     }
-}
 
-/// How you create a font
-void createFont(string fileLocation, string name = "") {
-    // Are we gonna use the name or the file location as the TTF key?
-    string key = name == "" ? fileLocation : name;
+    void load() {
+
+        // Assign in the raw binary data from the file
+        this.rawData = cast(ubyte[])read(fileLocation);
+
+        // Now process it
+
+    }
+
+
     
-    // We are assembling this font
-    TTFont fontObject = new TTFont(fileLocation, name);
-
-
-    fonts[key] = fontObject;
-
 }
 
-/// How you get render data from a font
-//Todo;
+//!========================================== END INTERNAL ============================================
+
+
+
+
+
 
 
 //*========================================= FONT LOADING =====================================================
