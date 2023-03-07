@@ -2,6 +2,7 @@ module gui.razor_font;
 
 import std.stdio;
 import std.file;
+import std.json;
 import color;
 import png;
 
@@ -139,8 +140,7 @@ void createFont(string fileLocation, string name = "") {
     RazorFont fontObject = new RazorFont();
 
     // Now parse the json
-
-    
+    parseJson(fontObject, jsonLocation);
 
 }
 
@@ -149,7 +149,47 @@ void createFont(string fileLocation, string name = "") {
 //* ========================== BEGIN JSON DECODING ==================================
 // Run through the required data to assemble a font object
 void parseJson(ref RazorFont fontObject, const string jsonLocation) {
-    
+    void[] rawData = read(jsonLocation);
+    string jsonString = cast(string)rawData;
+    JSONValue jsonData = parseJSON(jsonString);
+
+    foreach (string key,JSONValue value; jsonData.objectNoRef) {
+        switch(key) {
+            case "pallet_width": {
+                assert(value.type == JSONType.integer);
+                break;
+            }
+            case "pallet_height": {
+                assert(value.type == JSONType.integer);
+                break;
+            }
+            case "border": {
+                assert(value.type == JSONType.integer);
+                break;
+            }
+            case "rows": {
+                assert(value.type == JSONType.integer);
+                break;
+            }
+            case "columns": {
+                assert(value.type == JSONType.integer);
+                break;
+            }
+            case "character_width": {
+                assert(value.type == JSONType.integer);
+                break;
+            }
+            case "charactert_height": {
+                assert(value.type == JSONType.integer);
+                break;
+            }
+            case "character_map": {
+                assert(value.type == JSONType.string);
+                break;
+            }
+            default: // Unknown
+        }
+    }
 }
 
 
