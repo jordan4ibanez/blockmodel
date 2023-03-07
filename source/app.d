@@ -37,6 +37,28 @@ void main()
         }
     );
 
+    Font.RazorFontData test = Font.debugRenderDouble("cool", 20, "test"); 
+
+    // Mesh myCoolText = new Mesh()
+    //     .addVertices2d(to!(float[])(test.vertexData))
+    //     .addIndices(test.indices)
+    //     .addTextureCoordinates(to!(float[])(test.textureData))
+    //     .setTexture(Texture.getTexture("fonts/test_font.png"))
+    //     .finalize();
+
+    // Shader.setUniformMatrix4f("2d", "objectMatrix",
+    //     Camera.setGuiObjectMatrix(
+    //         Vector2d(
+    //             -Window.getWidth() / 2,
+    //             -Window.getHeight() / 2
+    //         )
+    //     )
+    // );
+
+    // myCoolText.render("2d");
+
+    // myCoolText.cleanUp();
+
     Font.createFont("fonts/test_font", "cool", false, false, false);
 
 
@@ -217,35 +239,11 @@ void main()
         
 
             // Now render this font
-            Camera.clearDepthBuffer();
+            // Camera.clearDepthBuffer();
 
-            Shader.startProgram("2d");
+            // Shader.startProgram("2d");
 
-            Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
-
-            const Tuple!(double[], "vertexData", double[], "textureData", int[], "indices") test = Font.debugRenderDouble("cool", 50, "this is a performance test\ncurrently doing multiline\ncurrent fps: " ~ to!string(Window.getFPS) ~
-                "\ni ran out of room on this\nso i had to go to the next line\nbut hopefully you can read all this\ndid i ever tell you about the time\nthat i caught a fish thiiiiiis\nbig?"~
-                "it was huge dude, literally could \nbarely pull the dang thing out of the\nwater, well it turned out i\nactually caught a boat anchor");
-
-            Mesh myCoolText = new Mesh()
-                .addVertices2d(to!(float[])(test.vertexData))
-                .addIndices(test.indices)
-                .addTextureCoordinates(to!(float[])(test.textureData))
-                .setTexture(Texture.getTexture("fonts/test_font.png"))
-                .finalize();
-
-            Shader.setUniformMatrix4f("2d", "objectMatrix",
-                Camera.setGuiObjectMatrix(
-                    Vector2d(
-                        -Window.getWidth() / 2,
-                        -Window.getHeight() / 2
-                    )
-                )
-            );
-
-            myCoolText.render("2d");
-
-            myCoolText.cleanUp();
+            // Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
         }
 
         Window.swapBuffers();
