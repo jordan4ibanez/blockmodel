@@ -3846,71 +3846,70 @@ private int stbtt_BakeFontBitmap_internal(ubyte *data, int offset,  // font loca
 				int* ascent, int* descent, int* line_gap
 				)
 {
-   float scale;
-   int x,y,bottom_y, i;
-   stbtt_fontinfo f;
-   f.userdata = null;
-   if (!stbtt_InitFont(&f, data, offset))
-      return -1;
-   STBTT_memset(pixels, 0, pw*ph); // background of 0 around pixels
-   x=y=1;
-   bottom_y = 1;
+    float scale;
+    int x,y,bottom_y, i;
+    stbtt_fontinfo f;
+    f.userdata = null;
+    if (!stbtt_InitFont(&f, data, offset))
+        return -1;
+    STBTT_memset(pixels, 0, pw*ph); // background of 0 around pixels
+    x=y=1;
+    bottom_y = 1;
 
-   scale = stbtt_ScaleForPixelHeight(&f, pixel_height);
+    scale = stbtt_ScaleForPixelHeight(&f, pixel_height);
 
-   stbtt_GetFontVMetrics(&f, ascent, descent, line_gap);
+    stbtt_GetFontVMetrics(&f, ascent, descent, line_gap);
 
-   if(ascent) *ascent = cast(int) (*ascent * scale);
-   if(descent) *descent = cast(int) (*descent * scale);
-   if(line_gap) *line_gap = cast(int) (*line_gap * scale);
+    if(ascent) *ascent = cast(int) (*ascent * scale);
+    if(descent) *descent = cast(int) (*descent * scale);
+    if(line_gap) *line_gap = cast(int) (*line_gap * scale);
 
-   for (i=0; i < num_chars; ++i) {
-      int advance, lsb, x0,y0,x1,y1,gw,gh;
-      int g = stbtt_FindGlyphIndex(&f, first_char + i);
-      stbtt_GetGlyphHMetrics(&f, g, &advance, &lsb);
-      stbtt_GetGlyphBitmapBox(&f, g, scale,scale, &x0,&y0,&x1,&y1);
-      gw = x1-x0;
-      gh = y1-y0;
-      if (x + gw + 1 >= pw)
-         y = bottom_y, x = 1; // advance to next row
-      if (y + gh + 1 >= ph) // check if it fits vertically AFTER potentially moving to next row
-         return -i;
-      assert(x+gw < pw);
-      assert(y+gh < ph);
-      stbtt_MakeGlyphBitmap(&f, pixels+x+y*pw, gw,gh,pw, scale,scale, g);
-      chardata[i].x0 = cast(stbtt_int16) x;
-      chardata[i].y0 = cast(stbtt_int16) y;
-      chardata[i].x1 = cast(stbtt_int16) (x + gw);
-      chardata[i].y1 = cast(stbtt_int16) (y + gh);
-      chardata[i].xadvance = scale * advance;
-      chardata[i].xoff     = cast(float) x0;
-      chardata[i].yoff     = cast(float) y0;
-      x = x + gw + 1;
-      if (y+gh+1 > bottom_y)
-         bottom_y = y+gh+1;
-   }
-   return bottom_y;
+    for (i=0; i < num_chars; ++i) {
+        int advance, lsb, x0,y0,x1,y1,gw,gh;
+        int g = stbtt_FindGlyphIndex(&f, first_char + i);
+        stbtt_GetGlyphHMetrics(&f, g, &advance, &lsb);
+        stbtt_GetGlyphBitmapBox(&f, g, scale,scale, &x0,&y0,&x1,&y1);
+        gw = x1-x0;
+        gh = y1-y0;
+        if (x + gw + 1 >= pw)
+            y = bottom_y, x = 1; // advance to next row
+        if (y + gh + 1 >= ph) // check if it fits vertically AFTER potentially moving to next row
+            return -i;
+        assert(x+gw < pw);
+        assert(y+gh < ph);
+        stbtt_MakeGlyphBitmap(&f, pixels+x+y*pw, gw,gh,pw, scale,scale, g);
+        chardata[i].x0 = cast(stbtt_int16) x;
+        chardata[i].y0 = cast(stbtt_int16) y;
+        chardata[i].x1 = cast(stbtt_int16) (x + gw);
+        chardata[i].y1 = cast(stbtt_int16) (y + gh);
+        chardata[i].xadvance = scale * advance;
+        chardata[i].xoff     = cast(float) x0;
+        chardata[i].yoff     = cast(float) y0;
+        x = x + gw + 1;
+        if (y+gh+1 > bottom_y)
+            bottom_y = y+gh+1;
+    }
+    return bottom_y;
 }
 
-public void stbtt_GetBakedQuad(const(stbtt_bakedchar)* chardata, int pw, int ph, int char_index, float *xpos, float *ypos, stbtt_aligned_quad *q, int opengl_fillrule)
-{
-   float d3d_bias = opengl_fillrule ? 0 : -0.5f;
-   float ipw = 1.0f / pw, iph = 1.0f / ph;
-   const(stbtt_bakedchar)* b = chardata + char_index;
-   int round_x = STBTT_ifloor((*xpos + b.xoff) + 0.5f);
-   int round_y = STBTT_ifloor((*ypos + b.yoff) + 0.5f);
+public void stbtt_GetBakedQuad(const(stbtt_bakedchar)* chardata, int pw, int ph, int char_index, float *xpos, float *ypos, stbtt_aligned_quad *q, int opengl_fillrule) {
+    float d3d_bias = opengl_fillrule ? 0 : -0.5f;
+    float ipw = 1.0f / pw, iph = 1.0f / ph;
+    const(stbtt_bakedchar)* b = chardata + char_index;
+    int round_x = STBTT_ifloor((*xpos + b.xoff) + 0.5f);
+    int round_y = STBTT_ifloor((*ypos + b.yoff) + 0.5f);
 
-   q.x0 = round_x + d3d_bias;
-   q.y0 = round_y + d3d_bias;
-   q.x1 = round_x + b.x1 - b.x0 + d3d_bias;
-   q.y1 = round_y + b.y1 - b.y0 + d3d_bias;
+    q.x0 = round_x + d3d_bias;
+    q.y0 = round_y + d3d_bias;
+    q.x1 = round_x + b.x1 - b.x0 + d3d_bias;
+    q.y1 = round_y + b.y1 - b.y0 + d3d_bias;
 
-   q.s0 = b.x0 * ipw;
-   q.t0 = b.y0 * iph;
-   q.s1 = b.x1 * ipw;
-   q.t1 = b.y1 * iph;
+    q.s0 = b.x0 * ipw;
+    q.t0 = b.y0 * iph;
+    q.s1 = b.x1 * ipw;
+    q.t1 = b.y1 * iph;
 
-   *xpos += b.xadvance;
+    *xpos += b.xadvance;
 }
 
 //////////////////////////////////////////////////////////////////////////////
