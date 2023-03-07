@@ -51,6 +51,7 @@ private TTFont[string] buffers;
 
 /// How you create a font
 void createFont(string fileLocation, string name = "") {
+    // Are we gonna use the name or the file location as the TTF key?
     string key = name == "" ? fileLocation : name;
     
     buffers[key] = new TTFont(fileLocation, name);
@@ -60,7 +61,8 @@ void createFont(string fileLocation, string name = "") {
 //Todo;
 
 
-/// A TrueType Font held in memory
+/// A TrueType Font held in memory, this whole thing can't be accessed outside this module,
+/// so we don't care about privacy because you can't touch it.
 private class TTFont {
 
     // This becomes consumed by the load() method
@@ -88,7 +90,6 @@ private class TTFont {
 
     ///
     void load(ubyte[] data, string name, string fileLocation) {
-        //! STAGE 1
         if (ttfInitializeFont(fontInfo, data, name, fileLocation) == false) {
             throw new Exception("Font failed to load!");
         }
