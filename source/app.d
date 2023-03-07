@@ -223,32 +223,32 @@ void main()
 
             Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
 
-            string accumulator;
-            foreach (i; 0..100) {
-                accumulator ~= "this is a test of my font rendering engine thing so cool wooo yeah :) here is some more text\n";
-            }
+            // string accumulator;
+            // foreach (i; 0..100) {
+            //     accumulator ~= "this is a test of my font rendering engine thing so cool wooo yeah :) here is some more text\n";
+            // }
 
-            Font.RazorFontData fontData = Font.debugRenderDouble("cool", 20, accumulator); 
+            // Font.RazorFontData fontData = Font.debugRenderDouble("cool", 20, accumulator); 
 
-            Mesh myCoolText = new Mesh()
-                .addVertices2d(to!(float[])(fontData.vertexPositions))
-                .addIndices(fontData.indices)
-                .addTextureCoordinates(to!(float[])(fontData.textureCoordinates))
-                .setTexture(Texture.getTexture("fonts/test_font.png"))
-                .finalize();
+            // Mesh myCoolText = new Mesh()
+            //     .addVertices2d(to!(float[])(fontData.vertexPositions))
+            //     .addIndices(fontData.indices)
+            //     .addTextureCoordinates(to!(float[])(fontData.textureCoordinates))
+            //     .setTexture(Texture.getTexture("fonts/test_font.png"))
+            //     .finalize();
 
-            Shader.setUniformMatrix4f("2d", "objectMatrix",
-                Camera.setGuiObjectMatrix(
-                    Vector2d(
-                        -Window.getWidth() / 2,
-                        -Window.getHeight() / 2
-                    )
-                )
-            );
+            // Shader.setUniformMatrix4f("2d", "objectMatrix",
+            //     Camera.setGuiObjectMatrix(
+            //         Vector2d(
+            //             -Window.getWidth() / 2,
+            //             -Window.getHeight() / 2
+            //         )
+            //     )
+            // );
 
-            myCoolText.render("2d");
+            // myCoolText.render("2d");
 
-            myCoolText.cleanUp();
+            // myCoolText.cleanUp();
         }
 
         Window.swapBuffers();
