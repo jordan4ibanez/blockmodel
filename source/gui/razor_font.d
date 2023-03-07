@@ -210,10 +210,6 @@ RazorFontData debugRenderDouble(string font, const double fontSize, string text)
         throw new Exception(font ~ " is not a registered font!");
     }
 
-    double[] vertexData;
-    double[] textureData;
-    int[] indices;
-
     // Cache the object
     const RazorFont thisFont = razorFonts[font];
 
@@ -222,34 +218,34 @@ RazorFontData debugRenderDouble(string font, const double fontSize, string text)
     // Store how far the arm has moved down
     double typeWriterArmY = 0.0;
 
-    int currentVertex = 0;
+
 
     foreach (key, character; text) {
 
-        // writeln(character);
-
+        // Skip space
         if (character == ' ') {
-            // writeln("skipping");
-
             typeWriterArmX += fontSize;
             continue;
         }
-
+        // Move down 1 space Y and to space 0 X
         if (character == '\n') {
-            // writeln("skipping down");
             typeWriterArmY += fontSize;
             typeWriterArmX = 0.0;
             continue;
         }
 
+        // Font stores character width and height in index 9 and 10 (8 and 9 [0 count])
         double[10] rawData = thisFont.map[character];
 
-        textureData ~= rawData[0..8];
+        // Keep on the stack
+        double[8] textureData = rawData[0..8];
 
         // This is the width and height of the character
+        // Keep on the stack
         double characterWidth = rawData[8];
         double characterHeight = rawData[9];
         
+        // Keep this on the stack
         double[8] rawVertex = [
             0,0,
             0,1,
