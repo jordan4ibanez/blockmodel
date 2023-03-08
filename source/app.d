@@ -49,9 +49,9 @@ void main()
                 .addTextureCoordinates(fontData.textureCoordinates)
                 .setTexture(Texture.getTexture(fileLocation))
                 .finalize();
+
             tempObject.render("2d");
             tempObject.cleanUp();
-            tempObject = null;
         }
     );
 
@@ -66,10 +66,6 @@ void main()
     //     Window.destroy();
     //     return;
     // }
-
-    
-	
-
     
     
     // Controls blockmodel rendering
@@ -157,8 +153,6 @@ void main()
 
     Window.setVsync(0);
 
-    
-
     while (!Window.shouldClose()) {
         // Calculating the delta goes first, we want this to be as accurate as possible.
         calculateDelta();
@@ -176,7 +170,7 @@ void main()
 
         Window.clear(1);
 
-        if (false) {
+        if (true) {
             Camera.clearDepthBuffer();
             Camera.setRotation(Vector3d(0,0,0));
 
@@ -236,8 +230,7 @@ void main()
 
         if (true) {
             // Now render this font
-
-            //! NO MEMLEAK 1
+            
             Camera.clearDepthBuffer();
 
             Shader.startProgram("2d");
@@ -253,21 +246,12 @@ void main()
             
             //! NO MEMLEAK 2
             Font.selectFont("mc");
-            Font.flush();
-            //! 2
-
-            
 
             //! NO MEMLEAK 3
             // Scoped to show individual calls into api
             {
                 Font.renderToCanvas(0,0, 24, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-                Font.flush();
             }
-            //! 3
-
-            
-
             //! NO MEMLEAK 4
             {
                 int fontSize = 40;
@@ -279,8 +263,6 @@ void main()
                 double posY = Window.getHeight - textSize.height;
 
                 Font.renderToCanvas(posX, posY - 30, fontSize, textString);
-
-                Font.flush();
             }
 
             
@@ -295,12 +277,10 @@ void main()
                 double posY = (Window.getHeight / 2.0) - (textSize.height / 2.0) - 50;
 
                 Font.renderToCanvas(posX, posY, fontSize, textString);
-
-                Font.render();
             }
+            
+            Font.render();
             //! 4
-
-            /*
 
 
             Font.selectFont("cool");
@@ -319,7 +299,6 @@ void main()
             myCoolText2.render("2d");
 
             myCoolText2.cleanUp();
-            */
         }
 
         Window.swapBuffers();
