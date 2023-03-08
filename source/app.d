@@ -226,7 +226,15 @@ void main()
         
         Font.selectFont("cool");
 
-        Font.renderToCanvas(0,0, 20, "i'm on the top left"); 
+        Font.renderToCanvas(0,0, 20, "i'm on the top left");
+
+        Font.RazorTextSize textSize = Font.getTextSize(20, "i'm on the bottom right");
+
+        // Now we're going to move this to the bottom right of the "canvas"
+        double posX = Window.getWidth - textSize.width;
+        double posY = Window.getHeight - textSize.height;
+
+        Font.renderToCanvas(posX, posY, 20, "i'm on the bottom right");
 
         Font.RazorFontData data =  Font.flush();
 
