@@ -108,8 +108,6 @@ class Mesh {
             GL_STATIC_DRAW                  // Which draw mode OpenGL will use
         );
 
-        verticesPointer = vertices.ptr;
-
         glVertexAttribPointer(
             0,           // Attribute 0 (matches the attribute in the glsl shader)
             size,           // Size (literal like 3 points)  
@@ -247,11 +245,6 @@ class Mesh {
         cause unexpected behavior.
     */
     void cleanUp() {
-
-        if (verticesPointer !is null) {
-            GC.free(cast(void*)verticesPointer);
-
-        }
 
         if (!finalized) {
             throw new Exception("You MUST call finalize() for a mesh!");
