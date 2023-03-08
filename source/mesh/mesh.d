@@ -54,8 +54,6 @@ class Mesh {
     private bool is3d = false;
     private bool is2d = false;
 
-    const(float)* verticesPointer;
-
     /// Creates the OpenGL context for assembling this GL Mesh Object.
     this() {
 
@@ -65,8 +63,8 @@ class Mesh {
 
     }
 
-    /// Adds vertex position data in Vector3 format within a linear float[].
-    Mesh addVertices3d(const float[] vertices) {
+    /// Adds vertex position data in Vector3 format within a linear double[].
+    Mesh addVertices3d(const double[] vertices) {
         if (is2d) {
             throw new Exception("Cannot add 3d vertex positions to a 2d model!");
         } else if (is3d) {
@@ -77,8 +75,8 @@ class Mesh {
         return this.verticesFunc(vertices, 3);
     }
 
-    /// Adds vertex position data in Vector2 format within a linear float[].
-    Mesh addVertices2d(const float[] vertices) {
+    /// Adds vertex position data in Vector2 format within a linear double[].
+    Mesh addVertices2d(const double[] vertices) {
         if (is3d) {
             throw new Exception("Cannot add 2d vertex positions to a 3d model!");
         } else if (is2d) {
@@ -92,7 +90,7 @@ class Mesh {
     }
 
     // The actual mechanism for addVertices
-    private Mesh verticesFunc(const float[] vertices, GLuint size) {
+    private Mesh verticesFunc(const double[] vertices, GLuint size) {
 
         // Don't bother if not divisible by or less than size
         if (vertices.length % size != 0 || vertices.length < size) {
@@ -105,7 +103,7 @@ class Mesh {
 
         glBufferData(
             GL_ARRAY_BUFFER,                // Target object
-            vertices.length * float.sizeof, // How big the object is
+            vertices.length * double.sizeof, // How big the object is
             vertices.ptr,                   // The pointer to the data for the object
             GL_STATIC_DRAW                  // Which draw mode OpenGL will use
         );
@@ -115,7 +113,7 @@ class Mesh {
         glVertexAttribPointer(
             0,           // Attribute 0 (matches the attribute in the glsl shader)
             size,           // Size (literal like 3 points)  
-            GL_FLOAT,    // Type
+            GL_DOUBLE,    // Type
             GL_FALSE,    // Normalized?
             0,           // Stride
             cast(void*)0 // Array buffer offset
@@ -125,8 +123,8 @@ class Mesh {
         return this;
     }
 
-    /// Adds texture coordinate data in Vector2 format within a linear float[].
-    Mesh addTextureCoordinates(const float[] textureCoordinates) {
+    /// Adds texture coordinate data in Vector2 format within a linear double[].
+    Mesh addTextureCoordinates(const double[] textureCoordinates) {
 
         // Don't bother if not divisible by 2 and less than 2, these are raw Vector2 components in a linear array.
         if (textureCoordinates.length % 2 != 0 || textureCoordinates.length < 2) {
@@ -140,7 +138,7 @@ class Mesh {
 
         glBufferData(
             GL_ARRAY_BUFFER,
-            textureCoordinates.length * float.sizeof,
+            textureCoordinates.length * double.sizeof,
             textureCoordinates.ptr,
             GL_STATIC_DRAW
         );
@@ -148,7 +146,7 @@ class Mesh {
         glVertexAttribPointer(
             1,
             2,
-            GL_FLOAT,
+            GL_DOUBLE,
             GL_FALSE,
             0,
             cast(const(void)*)0
