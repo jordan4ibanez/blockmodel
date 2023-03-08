@@ -3,10 +3,10 @@ module mesh.mesh;
 import std.stdio;
 import bindbc.opengl;
 import Shader = shader.shader;
-import vector_2d;
-import vector_3d;
-import vector_4d;
-import vector_4i;
+import doml.vector_2d;
+import doml.vector_3d;
+import doml.vector_4d;
+import doml.vector_4i;
 import tools.gl_error;
 import core.memory;
 

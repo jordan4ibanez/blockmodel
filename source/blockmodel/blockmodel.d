@@ -8,12 +8,11 @@ import std.conv;
 import std.algorithm.iteration;
 import std.algorithm.sorting;
 import std.conv;
-import tinygltf;
-import vector_2d;
-import vector_3d;
-import vector_3i;
-import matrix_4d;
-import math;
+import doml.vector_2d;
+import doml.vector_3d;
+import doml.vector_3i;
+import doml.matrix_4d;
+import doml.math;
 import delta_time;
 
 /// Container class for constructing the model

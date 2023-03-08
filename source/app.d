@@ -6,11 +6,11 @@ import Shader = shader.shader;
 import Texture = texture.texture;
 import Window = window.window;
 import mesh.mesh;
-import vector_2d;
-import vector_3d;
-import matrix_4d;
+import doml.vector_2d;
+import doml.vector_3d;
+import doml.matrix_4d;
 import blockmodel.blockmodel;
-import math;
+import doml.math;
 import delta_time;
 import std.typecons;
 

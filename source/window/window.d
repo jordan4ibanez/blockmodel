@@ -5,9 +5,9 @@ import std.conv;
 import std.string;
 import bindbc.opengl;
 import bindbc.glfw;
-import vector_2i;
-import vector_2d;
-import vector_3d;
+import doml.vector_2i;
+import doml.vector_2d;
+import doml.vector_3d;
 import delta_time;
 import tools.gl_error;
 

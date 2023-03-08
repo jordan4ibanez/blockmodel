@@ -2,14 +2,14 @@ module camera.camera;
 
 import bindbc.opengl;
 import Window = window.window;
-import vector_2d;
-import vector_3d;
-import matrix_4d;
-import math;
+import doml.vector_2d;
+import doml.vector_3d;
+import doml.matrix_4d;
+import Math = doml.math;
 
 
 
-private double FOV = math.toRadians(60.0);
+private double FOV = Math.toRadians(60.0);
 
 // Never set this to 0 :P
 // ALSO never set this too low!! You get float errors!
