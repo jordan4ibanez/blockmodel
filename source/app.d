@@ -51,6 +51,7 @@ void main()
                 .finalize();
             tempObject.render("2d");
             tempObject.cleanUp();
+            tempObject = null;
         }
     );
 
@@ -235,6 +236,8 @@ void main()
 
         if (true) {
             // Now render this font
+
+            //! NO MEMLEAK 1
             Camera.clearDepthBuffer();
 
             Shader.startProgram("2d");
@@ -243,14 +246,29 @@ void main()
 
             Shader.setUniformMatrix4("2d", "cameraMatrix", Camera.updateGuiMatrix());
             Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)) );
-            
-            Font.selectFont("mc");
 
+            //! 1
+
+            
+            
+            //! NO MEMLEAK 2
+            Font.selectFont("mc");
+            Font.flush();
+            //! 2
+
+            
+
+            //! NO MEMLEAK 3
             // Scoped to show individual calls into api
             {
                 Font.renderToCanvas(0,0, 24, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+                Font.flush();
             }
+            //! 3
 
+            
+
+            //! NO MEMLEAK 4
             {
                 int fontSize = 40;
                 string textString = "I'm on the bottom right!";
@@ -261,8 +279,11 @@ void main()
                 double posY = Window.getHeight - textSize.height;
 
                 Font.renderToCanvas(posX, posY - 30, fontSize, textString);
+
+                Font.flush();
             }
 
+            
             {
                 int fontSize = 30;
                 string textString = "The text below is rendered at the window center-point!";
@@ -274,7 +295,12 @@ void main()
                 double posY = (Window.getHeight / 2.0) - (textSize.height / 2.0) - 50;
 
                 Font.renderToCanvas(posX, posY, fontSize, textString);
+
+                Font.flush;
             }
+            //! 4
+
+            /*
 
             Font.render();
 
@@ -295,6 +321,7 @@ void main()
             myCoolText2.render("2d");
 
             myCoolText2.cleanUp();
+            */
         }
 
         Window.swapBuffers();
