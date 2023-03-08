@@ -287,6 +287,10 @@ void renderToCanvas(double posX, double posY, const double fontSize, string text
     // Store how far the arm has moved down
     double typeWriterArmY = 0.0;
 
+    // Top left of canvas is root position (X: 0, y: 0)
+    const positionX = posX - canvasWidth;
+    const positionY = posY - canvasHeight;
+
     foreach (key, character; text) {
 
         // Skip space
@@ -331,9 +335,9 @@ void renderToCanvas(double posX, double posY, const double fontSize, string text
         // Shifting
         for (int i = 0; i < 8; i += 2) {
             // Now shift right
-            rawVertex[i] += typeWriterArmX - canvasWidth;
+            rawVertex[i] += typeWriterArmX + positionX;
             // Now shift down
-            rawVertex[i + 1] += typeWriterArmY - canvasHeight;
+            rawVertex[i + 1] += typeWriterArmY + positionY;
         }
 
         typeWriterArmX += characterWidth * fontSize;
