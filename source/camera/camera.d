@@ -50,9 +50,9 @@ double[16] setObjectMatrix(Vector3d offset, Vector3d rotation, Vector3d scale) {
     objectMatrix
         .identity()
         .translate(-position.x + offset.x, -position.y + offset.y, -position.z + offset.z)
-        .rotateY(math.toRadians(-rotation.y))
-        .rotateX(math.toRadians(-rotation.x))
-        .rotateZ(math.toRadians(-rotation.z))
+        .rotateY(Math.toRadians(-rotation.y))
+        .rotateX(Math.toRadians(-rotation.x))
+        .rotateZ(Math.toRadians(-rotation.z))
         .scale(scale);
     return objectMatrix.getDoubleArray();
 }
@@ -78,8 +78,8 @@ double[16] updateCameraMatrix() {
     
     cameraMatrix.identity()
         .perspective(FOV, aspectRatio, Z_NEAR, Z_FAR)
-        .rotateX(math.toRadians(rotation.x))
-        .rotateY(math.toRadians(rotation.y));
+        .rotateX(Math.toRadians(rotation.x))
+        .rotateY(Math.toRadians(rotation.y));
     return cameraMatrix.getDoubleArray();
 }
 
@@ -110,12 +110,12 @@ Vector3d getPosition() {
 
 void movePosition(Vector3d positionModification) {
     if ( positionModification.z != 0 ) {
-        position.x += -math.sin(math.toRadians(rotation.y)) * positionModification.z;
-        position.z += math.cos(math.toRadians(rotation.y)) * positionModification.z;
+        position.x += -Math.sin(Math.toRadians(rotation.y)) * positionModification.z;
+        position.z += Math.cos(Math.toRadians(rotation.y)) * positionModification.z;
     }
     if ( positionModification.x != 0) {
-        position.x += -math.sin(math.toRadians(rotation.y - 90)) * positionModification.x;
-        position.z += math.cos(math.toRadians(rotation.y - 90)) * positionModification.x;
+        position.x += -Math.sin(Math.toRadians(rotation.y - 90)) * positionModification.x;
+        position.z += Math.cos(Math.toRadians(rotation.y - 90)) * positionModification.x;
     }
     position.y += positionModification.y;
 }
