@@ -218,25 +218,29 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
 
 //* ============================ BEGIN GRAPHICS DISPATCH ===========================
 
-void setCanvasWidthHeight(double width, double height) {
+/// Allows you to render to a canvas using top left as a base position
+void setCanvasSize(double width, double height) {
     canvasWidth = width;
     canvasHeight = height;
 }
 
-void flush() {
+RazorFontData flush() {
+
     fontLock = false;
 
-    //Todo : Return this:
-    // RazorFontData(
-    //     vertexCache[0..vertexCount],
-    //     textureCoordinateCache[0..textureCoordinateCount],
-    //     indicesCache[0..indicesCount]
-    // );
+    
+    RazorFontData returningStruct = RazorFontData(
+        vertexCache[0..vertexCount],
+        textureCoordinateCache[0..textureCoordinateCount],
+        indicesCache[0..indicesCount]
+    );
 
     // Reset the counters
     vertexCount = 0;
     textureCoordinateCount = 0;
     indicesCount = 0;
+
+    return returningStruct;
 }
 
 /**
@@ -319,7 +323,7 @@ void renderToCanvas(const double fontSize, string text) {
             // Now shift right
             rawVertex[i] += typeWriterArmX;
             // Now shift down
-            rawVertex[i + 1] += typeWriterArmX;
+            rawVertex[i + 1] += typeWriterArmY;
         }
 
         typeWriterArmX += characterWidth * fontSize;
