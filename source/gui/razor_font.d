@@ -92,6 +92,9 @@ private void delegate(string) renderTargetAPICallString = null;
 // Allows DIRECT automatic upload into whatever render target (OpenGL, Vulkan, Metal, DX) as RAW data
 private void delegate(ubyte[], int, int) renderTargetAPICallRAW = null;
 
+// Allows an automate render into whatever render target (OpenGL, Vulkan, Metal, DX) simply by calling render()
+private void delegate(RazorFontData) renderApiRenderCall = null;
+
 
 /**
 Allows automatic render target (OpenGL, Vulkan, Metal, DX) passthrough instantiation.
@@ -117,7 +120,17 @@ void setRenderTargetAPICallRAW(void delegate(ubyte[], int, int) apiRAWFunction) 
     renderTargetAPICallRAW = apiRAWFunction;
 }
 
-
+/**
+Allows automatic render target (OpenGL, Vulkan, Metal, DX) DIRECT rendering via RazorFont.
+You can simply call render() on the library and it will automatically do whatever you
+tell it to with this delegate function. This will also automatically run flush().
+*/
+void setRenderFunc(void delegate(RazorFontData) renderApiRenderFunction) {
+    if (renderApiRenderCall !is null) {
+        throw new Exception("Razor Font: You already set the RENDER api integration function!");
+    }
+    renderApiRenderCall = renderApiRenderFunction;
+}
 
 
 // A simple font container
