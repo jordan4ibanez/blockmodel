@@ -57,7 +57,12 @@ These store constant data that is highly repetitive
 private immutable double[8] RAW_VERTEX  = [ 0,0, 0,1, 1,1, 1,0 ];
 private immutable int[6]    RAW_INDICES = [ 0,1,2, 2,3,0 ];
 
-// Caches the current font in use
+/**
+Caches the current font in use.
+Think of this like the golfball on an IBM Selectric.
+You can use one ball, type out in one font. Then flush.
+Then you can swap to another ball and type in another font.
+*/
 private RazorFont currentFont;
 
 /// Stores all fonts
