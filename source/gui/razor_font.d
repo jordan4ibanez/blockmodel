@@ -169,7 +169,7 @@ private class RazorFont {
 
     The last 1 values specify width of the character
     */
-    double[9][char] map;
+    double[9][dchar] map;
 
     // Stores the map raw as a linear array before processed
     string rawMap;
@@ -335,7 +335,7 @@ void renderToCanvas(double posX, double posY, const double fontSize, string text
     const positionX = posX - canvasWidth;
     const positionY = posY - canvasHeight;
 
-    foreach (key, character; text) {
+    foreach (key, const(dchar) character; text) {
 
         // Skip space
         if (character == ' ') {
@@ -443,14 +443,14 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
     const int border = fontObject.border;
 
 
-    foreach (size_t i, immutable(char) value; fontObject.rawMap) {
+    foreach (size_t i, const(dchar) value; fontObject.rawMap) {
 
         // Turn off annoying casting suggestions
         const int index = cast(int) i;
 
         // Now get where the typewriter is
-        const int currentRow = (index % rows);
-        const int currentColum = index / columns;
+        const int currentRow = index % rows;
+        const int currentColum = index / (columns - 1);
 
         // Now get literal pixel position (top left)
         int intPosX = (characterWidth + border) * currentRow;
@@ -505,6 +505,7 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
         // writeln(glPositions[6..8]);
 
         // writeln(glPositions[8..10]);
+        
 
         // Now dump it into the dictionary
         fontObject.map[value] = glPositions;
