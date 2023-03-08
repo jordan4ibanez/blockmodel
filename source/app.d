@@ -226,7 +226,7 @@ void main()
         
         Font.selectFont("cool");
 
-        Font.renderToCanvas(0,0, 20, "hi there"); 
+        Font.renderToCanvas(0,0, 20, "i'm on the top left"); 
 
         Font.RazorFontData data =  Font.flush();
 
