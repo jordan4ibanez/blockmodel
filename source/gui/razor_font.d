@@ -220,8 +220,9 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
 
 /// Allows you to render to a canvas using top left as a base position
 void setCanvasSize(double width, double height) {
-    canvasWidth = width;
-    canvasHeight = height;
+    // Dividing by 2.0 because my test environment shader renders to center on pos(0,0) top left
+    canvasWidth = width / 2.0;
+    canvasHeight = height / 2.0;
 }
 
 // Flushes out the cache, gives you back a font struct containing the raw data
@@ -268,7 +269,7 @@ void selectFont(string font) {
 }
 
 /// Render to the canvas. Remember: You must run flush() to collect this canvas.
-void renderToCanvas(const double fontSize, string text) {
+void renderToCanvas(double posX, double posY, const double fontSize, string text) {
 
     // Can't render if no font is selected
     if (currentFont is null) {
@@ -325,7 +326,7 @@ void renderToCanvas(const double fontSize, string text) {
         // Shifting
         for (int i = 0; i < 8; i += 2) {
             // Now shift right
-            rawVertex[i] += typeWriterArmX;
+            rawVertex[i] += typeWriterArmX - canvasWidth;
             // Now shift down
             rawVertex[i + 1] += typeWriterArmY;
         }
@@ -361,7 +362,6 @@ void renderToCanvas(const double fontSize, string text) {
             throw new Exception("Character limit is: " ~ to!string(CHARACTER_LIMIT));
         }
     }
-    // return RazorFontData(vertexData, textureData, indices);
 }
 
 
