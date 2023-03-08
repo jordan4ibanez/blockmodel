@@ -138,7 +138,7 @@ void main()
 
     Window.setVsync(0);
 
-
+    
 
     while (!Window.shouldClose()) {
         // Calculating the delta goes first, we want this to be as accurate as possible.
@@ -157,7 +157,7 @@ void main()
 
         Window.clear(1);
 
-        if (true) {
+        if (false) {
             Camera.clearDepthBuffer();
             Camera.setRotation(Vector3d(0,0,0));
 
@@ -213,47 +213,43 @@ void main()
             );
 
             debug2d.render("2d");
+        }
 
+        // Now render this font
+        Camera.clearDepthBuffer();
+
+        Shader.startProgram("2d");
+
+        Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
+
+        Font.setCanvasSize(Window.getWidth, Window.getHeight);
+        
+        Font.selectFont("cool");
+
+        Font.renderToCanvas(20, "hi there"); 
+
+        Font.RazorFontData data =  Font.flush();
+
+        Mesh myCoolText = new Mesh()
+            .addVertices2d(to!(float[])(data.vertexPositions))
+            .addIndices(data.indices)
+            .addTextureCoordinates(to!(float[])(data.textureCoordinates))
+            .setTexture(Texture.getTexture("fonts/test_font.png"))
+            .finalize();
         
 
-            // Now render this font
-            Camera.clearDepthBuffer();
+        Shader.setUniformMatrix4f("2d", "objectMatrix",
+            Camera.setGuiObjectMatrix(
+                Vector2d(
+                    0,// -Window.getWidth() / 2,
+                    0// -Window.getHeight() / 2
+                )
+            )
+        );
 
-            Shader.startProgram("2d");
+        myCoolText.render("2d");
 
-            Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
-
-            // string accumulator;
-            // foreach (i; 0..100) {
-            //     accumulator ~= "this is a test of my font rendering engine thing so cool wooo yeah :) here is some more text\n";
-            // }
-
-            Font.selectFont("cool");
-
-            Font.renderToCanvas(20, "hi there"); 
-
-            Font.flush();
-
-            // Mesh myCoolText = new Mesh()
-            //     .addVertices2d(to!(float[])(fontData.vertexPositions))
-            //     .addIndices(fontData.indices)
-            //     .addTextureCoordinates(to!(float[])(fontData.textureCoordinates))
-            //     .setTexture(Texture.getTexture("fonts/test_font.png"))
-            //     .finalize();
-
-            // Shader.setUniformMatrix4f("2d", "objectMatrix",
-            //     Camera.setGuiObjectMatrix(
-            //         Vector2d(
-            //             -Window.getWidth() / 2,
-            //             -Window.getHeight() / 2
-            //         )
-            //     )
-            // );
-
-            // myCoolText.render("2d");
-
-            // myCoolText.cleanUp();
-        }
+        myCoolText.cleanUp();
 
         Window.swapBuffers();
     }
@@ -261,7 +257,6 @@ void main()
     Shader.deleteShader("regular");
     Shader.deleteShader("model");
     Shader.deleteShader("2d");
-
     
     debugMesh.cleanUp();
     xyzCompass.cleanUp();
