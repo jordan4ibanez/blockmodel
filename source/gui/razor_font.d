@@ -68,7 +68,10 @@ it would create garbage text data without a lock when swapping golfballs, aka fo
 */
 private RazorFont currentFont = null;
 
-// This is the lock described in the comment above;
+/// This stores the current font name as a string
+private string currentFontName;
+
+/// This is the lock described in the comment above;
 private bool fontLock = false;
 
 /// Stores all fonts
@@ -159,6 +162,9 @@ private class RazorFont {
     bool trimmedX = false;
     bool trimmedY = false;
 
+    // Readonly directory for texture (entire, including the .png)
+    string fileLocation;
+
     // Character map - stored as a linear associative array for O(1) retrieval
     /**
     Stores as:
@@ -220,6 +226,9 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
     // Create the Font object
     RazorFont fontObject = new RazorFont();
 
+    // Store the file location in the object
+    fontObject.fileLocation = pngLocation;
+
     // Now parse the json, and pass it into object
     parseJson(fontObject, jsonLocation);
 
@@ -236,6 +245,13 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
 
 //* ============================ BEGIN GRAPHICS DISPATCH ===========================
 
+string getCurrentFontTextureFileLocation() {
+    if (currentFont is null) {
+        throw new Exception("Razor Font: Can't get a font file location! You didn't select one!");
+    }
+    return currentFont.fileLocation;
+}
+
 /// Allows you to render to a canvas using top left as a base position
 void setCanvasSize(double width, double height) {
     // Dividing by 2.0 because my test environment shader renders to center on pos(0,0) top left
@@ -243,7 +259,20 @@ void setCanvasSize(double width, double height) {
     canvasHeight = height / 2.0;
 }
 
-// Flushes out the cache, gives you back a font struct containing the raw data
+/**
+Automatically flushes out the cache, handing the data structure off to
+the delegate function you defined via setRenderFunc()
+*/
+void render() {
+    if (renderApiRenderCall is null) {
+        throw new Exception("Razor Font: You did not set a render api call!");
+    }
+
+    renderApiRenderCall(flush());
+}
+
+
+/// Flushes out the cache, gives you back a font struct containing the raw data
 RazorFontData flush() {
 
     fontLock = false;
@@ -322,6 +351,7 @@ void selectFont(string font) {
 
     // Now store and lock
     currentFont = razorFonts[font];
+    currentFontName = font;
     fontLock = true;
 }
 
