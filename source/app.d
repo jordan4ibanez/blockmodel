@@ -37,7 +37,7 @@ void main()
         }
     );
 
-    Font.createFont("fonts/test_font", "cool", false, false, false);
+    Font.createFont("fonts/test_font", "cool", false, false);
 
 
     //* End Razor Font testing
