@@ -37,7 +37,7 @@ void main()
         }
     );
 
-    // Font.createFont("fonts/test_font", "cool", false, false);
+    Font.createFont("fonts/test_font", "cool", false, false);
 
     Font.createFont("fonts/totally_original", "mc", false, false);
 
@@ -222,21 +222,42 @@ void main()
 
         Shader.startProgram("2d");
 
-        Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
-
         Font.setCanvasSize(Window.getWidth, Window.getHeight);
+
+        Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
+        Shader.setUniformMatrix4f("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)) );
         
         Font.selectFont("mc");
 
-        Font.renderToCanvas(0,0, 20, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        // Scoped to show individual calls into api
+        {
+            Font.renderToCanvas(0,0, 24, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        }
 
-        Font.RazorTextSize textSize = Font.getTextSize(40, "I'm on the bottom right!");
+        {
+            int fontSize = 40;
+            string textString = "I'm on the bottom right!";
 
-        // Now we're going to move this to the bottom right of the "canvas"
-        double posX = Window.getWidth - textSize.width;
-        double posY = Window.getHeight - textSize.height;
+            Font.RazorTextSize textSize = Font.getTextSize(fontSize, textString);
+            // Now we're going to move this to the bottom right of the "canvas"
+            double posX = Window.getWidth - textSize.width;
+            double posY = Window.getHeight - textSize.height;
 
-        Font.renderToCanvas(posX, posY - 30, 40, "I'm on the bottom right!");
+            Font.renderToCanvas(posX, posY - 30, fontSize, textString);
+        }
+
+        {
+            int fontSize = 30;
+            string textString = "The text below is rendered at the window center-point!";
+
+            Font.RazorTextSize textSize = Font.getTextSize(fontSize, textString);
+            // Now we're going to move this to the bottom right of the "canvas"
+
+            double posX = (Window.getWidth / 2.0) - (textSize.width / 2.0);
+            double posY = (Window.getHeight / 2.0) - (textSize.height / 2.0) - 50;
+
+            Font.renderToCanvas(posX, posY, fontSize, textString);
+        }
 
         Font.RazorFontData data =  Font.flush();
 
@@ -248,20 +269,28 @@ void main()
             .finalize();
         
 
-        Shader.setUniformMatrix4f("2d", "objectMatrix",
-            Camera.setGuiObjectMatrix(
-                Vector2d(
-                    0,// -Window.getWidth() / 2,
-                    0// -Window.getHeight() / 2
-                )
-            )
-        );
-
         myCoolText.render("2d");
 
         myCoolText.cleanUp();
 
+
+
         Font.selectFont("cool");
+
+        Font.renderToCanvas(Window.getWidth / 2, Window.getHeight / 2, 30, "my test font is awful");
+
+        Font.RazorFontData data2 = Font.flush();
+
+        Mesh myCoolText2 = new Mesh()
+            .addVertices2d(to!(float[])(data2.vertexPositions))
+            .addIndices(data2.indices)
+            .addTextureCoordinates(to!(float[])(data2.textureCoordinates))
+            .setTexture(Texture.getTexture("fonts/test_font.png"))
+            .finalize();
+
+        myCoolText2.render("2d");
+
+        myCoolText2.cleanUp();
 
         Window.swapBuffers();
     }
