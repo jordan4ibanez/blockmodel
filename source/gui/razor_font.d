@@ -57,6 +57,9 @@ These store constant data that is highly repetitive
 private immutable double[8] RAW_VERTEX  = [ 0,0, 0,1, 1,1, 1,0 ];
 private immutable int[6]    RAW_INDICES = [ 0,1,2, 2,3,0 ];
 
+// Caches the current font in use
+private RazorFont currentFont;
+
 /// Stores all fonts
 private RazorFont[string] razorFonts;
 
