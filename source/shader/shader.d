@@ -5,6 +5,7 @@ import std.file;
 import bindbc.opengl;
 import tools.gl_error;
 import std.string;
+import std.conv;
 
 /// These work as a synced list
 private GLuint[string] vertexShaders;
@@ -110,24 +111,13 @@ void setUniformDouble(string shaderName, string uniformName, GLdouble value) {
     }
 }
 
-void setUniformMatrix4(string shaderName, string uniformName, double[] matrix, GLint count = 1) {
-
-    //! This works - still leaks >:(
-    // float[] temp;
-    // temp.length = matrix.length;
-    // foreach (index, float key; matrix) {
-    //     temp[index] = key;        
-    // }
-    //! Debug
-    float[16] hi;
-
-    
+void setUniformMatrix4(string shaderName, string uniformName, double[] matrix, GLint count = 1) {   
 
     glUniformMatrix4fv(
         getUniform(shaderName, uniformName), // Location
         count, // Count
         GL_FALSE,// Transpose
-        hi.ptr// Pointer
+        to!(float[])(matrix).ptr// Pointer
     );
     
     GLenum glErrorInfo = getAndClearGLErrors();
