@@ -249,6 +249,45 @@ RazorFontData flush() {
     return returningStruct;
 }
 
+/// Allows you to get text size to do interesting things. Returns as RazorTextSize struct
+RazorTextSize getTextSize(double fontSize, string text) {
+    double accumulatorX = 0.0;
+    double accumulatorY = 0.0;
+
+    // Can't get the size if there's no font!
+    if (currentFont is null) {
+        throw new Exception("Razor Font: Tried to get text size without selecting a font! " ~
+            "You must select a font before getting the size of text with it!");
+    }
+    
+    foreach (key, character; text) {
+
+        // Skip space
+        if (character == ' ') {
+            accumulatorX += fontSize;
+            continue;
+        }
+        // Move down 1 space Y
+        if (character == '\n') {
+            accumulatorY += fontSize;
+            continue;
+        }
+        
+        // Skip unknown character
+        if (character !in currentFont.map) {
+            continue;
+        }
+
+        // Font stores character width in index 9 (8 [0 count])
+        accumulatorX += currentFont.map[character][8] * fontSize;
+    }
+
+    // Now add a last bit of the height offset
+    accumulatorY += fontSize;
+
+    return RazorTextSize(accumulatorX, accumulatorY);
+}
+
 /**
 Selects and caches the font of your choosing.
 
@@ -315,7 +354,7 @@ void renderToCanvas(double posX, double posY, const double fontSize, string text
             continue;
         }
 
-        // Font stores character width and height in index 9 and 10 (8 and 9 [0 count])
+        // Font stores character width in index 9 (8 [0 count])
         double[9] rawData = currentFont.map[character];
 
         // Keep on the stack
