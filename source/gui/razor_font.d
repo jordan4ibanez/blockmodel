@@ -66,7 +66,10 @@ Then you can swap to another ball and type in another font.
 Just remember, you must flush or this is going to throw an error because
 it would create garbage text data without a lock when swapping golfballs, aka fonts.
 */
-private RazorFont currentFont;
+private RazorFont currentFont = null;
+
+// This is the lock described in the comment above;
+private bool fontLock = false;
 
 /// Stores all fonts
 private RazorFont[string] razorFonts;
@@ -220,16 +223,22 @@ void setCanvasWidthHeight(double width, double height) {
     canvasHeight = height;
 }
 
-/// Render to the canvas. Remember: You must run flush() to collect this canvas.
-void debugRenderDouble(string font, const double fontSize, string text) {
+void selectFont(string font) {
 
     // Can't render if that font doesn't exist
     if (font !in razorFonts) {
         throw new Exception(font ~ " is not a registered font!");
     }
 
-    // Cache the object
-    const RazorFont thisFont = razorFonts[font];
+}
+
+/// Render to the canvas. Remember: You must run flush() to collect this canvas.
+void renderToCanvas(const double fontSize, string text) {
+
+    // Can't render if no font is selected
+    if (currentFont is null) {
+        throw new Exception("Razor Font: Tried to render without selecting a font!");
+    }
 
     // Store how far the arm has moved to the right
     double typeWriterArmX = 0.0;
@@ -253,10 +262,14 @@ void debugRenderDouble(string font, const double fontSize, string text) {
         }
 
         // Font stores character width and height in index 9 and 10 (8 and 9 [0 count])
-        double[10] rawData = thisFont.map[character];
+        double[10] rawData = currentFont.map[character];
 
         // Keep on the stack
         double[8] textureData = rawData[0..8];
+        //Now dispatch into the cache
+        for (int i = 0; i < 8; i++) {
+            textureCoordinateCache[i + textureCoordinateCount] = textureData[i];
+        }
 
         // This is the width and height of the character
         // Keep on the stack
@@ -303,6 +316,7 @@ void debugRenderDouble(string font, const double fontSize, string text) {
 
         // Now hold cursor position (count) in arrays
         vertexCount  += 8;
+        textureCoordinateCount += 8;
         indicesCount += 6;
 
         if (vertexCount >= CHARACTER_LIMIT || indicesCount >= CHARACTER_LIMIT) {
