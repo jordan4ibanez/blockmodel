@@ -270,6 +270,7 @@ class Mesh {
 
             // writeln("deleted TEXTURE COORDINATES");
         }
+        
         // Delete the bones vbo
         if (this.bbo != invalid) {
             glDisableVertexAttribArray(2);
