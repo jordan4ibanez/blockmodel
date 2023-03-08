@@ -60,8 +60,11 @@ private immutable int[6]    RAW_INDICES = [ 0,1,2, 2,3,0 ];
 /**
 Caches the current font in use.
 Think of this like the golfball on an IBM Selectric.
-You can use one ball, type out in one font. Then flush.
+You can use one ball, type out in one font. Then flush to your render target.
 Then you can swap to another ball and type in another font.
+
+Just remember, you must flush or this is going to throw an error because
+it would create garbage text data without a lock when swapping golfballs, aka fonts.
 */
 private RazorFont currentFont;
 
