@@ -10,5 +10,9 @@ out vec4 fragColor;
 uniform sampler2D textureSampler;
 
 void main() {
-    fragColor = texture(textureSampler, outputTextureCoordinate);
+    vec4 outputPixel = texture(textureSampler, outputTextureCoordinate);
+    if (outputPixel.w <= 0.0) {
+        discard;
+    }
+    fragColor = outputPixel;
 }
