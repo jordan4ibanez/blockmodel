@@ -98,36 +98,9 @@ void setUniformInt(string shaderName, string uniformName, GLuint value) {
     }
 }
 
-void setUniformFloat(string shaderName, string uniformName, GLfloat value) {
-    glUniform1f(getUniform(shaderName, uniformName), value);
-    
-    GLenum glErrorInfo = getAndClearGLErrors();
-    if (glErrorInfo != GL_NO_ERROR) {
-        writeln("GL ERROR: ", glErrorInfo);
-        // This needs to crash too! Game needs shaders!
-        throw new Exception("Error setting shader uniform: " ~ uniformName);
-    }
-}
 
 void setUniformDouble(string shaderName, string uniformName, GLdouble value) {
     glUniform1d(getUniform(shaderName, uniformName), value);
-    
-    GLenum glErrorInfo = getAndClearGLErrors();
-    if (glErrorInfo != GL_NO_ERROR) {
-        writeln("GL ERROR: ", glErrorInfo);
-        // This needs to crash too! Game needs shaders!
-        throw new Exception("Error setting shader uniform: " ~ uniformName);
-    }
-}
-
-void setUniformMatrix4f(string shaderName, string uniformName, float[] matrix, GLint count = 1) {
-
-    glUniformMatrix4fv(
-        getUniform(shaderName, uniformName), // Location
-        count, // Count
-        GL_FALSE,// Transpose
-        matrix.ptr// Pointer
-    );
     
     GLenum glErrorInfo = getAndClearGLErrors();
     if (glErrorInfo != GL_NO_ERROR) {
