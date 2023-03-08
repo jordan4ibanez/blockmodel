@@ -8,6 +8,7 @@ import vector_3d;
 import vector_4d;
 import vector_4i;
 import tools.gl_error;
+import core.memory;
 
 /// An OpenGL mesh. Utilizes builder pattern.
 class Mesh {
@@ -52,6 +53,8 @@ class Mesh {
     
     private bool is3d = false;
     private bool is2d = false;
+
+    const(float)* verticesPointer;
 
     /// Creates the OpenGL context for assembling this GL Mesh Object.
     this() {
@@ -106,6 +109,8 @@ class Mesh {
             vertices.ptr,                   // The pointer to the data for the object
             GL_STATIC_DRAW                  // Which draw mode OpenGL will use
         );
+
+        verticesPointer = vertices.ptr;
 
         glVertexAttribPointer(
             0,           // Attribute 0 (matches the attribute in the glsl shader)
@@ -244,6 +249,11 @@ class Mesh {
         cause unexpected behavior.
     */
     void cleanUp() {
+
+        if (verticesPointer !is null) {
+            GC.free(cast(void*)verticesPointer);
+
+        }
 
         if (!finalized) {
             throw new Exception("You MUST call finalize() for a mesh!");
