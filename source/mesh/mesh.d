@@ -15,7 +15,7 @@ class Mesh {
 
     private static immutable GLuint invalid = GLuint.max;
 
-    private static bool debugEnabled = false;
+    private static immutable bool debugEnabled = false;
 
     // Vertex array object - Main object
     private GLuint vao = invalid;
@@ -155,23 +155,21 @@ class Mesh {
     }
 
     /// Adds indices data (order of vertex positions) in a linear int[].
-    Mesh addIndices(const int[] indices) {
+    void addIndices(const int[] indices) {
 
         // Indices VBO
 
-        this.indexCount = cast(GLuint)(indices.length);
-
+        this.indexCount = cast(GLint)indices.length;
+        
         glGenBuffers(1, &this.ibo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.ibo);
 
         glBufferData(
-            GL_ELEMENT_ARRAY_BUFFER,     // Target object
-            indices.length * int.sizeof, // size (bytes)
-            indices.ptr,                 // the pointer to the data for the object
-            GL_STATIC_DRAW               // The draw mode OpenGL will use
+            GL_ELEMENT_ARRAY_BUFFER,       // Target object
+            indices.length * GLint.sizeof, // size (bytes)
+            indices.ptr,                   // the pointer to the data for the object
+            GL_STATIC_DRAW                 // The draw mode OpenGL will use
         );
-
-        return this;
     }
 
     /// Adds bone data aligned with the vertex position in a linear int[].
@@ -270,13 +268,19 @@ class Mesh {
 
             // writeln("deleted TEXTURE COORDINATES");
         }
-        // Delete the indices vbo
+        // Delete the bones vbo
         if (this.bbo != invalid) {
             glDisableVertexAttribArray(2);
-            glDeleteBuffers(1, &this.ibo);
-            assert (glIsBuffer(this.ibo) == GL_FALSE);
+            glDeleteBuffers(1, &this.bbo);
+            assert (glIsBuffer(this.bbo) == GL_FALSE);
 
             // writeln("deleted BONES");
+        }
+
+        // Delete the indices
+        if (this.ibo != invalid) {
+            glDeleteBuffers(1, &this.ibo);
+            assert(glIsBuffer(this.ibo) == GL_FALSE);
         }
 
         // Unbind the OpenGL object
@@ -347,5 +351,12 @@ class Mesh {
             throw new Exception("Cannot get the size of a 3d model!");
         }
         return this.size.y;
+    }
+}
+
+class EmptyTestObject {
+    int hi = 1;
+    int getHi() {
+        return hi;
     }
 }
