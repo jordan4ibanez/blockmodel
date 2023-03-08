@@ -80,6 +80,11 @@ struct RazorFontData {
     double[] textureCoordinates;
     int[]    indices;
 }
+/// A simple struct to get the width and height of rendered text
+struct RazorTextSize {
+    double width  = 0.0;
+    double height = 0.0;
+}
 
 // Allows an automatic upload into whatever render target (OpenGL, Vulkan, Metal, DX) as a string file location
 private void delegate(string) renderTargetAPICallString = null;
