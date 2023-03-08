@@ -44,9 +44,9 @@ void main()
             string fileLocation = Font.getCurrentFontTextureFileLocation();
 
             Mesh tempObject = new Mesh()
-                .addVertices2d(to!(float[])(fontData.vertexPositions))
+                .addVertices2d(fontData.vertexPositions)
                 .addIndices(fontData.indices)
-                .addTextureCoordinates(to!(float[])(fontData.textureCoordinates))
+                .addTextureCoordinates(fontData.textureCoordinates)
                 .setTexture(Texture.getTexture(fileLocation))
                 .finalize();
             tempObject.render("2d");
@@ -183,10 +183,10 @@ void main()
 
             Shader.startProgram("model");
 
-            Shader.setUniformMatrix4f("model", "boneTRS", model.playAnimation(1), model.total_blocks);
-            Shader.setUniformMatrix4f("model", "cameraMatrix", Camera.updateCameraMatrix());
+            Shader.setUniformMatrix4("model", "boneTRS", model.playAnimation(1), model.total_blocks);
+            Shader.setUniformMatrix4("model", "cameraMatrix", Camera.updateCameraMatrix());
 
-            Shader.setUniformMatrix4f("model", "objectMatrix",
+            Shader.setUniformMatrix4("model", "objectMatrix",
                 Camera.setObjectMatrix(
                     Vector3d(0,-3,-10), // Translation
                     Vector3d(0,fancyRotation,0), // Rotation
@@ -201,9 +201,9 @@ void main()
 
             Shader.startProgram("regular");
 
-            Shader.setUniformMatrix4f("regular", "cameraMatrix", Camera.updateCameraMatrix());
+            Shader.setUniformMatrix4("regular", "cameraMatrix", Camera.updateCameraMatrix());
 
-            Shader.setUniformMatrix4f("regular", "objectMatrix",
+            Shader.setUniformMatrix4("regular", "objectMatrix",
                 Camera.setObjectMatrix(
                     Vector3d(0,-1,-4), // Translation
                     Vector3d(0,fancyRotation,0), // Rotation
@@ -219,9 +219,9 @@ void main()
 
             Shader.startProgram("2d");
 
-            Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
+            Shader.setUniformMatrix4("2d", "cameraMatrix", Camera.updateGuiMatrix());
 
-            Shader.setUniformMatrix4f("2d", "objectMatrix",
+            Shader.setUniformMatrix4("2d", "objectMatrix",
                 Camera.setGuiObjectMatrix(
                     Vector2d(
                         (Window.getWidth / 2.0) - debug2d.getWidth,
@@ -241,8 +241,8 @@ void main()
 
             Font.setCanvasSize(Window.getWidth, Window.getHeight);
 
-            Shader.setUniformMatrix4f("2d", "cameraMatrix", Camera.updateGuiMatrix());
-            Shader.setUniformMatrix4f("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)) );
+            Shader.setUniformMatrix4("2d", "cameraMatrix", Camera.updateGuiMatrix());
+            Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)) );
             
             Font.selectFont("mc");
 
@@ -286,9 +286,9 @@ void main()
             Font.RazorFontData data2 = Font.flush();
 
             Mesh myCoolText2 = new Mesh()
-                .addVertices2d(to!(float[])(data2.vertexPositions))
+                .addVertices2d(data2.vertexPositions)
                 .addIndices(data2.indices)
-                .addTextureCoordinates(to!(float[])(data2.textureCoordinates))
+                .addTextureCoordinates(data2.textureCoordinates)
                 .setTexture(Texture.getTexture("fonts/test_font.png"))
                 .finalize();
 
