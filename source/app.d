@@ -36,9 +36,25 @@ void main()
             Texture.addTexture(input);
         }
     );
+    
+
+    Font.setRenderFunc(
+        (Font.RazorFontData fontData) {
+
+            string fileLocation = Font.getCurrentFontTextureFileLocation();
+
+            Mesh tempObject = new Mesh()
+                .addVertices2d(to!(float[])(fontData.vertexPositions))
+                .addIndices(fontData.indices)
+                .addTextureCoordinates(to!(float[])(fontData.textureCoordinates))
+                .setTexture(Texture.getTexture(fileLocation))
+                .finalize();
+            tempObject.render("2d");
+            tempObject.cleanUp();
+        }
+    );
 
     Font.createFont("fonts/test_font", "cool", false, false);
-
     Font.createFont("fonts/totally_original", "mc", false, false);
 
 
@@ -259,20 +275,7 @@ void main()
             Font.renderToCanvas(posX, posY, fontSize, textString);
         }
 
-        Font.RazorFontData data =  Font.flush();
-
-        Mesh myCoolText = new Mesh()
-            .addVertices2d(to!(float[])(data.vertexPositions))
-            .addIndices(data.indices)
-            .addTextureCoordinates(to!(float[])(data.textureCoordinates))
-            .setTexture(Texture.getTexture("fonts/totally_original.png"))
-            .finalize();
-        
-
-        myCoolText.render("2d");
-
-        myCoolText.cleanUp();
-
+        Font.render();
 
 
         Font.selectFont("cool");
