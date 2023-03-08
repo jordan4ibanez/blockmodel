@@ -495,7 +495,7 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
         const int currentRow = index % rows;
         const int currentColum = index / rows;
 
-        writeln(value, " is at X: ", currentRow, " | Y: ", currentColum);
+        // writeln(value, " is at X: ", currentRow, " | Y: ", currentColum);
 
         // Now get literal pixel position (top left)
         int intPosX = (characterWidth + border) * currentRow;
