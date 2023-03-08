@@ -110,7 +110,7 @@ void setUniformDouble(string shaderName, string uniformName, GLdouble value) {
     }
 }
 
-void setUniformMatrix4d(string shaderName, string uniformName, double[] matrix, GLint count = 1) {
+void setUniformMatrix4(string shaderName, string uniformName, double[] matrix, GLint count = 1) {
 
     glUniformMatrix4dv(
         getUniform(shaderName, uniformName), // Location
