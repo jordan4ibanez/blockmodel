@@ -245,8 +245,6 @@ void renderToCanvas(const double fontSize, string text) {
     // Store how far the arm has moved down
     double typeWriterArmY = 0.0;
 
-
-
     foreach (key, character; text) {
 
         // Skip space
