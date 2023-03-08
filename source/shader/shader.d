@@ -112,11 +112,22 @@ void setUniformDouble(string shaderName, string uniformName, GLdouble value) {
 
 void setUniformMatrix4(string shaderName, string uniformName, double[] matrix, GLint count = 1) {
 
-    glUniformMatrix4dv(
+    //! This works - still leaks >:(
+    // float[] temp;
+    // temp.length = matrix.length;
+    // foreach (index, float key; matrix) {
+    //     temp[index] = key;        
+    // }
+    //! Debug
+    float[16] hi;
+
+    
+
+    glUniformMatrix4fv(
         getUniform(shaderName, uniformName), // Location
         count, // Count
         GL_FALSE,// Transpose
-        matrix.ptr// Pointer
+        hi.ptr// Pointer
     );
     
     GLenum glErrorInfo = getAndClearGLErrors();
