@@ -162,9 +162,9 @@ private class RazorFont {
     Accessed as:
     double[] myCoolBlah = map["whatever letter/unicode thing you're getting"];
 
-    The last 2 values specify width and height
+    The last 1 values specify width of the character
     */
-    double[10][char] map;
+    double[9][char] map;
 
     // Stores the map raw as a linear array before processed
     string rawMap;
@@ -301,7 +301,7 @@ void renderToCanvas(const double fontSize, string text) {
         }
 
         // Font stores character width and height in index 9 and 10 (8 and 9 [0 count])
-        double[10] rawData = currentFont.map[character];
+        double[9] rawData = currentFont.map[character];
 
         // Keep on the stack
         double[8] textureData = rawData[0..8];
@@ -310,10 +310,9 @@ void renderToCanvas(const double fontSize, string text) {
             textureCoordinateCache[i + textureCoordinateCount] = textureData[i];
         }
 
-        // This is the width and height of the character
+        // This is the width of the character
         // Keep on the stack
         double characterWidth = rawData[8];
-        double characterHeight = rawData[9];
         
         // Keep this on the stack
         double[8] rawVertex = RAW_VERTEX;
@@ -419,7 +418,7 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
             intPosX + characterWidth, intPosY + characterHeight, // Bottom right
             intPosX + characterWidth, intPosY,                    // Top right
             
-            characterWidth, characterHeight // Width and height
+            characterWidth, // Width
         ];
 
         // Now calculate limiters
@@ -437,14 +436,14 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
         }
 
         // Now calculate REAL graphical texture map
-        double[10] glPositions  = [
+        double[9] glPositions  = [
             iPos[0] / palletWidth, iPos[1] / palletHeight, 
             iPos[2] / palletWidth, iPos[3] / palletHeight,
             iPos[4] / palletWidth, iPos[5] / palletHeight,
             iPos[6] / palletWidth, iPos[7] / palletHeight,
 
-            //! This might be backwards!
-            cast(double)iPos[8] / cast(double)characterWidth, cast(double)iPos[9] / cast(double)palletHeight
+            // Now store char width
+            cast(double)iPos[8] / cast(double)characterWidth
         ];
         // writeln("-------------------");
         // writeln(glPositions[0..2]);
