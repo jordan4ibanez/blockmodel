@@ -300,6 +300,11 @@ void renderToCanvas(double posX, double posY, const double fontSize, string text
             typeWriterArmX = 0.0;
             continue;
         }
+        
+        // Skip unknown character
+        if (character !in currentFont.map) {
+            continue;
+        }
 
         // Font stores character width and height in index 9 and 10 (8 and 9 [0 count])
         double[9] rawData = currentFont.map[character];
@@ -328,7 +333,7 @@ void renderToCanvas(double posX, double posY, const double fontSize, string text
             // Now shift right
             rawVertex[i] += typeWriterArmX - canvasWidth;
             // Now shift down
-            rawVertex[i + 1] += typeWriterArmY;
+            rawVertex[i + 1] += typeWriterArmY - canvasHeight;
         }
 
         typeWriterArmX += characterWidth * fontSize;
