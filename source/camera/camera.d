@@ -12,7 +12,7 @@ import Math = doml.math;
 private double FOV = Math.toRadians(60.0);
 
 // Never set this to 0 :P
-// ALSO never set this too low!! You get float errors!
+// ALSO never set this too low!! You get double errors!
 private immutable double Z_NEAR = 0.1;
 // Never set this too high or less than Z_NEAR!!!
 private immutable double Z_FAR = 600.0;
@@ -44,7 +44,7 @@ it does 3 things:
 2. Uploads the matrix to glsl
 3. glsl will multiply this matrix by the camera's matrix, giving a usable position
 */
-float[16] setObjectMatrix(Vector3d offset, Vector3d rotation, Vector3d scale) {
+double[16] setObjectMatrix(Vector3d offset, Vector3d rotation, Vector3d scale) {
 
     // The primary usecase for this is mobs. So Y X Z to do moblike animations.
     objectMatrix
@@ -54,16 +54,16 @@ float[16] setObjectMatrix(Vector3d offset, Vector3d rotation, Vector3d scale) {
         .rotateX(math.toRadians(-rotation.x))
         .rotateZ(math.toRadians(-rotation.z))
         .scale(scale);
-    return objectMatrix.getFloatArray();
+    return objectMatrix.getDoubleArray();
 }
 // ^ v Both of these functions reuse the object matrix
-float[16] setGuiObjectMatrix(Vector2d offset) {
+double[16] setGuiObjectMatrix(Vector2d offset) {
 
     // The primary usecase for this is GUI.
     objectMatrix
         .identity()
         .translate(offset.x, offset.y, 0.0);
-    return objectMatrix.getFloatArray();
+    return objectMatrix.getDoubleArray();
 }
 
 /**
@@ -73,22 +73,22 @@ it does 3 things:
 2. Calculates it's position in 4d space, and locks it in place
 3. It updates GLSL so it can work with it
 */
-float[16] updateCameraMatrix() {
+double[16] updateCameraMatrix() {
     double aspectRatio = Window.getAspectRatio();
     
     cameraMatrix.identity()
         .perspective(FOV, aspectRatio, Z_NEAR, Z_FAR)
         .rotateX(math.toRadians(rotation.x))
         .rotateY(math.toRadians(rotation.y));
-    return cameraMatrix.getFloatArray();
+    return cameraMatrix.getDoubleArray();
 }
 
-float[16] updateGuiMatrix() {
-    const float width = Window.getWidth / 2.0;
-    const float height = Window.getHeight / 2.0;
+double[16] updateGuiMatrix() {
+    const double width = Window.getWidth / 2.0;
+    const double height = Window.getHeight / 2.0;
     cameraMatrix.identity()
         .setOrtho2D(-width, width, height, -height);
-    return cameraMatrix.getFloatArray();
+    return cameraMatrix.getDoubleArray();
 }
 
 // It is extremely important to clear the buffer bit!

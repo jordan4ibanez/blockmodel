@@ -100,7 +100,7 @@ class BlockModel {
                     .setRotationXYZ(rotation.x, rotation.y, rotation.z)
                     .scaleLocal(scale.x,scale.y,scale.z);
                     
-                animationAccumulator ~= animationMatrix.getFloatArray;
+                animationAccumulator ~= animationMatrix.getDoubleArray();
             }
 
         } else {
@@ -147,7 +147,7 @@ class BlockModel {
                     .setRotationXYZ(rotation.x, rotation.y, rotation.z)
                     .scaleLocal(scale.x,scale.y,scale.z);
                     
-                animationAccumulator ~= animationMatrix.getFloatArray;
+                animationAccumulator ~= animationMatrix.getDoubleArray();
             }
         }
         

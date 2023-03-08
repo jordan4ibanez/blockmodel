@@ -132,7 +132,7 @@ void main()
     Shader.createUniform("2d", "textureSampler");
 
     // Debug scale thing
-    float d = 100.0;
+    double d = 100.0;
     Mesh debug2d = new Mesh()
         .addVertices2d([
             0,0,
@@ -152,7 +152,7 @@ void main()
         .setTexture(Texture.getTexture("textures/debug.png"))
         .finalize();
 
-    float fancyRotation = 0;
+    double fancyRotation = 0;
 
     Window.setVsync(0);
 

@@ -436,13 +436,13 @@ void clear() {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void clear(float intensity) {
+void clear(double intensity) {
     clearColor = Vector3d(intensity);
     glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void clear(float r, float g, float b) {
+void clear(double r, double g, double b) {
     clearColor = Vector3d(r,g,b);
     glClearColor(clearColor.x,clearColor.y,clearColor.z,1);
     glClear(GL_COLOR_BUFFER_BIT);

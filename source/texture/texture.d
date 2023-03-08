@@ -45,7 +45,7 @@ GLuint addTexture(string fileLocation, bool debugEnabled = false) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
     // Border color is nothing
-    float[4] borderColor = [0,0,0,0];
+    double[4] borderColor = [0,0,0,0];
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor.ptr);
 
     // Add in nearest neighbor texture filtering
