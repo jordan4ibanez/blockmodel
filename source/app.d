@@ -10,7 +10,7 @@ import doml.vector_2d;
 import doml.vector_3d;
 import doml.matrix_4d;
 import blockmodel.blockmodel;
-import doml.math;
+import Math = doml.math;
 import delta_time;
 import std.typecons;
 
