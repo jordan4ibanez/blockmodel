@@ -296,13 +296,11 @@ void main()
 
                 Font.renderToCanvas(posX, posY, fontSize, textString);
 
-                Font.flush;
+                Font.render();
             }
             //! 4
 
             /*
-
-            Font.render();
 
 
             Font.selectFont("cool");
