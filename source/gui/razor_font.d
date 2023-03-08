@@ -223,13 +223,44 @@ void setCanvasWidthHeight(double width, double height) {
     canvasHeight = height;
 }
 
+void flush() {
+    fontLock = false;
+
+    //Todo : Return this:
+    // RazorFontData(
+    //     vertexCache[0..vertexCount],
+    //     textureCoordinateCache[0..textureCoordinateCount],
+    //     indicesCache[0..indicesCount]
+    // );
+
+    // Reset the counters
+    vertexCount = 0;
+    textureCoordinateCount = 0;
+    indicesCount = 0;
+}
+
+/**
+Selects and caches the font of your choosing.
+
+Remember: You must flush the cache before choosing a new font.
+
+This is done because all fonts are different. It would create garbage
+data on screen without this.
+*/
 void selectFont(string font) {
+
+    if (fontLock) {
+        throw new Exception("You must flush() out the cache before selecting a new font!");
+    }
 
     // Can't render if that font doesn't exist
     if (font !in razorFonts) {
         throw new Exception(font ~ " is not a registered font!");
     }
 
+    // Now store and lock
+    currentFont = razorFonts[font];
+    fontLock = true;
 }
 
 /// Render to the canvas. Remember: You must run flush() to collect this canvas.
@@ -237,7 +268,8 @@ void renderToCanvas(const double fontSize, string text) {
 
     // Can't render if no font is selected
     if (currentFont is null) {
-        throw new Exception("Razor Font: Tried to render without selecting a font!");
+        throw new Exception("Razor Font: Tried to render without selecting a font! " ~
+            "You must select a font before rendering to canvas!");
     }
 
     // Store how far the arm has moved to the right
