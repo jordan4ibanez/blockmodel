@@ -51,6 +51,12 @@ This is optional though, you can do whatever you want!
 private double canvasWidth  = 0;
 private double canvasHeight = 0;
 
+/**
+These store constant data that is highly repetitive
+*/
+private immutable double[8] RAW_VERTEX  = [ 0,0, 0,1, 1,1, 1,0 ];
+private immutable int[6]    RAW_INDICES = [ 0,1,2, 2,3,0 ];
+
 /// Stores all fonts
 private RazorFont[string] razorFonts;
 
@@ -199,11 +205,12 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
 //* ============================ BEGIN GRAPHICS DISPATCH ===========================
 
 void setCanvasWidthHeight(double width, double height) {
-    
+    canvasWidth = width;
+    canvasHeight = height;
 }
 
 /// Render to the canvas. Remember: You must run flush() to collect this canvas.
-RazorFontData debugRenderDouble(string font, const double fontSize, string text) {
+void debugRenderDouble(string font, const double fontSize, string text) {
 
     // Can't render if that font doesn't exist
     if (font !in razorFonts) {
@@ -246,18 +253,14 @@ RazorFontData debugRenderDouble(string font, const double fontSize, string text)
         double characterHeight = rawData[9];
         
         // Keep this on the stack
-        double[8] rawVertex = [
-            0,0,
-            0,1,
-            1,1,
-            1,0
-        ];
+        double[8] rawVertex = RAW_VERTEX;
 
         // Now scale
         foreach (ref double vertexPosition; rawVertex) {
             vertexPosition *= fontSize;
         }
 
+        // Shifting
         for (int i = 0; i < 8; i += 2) {
             // Now shift right
             rawVertex[i] += typeWriterArmX;
@@ -267,29 +270,35 @@ RazorFontData debugRenderDouble(string font, const double fontSize, string text)
 
         typeWriterArmX += characterWidth * fontSize;
 
-        // writeln("x pos ", rawVertex[0]);
 
-        vertexData ~= rawVertex;
+        // vertexData ~= rawVertex;
+        // Now dispatch into the cache
+        for (int i = 0; i < 8; i++) {
+            vertexCache[i + vertexCount] = rawVertex[i];
+        }
+        
 
-        int[] rawIndices = [
-            0,1,2,2,3,0
-        ];
 
+        // Keep this on the stack
+        int[6] rawIndices = RAW_INDICES;
+        foreach (ref value; rawIndices) {
+            // Using vertexCount because we're targeting vertex positions
+            value += vertexCount / 2;
+        }
+        // Now dispatch into the cache
         for (int i = 0; i < 6; i++) {
-            rawIndices[i] += currentVertex;
+            indicesCache[i + indicesCount] = rawIndices[i];
         }
 
-        // writeln(rawIndices);
+        // Now hold cursor position (count) in arrays
+        vertexCount  += 8;
+        indicesCount += 6;
 
-        currentVertex += 4;
-
-        indices ~= rawIndices;
-        
+        if (vertexCount >= CHARACTER_LIMIT || indicesCount >= CHARACTER_LIMIT) {
+            throw new Exception("Character limit is: " ~ to!string(CHARACTER_LIMIT));
+        }
     }
-    
-    // writeln("raw", vertexData);
-
-    return RazorFontData(vertexData, textureData, indices);
+    // return RazorFontData(vertexData, textureData, indices);
 }
 
 
