@@ -48,8 +48,8 @@ This allows batch rendering to a "canvas" ala vertex positionining
 With this you can shovel one giant lump of data into a vao or whatever you're using.
 This is optional though, you can do whatever you want!
 */
-private double canvasWidth  = 0;
-private double canvasHeight = 0;
+private double canvasWidth  = -1;
+private double canvasHeight = -1;
 
 /**
 These store constant data that is highly repetitive
@@ -182,9 +182,9 @@ Name is an optional. You will call into Razor Font by this name.
 
 If you do not specify a name, you must call into Razor Font by the fileLocation, literal.
 
-You can trim the height (X) or width (Y) or both if you want.
+If you turn on trimming, your font will go from monospace to proportional.
 */
-void createFont(string fileLocation, string name = "", bool kerning = false, bool trimmingX = false, bool trimmingY = false) {
+void createFont(string fileLocation, string name = "", bool kerning = false, bool trimming = false) {
 
     // Are we using the fileLocation as the key, or did they specify a name?
     const string key = name == "" ? fileLocation : name;
@@ -206,7 +206,7 @@ void createFont(string fileLocation, string name = "", bool kerning = false, boo
     parseJson(fontObject, jsonLocation);
 
     // Now encode the linear string as a keymap of raw graphics positions
-    encodeGraphics(fontObject, kerning, trimmingX, trimmingY);
+    encodeGraphics(fontObject, kerning, trimming);
 
     //!Debug
     // writeln(fontObject.map);
@@ -224,10 +224,10 @@ void setCanvasSize(double width, double height) {
     canvasHeight = height;
 }
 
+// Flushes out the cache, gives you back a font struct containing the raw data
 RazorFontData flush() {
 
     fontLock = false;
-
     
     RazorFontData returningStruct = RazorFontData(
         vertexCache[0..vertexCount],
@@ -274,6 +274,11 @@ void renderToCanvas(const double fontSize, string text) {
     if (currentFont is null) {
         throw new Exception("Razor Font: Tried to render without selecting a font! " ~
             "You must select a font before rendering to canvas!");
+    }
+
+    // Can't render to canvas if there IS no canvas
+    if (canvasWidth == -1 && canvasHeight == -1) {
+        throw new Exception("Razor Font: You have to set the canvas size to render to it!");
     }
 
     // Store how far the arm has moved to the right
@@ -366,7 +371,7 @@ void renderToCanvas(const double fontSize, string text) {
 
 //* ========================= BEGIN GRAPHICS ENCODING ==============================
 
-void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimmingX, bool trimmingY) {
+void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
     
     // Store all this on the stack
 
@@ -426,7 +431,7 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimmingX, bool
 
 
         // Now trim it if suggested
-        if (trimmingX) {
+        if (trimming) {
             writeln("trim trim trim");
             
         }
