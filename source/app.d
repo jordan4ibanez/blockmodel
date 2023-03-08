@@ -37,7 +37,9 @@ void main()
         }
     );
 
-    Font.createFont("fonts/test_font", "cool", false, false);
+    // Font.createFont("fonts/test_font", "cool", false, false);
+
+    Font.createFont("fonts/totally_original", "mc", false, false);
 
 
     //* End Razor Font testing
@@ -224,17 +226,17 @@ void main()
 
         Font.setCanvasSize(Window.getWidth, Window.getHeight);
         
-        Font.selectFont("cool");
+        Font.selectFont("mc");
 
-        Font.renderToCanvas(0,0, 20, "i'm on the top left");
+        Font.renderToCanvas(0,0, 20, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
-        Font.RazorTextSize textSize = Font.getTextSize(20, "i'm on the bottom right");
+        Font.RazorTextSize textSize = Font.getTextSize(40, "I'm on the bottom right!");
 
         // Now we're going to move this to the bottom right of the "canvas"
         double posX = Window.getWidth - textSize.width;
         double posY = Window.getHeight - textSize.height;
 
-        Font.renderToCanvas(posX, posY, 20, "i'm on the bottom right");
+        Font.renderToCanvas(posX, posY - 30, 40, "I'm on the bottom right!");
 
         Font.RazorFontData data =  Font.flush();
 
@@ -242,7 +244,7 @@ void main()
             .addVertices2d(to!(float[])(data.vertexPositions))
             .addIndices(data.indices)
             .addTextureCoordinates(to!(float[])(data.textureCoordinates))
-            .setTexture(Texture.getTexture("fonts/test_font.png"))
+            .setTexture(Texture.getTexture("fonts/totally_original.png"))
             .finalize();
         
 
@@ -258,6 +260,8 @@ void main()
         myCoolText.render("2d");
 
         myCoolText.cleanUp();
+
+        Font.selectFont("cool");
 
         Window.swapBuffers();
     }
