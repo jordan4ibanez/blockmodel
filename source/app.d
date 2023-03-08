@@ -240,19 +240,12 @@ void main()
             Shader.setUniformMatrix4("2d", "cameraMatrix", Camera.updateGuiMatrix());
             Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)) );
 
-            //! 1
-
-            
-            
-            //! NO MEMLEAK 2
             Font.selectFont("mc");
 
-            //! NO MEMLEAK 3
             // Scoped to show individual calls into api
             {
                 Font.renderToCanvas(0,0, 24, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
             }
-            //! NO MEMLEAK 4
             {
                 int fontSize = 40;
                 string textString = "I'm on the bottom right!";
@@ -264,8 +257,6 @@ void main()
 
                 Font.renderToCanvas(posX, posY - 30, fontSize, textString);
             }
-
-            
             {
                 int fontSize = 30;
                 string textString = "The text below is rendered at the window center-point!";
@@ -280,7 +271,6 @@ void main()
             }
             
             Font.render();
-            //! 4
 
 
             Font.selectFont("cool");
