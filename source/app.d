@@ -228,7 +228,7 @@ void main()
             //     accumulator ~= "this is a test of my font rendering engine thing so cool wooo yeah :) here is some more text\n";
             // }
 
-            // Font.RazorFontData fontData = Font.debugRenderDouble("cool", 20, accumulator); 
+            Font.RazorFontData fontData = Font.debugRenderDouble("cool", 20, accumulator); 
 
             // Mesh myCoolText = new Mesh()
             //     .addVertices2d(to!(float[])(fontData.vertexPositions))
