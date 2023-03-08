@@ -155,7 +155,7 @@ class Mesh {
     }
 
     /// Adds indices data (order of vertex positions) in a linear int[].
-    void addIndices(const int[] indices) {
+    Mesh addIndices(const int[] indices) {
 
         // Indices VBO
 
@@ -170,6 +170,8 @@ class Mesh {
             indices.ptr,                   // the pointer to the data for the object
             GL_STATIC_DRAW                 // The draw mode OpenGL will use
         );
+        
+        return this;
     }
 
     /// Adds bone data aligned with the vertex position in a linear int[].
