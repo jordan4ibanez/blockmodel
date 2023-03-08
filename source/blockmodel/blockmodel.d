@@ -57,10 +57,10 @@ class BlockModel {
     int total_blocks = 0;
     bool isStatic;
     
-    float[] vertexPositions;
+    double[] vertexPositions;
     int[] indices;
     int[] bones;
-    float[] textureCoordinates;
+    double[] textureCoordinates;
     
     // Framerate is constant LINEAR interpolation
     const double frameTick;
@@ -85,9 +85,9 @@ class BlockModel {
     //! In future implementation: Containerization will allow LERP portions of the animation
     
     /// Speed is a multiplier on the base model FPS
-    float[] playAnimation(double speed = 1.0) {
+    double[] playAnimation(double speed = 1.0) {
 
-        float[] animationAccumulator;
+        double[] animationAccumulator;
         
         if (isStatic) {
             foreach (Block block; blocks) {
@@ -155,7 +155,7 @@ class BlockModel {
         return animationAccumulator;
     }
 
-    float[] getVertexPositions() {
+    double[] getVertexPositions() {
         return this.vertexPositions;
     }
 
@@ -163,7 +163,7 @@ class BlockModel {
         return this.indices;
     }
 
-    float[] getTextureCoordinates() {
+    double[] getTextureCoordinates() {
         return this.textureCoordinates;
     }
 
