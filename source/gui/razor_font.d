@@ -207,8 +207,13 @@ Name is an optional. You will call into Razor Font by this name.
 If you do not specify a name, you must call into Razor Font by the fileLocation, literal.
 
 If you turn on trimming, your font will go from monospace to proportional.
+
+Kerning is NOT implemented.
 */
-void createFont(string fileLocation, string name = "", bool kerning = false, bool trimming = false) {
+void createFont(string fileLocation, string name = "", bool trimming = false) {
+
+    //! Place holder for future
+    bool kerning = false;
 
     // Are we using the fileLocation as the key, or did they specify a name?
     const string key = name == "" ? fileLocation : name;
@@ -485,8 +490,14 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
     // The border between the characters in pixels
     const int border = fontObject.border;
 
+    // Cache a raw true color image for trimming if requested
+    const TrueColorImage tempImageObject = trimming == false ? null : readPng(fontObject.fileLocation).getAsTrueColorImage();
+
 
     foreach (size_t i, const(dchar) value; fontObject.rawMap) {
+
+        // Starts off as a normal monospace size
+        int thisCharacterWidth = characterWidth;
 
         // Turn off annoying casting suggestions
         const int index = cast(int) i;
@@ -500,38 +511,84 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
         // Now get literal pixel position (top left)
         int intPosX = (characterWidth + border) * currentRow;
         int intPosY = (characterHeight + border) * currentColum;
-
-        //! I'm not sure what's going to be the easiest way to go about this
-        //! So I'm dividing my dividends
         
         // left  top,
         // left  bottom,
         // right bottom,
         // right top
 
-        // Now shovel it into a raw array so we can easily use it - iPos stands for Integral Positions
-        int[] iPos = [
-            intPosX,                  intPosY,                   // Top left
-            intPosX,                  intPosY + characterHeight, // Bottom left
-            intPosX + characterWidth, intPosY + characterHeight, // Bottom right
-            intPosX + characterWidth, intPosY,                    // Top right
-            
-            characterWidth, // Width
-        ];
-
         // Now calculate limiters
-        const int minX = intPosX;
-        const int maxX = intPosX + characterWidth;
+        // +1 on max because the GL texture stops on the top left of the point in the texture pixel
+        int minX = intPosX;
+        int maxX = intPosX + characterWidth + 1;
 
         const int minY = intPosY;
-        const int maxY = intPosY + characterHeight;
+        const int maxY = intPosY + characterHeight + 1;
 
+        // Now trim it if requested
+        if (trimming && value == 'a') {
+            writeln("----------===========-----------===========---------------");
+            writeln("Hello I am A");
+            writeln("----------===========-----------===========---------------");
 
-        // Now trim it if suggested
-        if (trimming) {
-            writeln("trim trim trim");
+            const int width = tempImageObject.width();
+            const int height = tempImageObject.height();
+
+            // Create temp workers
+            int newMinX = minX;
+            int newMaxX = maxX;
+
+            // Trim left side
+            outer1: foreach(x; minX..maxX) {
+                // writeln(x);
+                newMinX = x;
+                foreach (y; minY..maxY) {
+                    // This is ubyte (0-255)
+                    if (tempImageObject.getPixel(x,y).a > 0) {
+                        // writeln("found it!");
+                        break outer1;
+                    }
+                }
+            }
+            
+            // Trim right side
+            outer2: foreach_reverse(x; minX..maxX) {
+                // writeln(x);
+                // +1 because of the reason stated above assigning minX and maxX
+                newMaxX = x + 1;
+                foreach (y; minY..maxY) {
+                    // This is ubyte (0-255)
+                    if (tempImageObject.getPixel(x,y).a > 0) {
+                        // writeln("found it!");
+                        break outer2;
+                    }
+                }
+            }
+
+            // writeln("new min x: ", newMinX);
+            // writeln("new max x: ", newMaxX);
+            
+            // I was going to throw a blank space check, but maybe someone has a reason for that
+
+            minX = newMinX;
+            maxX = newMaxX;
+
+            thisCharacterWidth = maxX - minX;
+
+            writeln("width: ", thisCharacterWidth);
             
         }
+
+        // Now shovel it into a raw array so we can easily use it - iPos stands for Integral Positions
+        // This is using UNtrimmed points
+        int[] iPos = [
+            minX, minY, // Top left
+            minX, maxY, // Bottom left
+            maxX, maxY, // Bottom right
+            maxX, minY, // Top right
+            
+            thisCharacterWidth, // Width
+        ];
 
         // Now calculate REAL graphical texture map
         double[9] glPositions  = [
@@ -540,7 +597,8 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
             iPos[4] / palletWidth, iPos[5] / palletHeight,
             iPos[6] / palletWidth, iPos[7] / palletHeight,
 
-            // Now store char width
+            // Now store char width - Find the new double size by comparing it to original
+            // Will simply be 1.0 with monospaced fonts
             cast(double)iPos[8] / cast(double)characterWidth
         ];
         // writeln("-------------------");
