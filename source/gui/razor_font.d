@@ -146,10 +146,14 @@ private class RazorFont {
     // Pixel space (literally) between characters in pallet
     int border = 0;
 
-    // Number of characters (horizontal, aka Z)
-    int rows    = 0;
-    // Number of characters (vertical, aka Y)
-    int columns = 0;
+    // Number of characters (horizontal, aka X)
+    int rows = 0;
+
+    // How far the letters are from each other
+    double spacing = 1.0;
+
+    // How big the space character is (' ')
+    double spaceCharacterSize = 4.0;
 
     // Character pallet (individual) in pixels
     int characterWidth   = 0;
@@ -208,9 +212,11 @@ If you do not specify a name, you must call into Razor Font by the fileLocation,
 
 If you turn on trimming, your font will go from monospace to proportional.
 
-Spacing is how far the letters are from each other. Default: 1.0 pixels
+Spacing is how far the letters are from each other. Default: 1.0 pixel
+
+spaceCharacterSize is how big the ' ' (space) character is. By default, it's 4 pixels wide.
 */
-void createFont(string fileLocation, string name = "", bool trimming = false, double spacing = 1.0) {
+void createFont(string fileLocation, string name = "", bool trimming = false, double spacing = 1.0, double spaceCharacterSize = 4.0) {
 
     //! Place holder for future
     bool kerning = false;
@@ -238,7 +244,7 @@ void createFont(string fileLocation, string name = "", bool trimming = false, do
     parseJson(fontObject, jsonLocation);
 
     // Now encode the linear string as a keymap of raw graphics positions
-    encodeGraphics(fontObject, kerning, trimming);
+    encodeGraphics(fontObject, kerning, trimming, spacing, spaceCharacterSize);
 
     //!Debug
     // writeln(fontObject.map);
@@ -383,11 +389,17 @@ void renderToCanvas(double posX, double posY, const double fontSize, string text
     const positionX = posX - canvasWidth;
     const positionY = posY - canvasHeight;
 
+    // Cache spacing
+    const double spacing = currentFont.spacing * fontSize;
+
+    // Cache space (' ') character
+    const double spaceCharacterSize = currentFont.spaceCharacterSize * fontSize;
+
     foreach (key, const(dchar) character; text) {
 
         // Skip space
         if (character == ' ') {
-            typeWriterArmX += fontSize;
+            typeWriterArmX += spaceCharacterSize;
             continue;
         }
         // Move down 1 space Y and to space 0 X
@@ -439,7 +451,7 @@ void renderToCanvas(double posX, double posY, const double fontSize, string text
             rawVertex[i + 1] += typeWriterArmY + positionY;
         }
 
-        typeWriterArmX += characterWidth * fontSize;
+        typeWriterArmX += (characterWidth * fontSize) + spacing;
 
 
         // vertexData ~= rawVertex;
@@ -478,7 +490,7 @@ void renderToCanvas(double posX, double posY, const double fontSize, string text
 
 //* ========================= BEGIN GRAPHICS ENCODING ==============================
 
-void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
+void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming, double spacing, double spaceCharacterSize) {
     
     // Store all this on the stack
 
@@ -495,6 +507,12 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
 
     // The border between the characters in pixels
     const int border = fontObject.border;
+
+    // Store font spacing here as it's a one shot operation
+    fontObject.spacing = spacing / characterWidth;
+
+    // Store space character width as it's a one shot operation
+    fontObject.spaceCharacterSize = spaceCharacterSize / characterWidth;
 
     // Cache a raw true color image for trimming if requested
     const TrueColorImage tempImageObject = trimming == false ? null : readPng(fontObject.fileLocation).getAsTrueColorImage();
@@ -575,7 +593,7 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
 
             thisCharacterWidth = maxX - minX;
 
-            writeln("width: ", thisCharacterWidth);
+            // writeln("width: ", thisCharacterWidth);
             
         }
 
@@ -649,11 +667,6 @@ void parseJson(ref RazorFont fontObject, const string jsonLocation) {
             case "rows": {
                 assert(value.type == JSONType.integer);
                 fontObject.rows = cast(int)value.integer;
-                break;
-            }
-            case "columns": {
-                assert(value.type == JSONType.integer);
-                fontObject.columns = cast(int)value.integer;
                 break;
             }
             case "character_width": {
