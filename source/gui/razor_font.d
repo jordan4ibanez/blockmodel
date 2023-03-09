@@ -7,6 +7,7 @@ import std.json;
 import std.typecons;
 import color;
 import png;
+import std.math;
 
 //  ____________________________
 // |         RAZOR FONT         |
@@ -372,8 +373,18 @@ void selectFont(string font) {
     fontLock = true;
 }
 
-/// Render to the canvas. Remember: You must run flush() to collect this canvas.
-void renderToCanvas(double posX, double posY, const double fontSize, string text) {
+/**
+Render to the canvas. Remember: You must run flush() to collect this canvas.
+If rounding is enabled, it will attempt to keep your text aligned with the pixels on screen
+to avoid wavy/blurry/jagged text.
+*/
+void renderToCanvas(double posX, double posY, const double fontSize, string text, bool rounding = true) {
+
+    // Keep square pixels
+    if (rounding) {
+        posX = round(posX);
+        posY = round(posY);
+    }
 
     // Can't render if no font is selected
     if (currentFont is null) {
