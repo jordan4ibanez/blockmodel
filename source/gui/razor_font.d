@@ -419,6 +419,13 @@ void renderToCanvas(double posX, double posY, const double fontSize, string text
         // Keep this on the stack
         double[8] rawVertex = RAW_VERTEX;
 
+
+        // ( 0 x 1 y 2 x 3 y ) <- left side ( 4 x 5 y 6 x 7 y ) <- right side is goal
+        // Now apply trimming
+        for (int i = 4; i < 8; i += 2) {
+            rawVertex[i] = characterWidth;
+        }
+
         // Now scale
         foreach (ref double vertexPosition; rawVertex) {
             vertexPosition *= fontSize;
@@ -481,7 +488,6 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
 
     // How many characters (width, then height)
     const int rows = fontObject.rows;
-    const int columns = fontObject.columns;
 
     // How wide and tall are the characters in pixels
     const int characterWidth = fontObject.characterWidth;
