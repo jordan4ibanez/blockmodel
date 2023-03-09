@@ -532,13 +532,7 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming) {
         const int maxY = intPosY + characterHeight + 1;
 
         // Now trim it if requested
-        if (trimming && value == 'a') {
-            writeln("----------===========-----------===========---------------");
-            writeln("Hello I am A");
-            writeln("----------===========-----------===========---------------");
-
-            const int width = tempImageObject.width();
-            const int height = tempImageObject.height();
+        if (trimming) {
 
             // Create temp workers
             int newMinX = minX;
