@@ -208,9 +208,9 @@ If you do not specify a name, you must call into Razor Font by the fileLocation,
 
 If you turn on trimming, your font will go from monospace to proportional.
 
-Kerning is NOT implemented.
+Spacing is how far the letters are from each other. Default: 1.0 pixels
 */
-void createFont(string fileLocation, string name = "", bool trimming = false) {
+void createFont(string fileLocation, string name = "", bool trimming = false, double spacing = 1.0) {
 
     //! Place holder for future
     bool kerning = false;
