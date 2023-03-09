@@ -306,6 +306,10 @@ RazorFontData flush() {
 RazorTextSize getTextSize(double fontSize, string text) {
     double accumulatorX = 0.0;
     double accumulatorY = 0.0;
+    // Cache spacing
+    const double spacing = currentFont.spacing * fontSize;
+    // Cache space (' ') character
+    const double spaceCharacterSize = currentFont.spaceCharacterSize * fontSize;
 
     // Can't get the size if there's no font!
     if (currentFont is null) {
@@ -317,7 +321,7 @@ RazorTextSize getTextSize(double fontSize, string text) {
 
         // Skip space
         if (character == ' ') {
-            accumulatorX += fontSize;
+            accumulatorX += spaceCharacterSize;
             continue;
         }
         // Move down 1 space Y
@@ -332,11 +336,13 @@ RazorTextSize getTextSize(double fontSize, string text) {
         }
 
         // Font stores character width in index 9 (8 [0 count])
-        accumulatorX += currentFont.map[character][8] * fontSize;
+        accumulatorX += (currentFont.map[character][8] * fontSize) + spacing;
     }
 
     // Now add a last bit of the height offset
     accumulatorY += fontSize;
+    // Now remove the last bit of spacing
+    accumulatorX -= spacing;
 
     return RazorTextSize(accumulatorX, accumulatorY);
 }
@@ -598,12 +604,12 @@ void encodeGraphics(ref RazorFont fontObject, bool kerning, bool trimming, doubl
         }
 
         // Now shovel it into a raw array so we can easily use it - iPos stands for Integral Positions
-        // This is using UNtrimmed points
+        // -1 on maxY because the position was overshot, now we reverse it
         int[] iPos = [
-            minX, minY, // Top left
-            minX, maxY, // Bottom left
-            maxX, maxY, // Bottom right
-            maxX, minY, // Top right
+            minX, minY,     // Top left
+            minX, maxY - 1, // Bottom left
+            maxX, maxY - 1, // Bottom right
+            maxX, minY,    // Top right
             
             thisCharacterWidth, // Width
         ];
