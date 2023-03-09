@@ -55,8 +55,8 @@ void main()
         }
     );
 
-    Font.createFont("fonts/test_font", "cool", false, false);
-    Font.createFont("fonts/totally_original", "mc", false, false);
+    // Font.createFont("fonts/test_font", "cool", false, false);
+    Font.createFont("fonts/totally_original", "mc", false, true);
 
 
     //* End Razor Font testing
@@ -273,22 +273,24 @@ void main()
             Font.render();
 
 
-            Font.selectFont("cool");
+            if (false) {
+                // Font.selectFont("cool");
 
-            Font.renderToCanvas(Window.getWidth / 2, Window.getHeight / 2, 30, "my test font is awful");
+                Font.renderToCanvas(Window.getWidth / 2, Window.getHeight / 2, 30, "my test font is awful");
 
-            Font.RazorFontData data2 = Font.flush();
+                Font.RazorFontData data2 = Font.flush();
 
-            Mesh myCoolText2 = new Mesh()
-                .addVertices2d(data2.vertexPositions)
-                .addIndices(data2.indices)
-                .addTextureCoordinates(data2.textureCoordinates)
-                .setTexture(Texture.getTexture("fonts/test_font.png"))
-                .finalize();
+                Mesh myCoolText2 = new Mesh()
+                    .addVertices2d(data2.vertexPositions)
+                    .addIndices(data2.indices)
+                    .addTextureCoordinates(data2.textureCoordinates)
+                    .setTexture(Texture.getTexture("fonts/test_font.png"))
+                    .finalize();
 
-            myCoolText2.render("2d");
+                myCoolText2.render("2d");
 
-            myCoolText2.cleanUp();
+                myCoolText2.cleanUp();
+            }
         }
 
         Window.swapBuffers();
