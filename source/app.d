@@ -55,8 +55,8 @@ void main()
         }
     );
 
-    // Font.createFont("fonts/test_font", "cool", false, false);
-    Font.createFont("fonts/totally_original", "mc", false, true);
+    Font.createFont("fonts/test_font", "cool", true);
+    Font.createFont("fonts/totally_original", "mc", true);
 
 
     //* End Razor Font testing
@@ -153,7 +153,7 @@ void main()
 
     Window.setVsync(0);
 
-    while (Window.shouldClose()) {
+    while (!Window.shouldClose()) {
         // Calculating the delta goes first, we want this to be as accurate as possible.
         calculateDelta();
         // Poll events is hugging the entry point to the scope
@@ -168,9 +168,9 @@ void main()
 
         Window.setTitle(Window.getTitle ~ " | FPS: " ~ to!string(Window.getFPS) ~ " | Rotation: " ~ to!string(fancyRotation), false);
 
-        Window.clear(1);
+        Window.clear(0.9);
 
-        if (true) {
+        if (false) {
             Camera.clearDepthBuffer();
             Camera.setRotation(Vector3d(0,0,0));
 
@@ -244,10 +244,10 @@ void main()
 
             // Scoped to show individual calls into api
             {
-                Font.renderToCanvas(0,0, 24, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+                Font.renderToCanvas(0,0, 32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
             }
             {
-                int fontSize = 40;
+                int fontSize = 70;
                 string textString = "I'm on the bottom right!";
 
                 Font.RazorTextSize textSize = Font.getTextSize(fontSize, textString);
@@ -255,10 +255,10 @@ void main()
                 double posX = Window.getWidth - textSize.width;
                 double posY = Window.getHeight - textSize.height;
 
-                Font.renderToCanvas(posX, posY - 30, fontSize, textString);
+                Font.renderToCanvas(posX, posY, fontSize, textString);
             }
             {
-                int fontSize = 30;
+                int fontSize = 32;
                 string textString = "The text below is rendered at the window center-point!";
 
                 Font.RazorTextSize textSize = Font.getTextSize(fontSize, textString);
@@ -268,15 +268,17 @@ void main()
                 double posY = (Window.getHeight / 2.0) - (textSize.height / 2.0) - 50;
 
                 Font.renderToCanvas(posX, posY, fontSize, textString);
+
+                Font.render();
             }
-            
-            Font.render();
 
 
-            if (false) {
-                // Font.selectFont("cool");
+            if (true) {
+                Font.selectFont("cool");
 
-                Font.renderToCanvas(Window.getWidth / 2, Window.getHeight / 2, 30, "my test font is awful");
+                Font.renderToCanvas(Window.getWidth / 2, Window.getHeight / 2, 54, "my test font is awful");
+
+                Font.renderToCanvas(0, Window.getHeight - 54, 54, "test");
 
                 Font.RazorFontData data2 = Font.flush();
 
@@ -290,6 +292,7 @@ void main()
                 myCoolText2.render("2d");
 
                 myCoolText2.cleanUp();
+                
             }
         }
 
