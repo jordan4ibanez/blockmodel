@@ -24,7 +24,7 @@ Spec:
 
 File format:
 1. PNG with accompanying JSON in same directory. If these requirements are not met, it will throw an exception.
-
+2. Files must 
 */
 
 /**
