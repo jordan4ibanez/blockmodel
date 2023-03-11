@@ -8,7 +8,6 @@ import doml.vector_3d;
 import doml.vector_4d;
 import doml.vector_4i;
 import tools.gl_error;
-import core.memory;
 
 /// An OpenGL mesh. Utilizes builder pattern.
 class Mesh {
@@ -29,6 +28,10 @@ class Mesh {
     // Bones vertex buffer object
     //* Layout position 2
     private GLuint bbo = invalid;
+    //! This can be layout position 2 as well because bbo (bones) is only used for 3d meshes!
+    //* Layout position 2 
+    private GLuint cbo = invalid;
+
 
     // Indices vertex buffer object
     private GLuint ibo = invalid;
@@ -110,8 +113,8 @@ class Mesh {
 
         glVertexAttribPointer(
             0,           // Attribute 0 (matches the attribute in the glsl shader)
-            size,           // Size (literal like 3 points)  
-            GL_DOUBLE,    // Type
+            size,        // Size (literal like 3 points)  
+            GL_DOUBLE,   // Type
             GL_FALSE,    // Normalized?
             0,           // Stride
             cast(void*)0 // Array buffer offset
@@ -154,28 +157,14 @@ class Mesh {
         return this;
     }
 
-    /// Adds indices data (order of vertex positions) in a linear int[].
-    Mesh addIndices(const int[] indices) {
-
-        // Indices VBO
-
-        this.indexCount = cast(GLint)indices.length;
-        
-        glGenBuffers(1, &this.ibo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.ibo);
-
-        glBufferData(
-            GL_ELEMENT_ARRAY_BUFFER,       // Target object
-            indices.length * GLint.sizeof, // size (bytes)
-            indices.ptr,                   // the pointer to the data for the object
-            GL_STATIC_DRAW                 // The draw mode OpenGL will use
-        );
-        
-        return this;
-    }
-
     /// Adds bone data aligned with the vertex position in a linear int[].
     Mesh addBones(const int[] bones) {
+
+        //! A note: We throw an error here since a mesh cannot have bones and
+        //! colors!
+        if (this.cbo != invalid) {
+            throw new Exception("Tried to add bones to a mesh with colors!");
+        }
 
         // Bones VBO
 
@@ -198,6 +187,60 @@ class Mesh {
         );
         glEnableVertexAttribArray(2);
 
+        return this;
+    }
+
+    /// Adds color data aligned with the vertex position in a linear double[].
+    Mesh addColors(const double[] colors) {
+
+        //! A note: We throw an error here since a mesh cannot have bones and
+        //! colors!
+        if (this.bbo != invalid) {
+            throw new Exception("Tried to add colors to a mesh with bones!");
+        }
+
+        // Colors VBO
+
+        glGenBuffers(1, &this.cbo);
+        glBindBuffer(GL_ARRAY_BUFFER, this.cbo);
+
+        glBufferData(
+            GL_ARRAY_BUFFER,            // Target object
+            colors.length * double.sizeof,  // How big the object is
+            colors.ptr,                  // The pointer to the data for the object
+            GL_STATIC_DRAW              // Which draw mode OpenGL will use
+        );
+
+        glVertexAttribPointer(
+            2,           // Attribute 0 (matches the attribute in the glsl shader)
+            4,           // Size (literal like 3 points)  
+            GL_DOUBLE,   // Type
+            GL_FALSE,    // Normalized?
+            0,           // Stride
+            cast(void*)0 // Array buffer offset
+        );
+        glEnableVertexAttribArray(2);
+
+        return this;
+    }
+
+    /// Adds indices data (order of vertex positions) in a linear int[].
+    Mesh addIndices(const int[] indices) {
+
+        // Indices VBO
+
+        this.indexCount = cast(GLint)indices.length;
+        
+        glGenBuffers(1, &this.ibo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.ibo);
+
+        glBufferData(
+            GL_ELEMENT_ARRAY_BUFFER,       // Target object
+            indices.length * GLint.sizeof, // size (bytes)
+            indices.ptr,                   // the pointer to the data for the object
+            GL_STATIC_DRAW                 // The draw mode OpenGL will use
+        );
+        
         return this;
     }
 
@@ -280,6 +323,15 @@ class Mesh {
             // writeln("deleted BONES");
         }
 
+        // Delete the colors vbo
+        if (this.cbo != invalid) {
+            glDisableVertexAttribArray(2);
+            glDeleteBuffers(1, &this.cbo);
+            assert (glIsBuffer(this.cbo) == GL_FALSE);
+
+            // writeln("deleted COLORS");
+        }
+
         // Delete the indices
         if (this.ibo != invalid) {
             glDeleteBuffers(1, &this.ibo);
@@ -354,12 +406,5 @@ class Mesh {
             throw new Exception("Cannot get the size of a 3d model!");
         }
         return this.size.y;
-    }
-}
-
-class EmptyTestObject {
-    int hi = 1;
-    int getHi() {
-        return hi;
     }
 }
