@@ -57,7 +57,7 @@ double[16] setObjectMatrix(Vector3d offset, Vector3d rotation, Vector3d scale) {
     return objectMatrix.getDoubleArray();
 }
 // ^ v Both of these functions reuse the object matrix
-double[16] setGuiObjectMatrix(Vector2d offset) {
+double[16] setGuiObjectMatrix(Vector2d offset = Vector2d(0,0)) {
 
     // The primary usecase for this is GUI.
     objectMatrix
