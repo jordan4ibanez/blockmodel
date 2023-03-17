@@ -29,6 +29,7 @@ private  GLFWwindow* window = null;
 private GLFWmonitor* monitor = null;
 private GLFWvidmode videoMode;
 private bool fullscreen = false;
+
 // 0 none, 1 normal vsync, 2 double buffered
 private int vsync = 1;
 
@@ -57,7 +58,7 @@ private bool initializeGLFWComponents() {
     version(Windows) {
         returnedError = loadGLFW("libs/glfw3.dll");
     } else {
-        // Linux,FreeBSD, OpenBSD, Mac OS, haiku, etc
+        // Linux, FreeBSD, OpenBSD, Mac OS, haiku, etc
         returnedError = loadGLFW();
     }
 
@@ -89,34 +90,10 @@ private bool initializeGLFWComponents() {
     return true;
 }
 
-nothrow
-static extern(C) void myframeBufferSizeCallback(GLFWwindow* theWindow, int x, int y) {
-    windowSize.x = x;
-    windowSize.y = y;
+private nothrow static
+extern(C) void myframeBufferSizeCallback(GLFWwindow* theWindow, int x, int y) {
     glViewport(0,0,x,y);
 }
-// nothrow
-// static extern(C) void externalKeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods){
-//     // This is the best hack ever, or the worst
-//     try {
-//     Keyboard.keyCallback(key,scancode,action,mods);
-//     } catch(Exception e){nothrowWriteln(e);}
-// }
-
-// nothrow
-// static extern(C) void externalcursorPositionCallback(GLFWwindow* window, double xpos, double ypos) {
-//     try {
-//         Mouse.mouseCallback(Vector2d(xpos, ypos));
-//     } catch(Exception e){nothrowWriteln(e);}
-// }
-
-// nothrow
-// static extern(C) void myRefreshCallback(GLFWwindow* theWindow) {
-//     try {
-//         return;
-//     } catch(Exception e) {}
-// }
-
 
 // Window talks directly to GLFW
 private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
