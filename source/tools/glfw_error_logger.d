@@ -13,7 +13,7 @@ class GLFWErrorLogger {
     
     // This is the actual Exception that will MAYBE be thrown 
     // Starts off as the output in the end of the line in terminal
-    string accumulator = "GLFW Error!\n";
+    private string accumulator = "GLFW Error!\n";
 
     private string helperTip;
     private string[] glfwErrorMessageTypes;
@@ -46,7 +46,7 @@ class GLFWErrorLogger {
     }
 
     // Automatically throws exception containing error output
-    private void execute() {
+    void execute() {
 
         // Iterate the errors into a more usable form
         foreach(info; Loader.errors) {
