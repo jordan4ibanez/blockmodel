@@ -7,7 +7,7 @@ import std.conv;
 
 import bindbc.opengl;
 
-import tools.opengl_error_logger;
+import OpenGlLogger = tools.opengl_error_logger;
 
 /// These work as a synced list
 private GLuint[string] vertexShaders;
@@ -77,10 +77,7 @@ void createUniform(string shaderName, string uniformName) {
         throw new Exception("OpenGL uniform is out of bounds!");
     }
 
-    new OpenGLErrorLogger()
-        .attachTip("This error comes from the createUniform() method of Shader.\n" ~
-                   "ERROR CREATING UNIFORM!")
-        .execute();
+    OpenGlLogger.execute("This error comes from the createUniform() method of Shader.\n" ~ "ERROR CREATING UNIFORM!");
 
     uniforms[genUniformName(shaderName, uniformName)] = location;
 }
@@ -88,22 +85,15 @@ void createUniform(string shaderName, string uniformName) {
 // Set the uniform's int value in GPU memory (integer)
 void setUniformInt(string shaderName, string uniformName, GLuint value) {
     glUniform1i(getUniform(shaderName, uniformName), value);
-    
 
-    new OpenGLErrorLogger()
-        .attachTip("This error comes from the setUniformInt() method of Shader.\n" ~
-                   "Error setting shader uniform: " ~ uniformName)
-        .execute();
+    OpenGlLogger.execute("This error comes from the setUniformInt() method of Shader.\n" ~ "Error setting shader uniform: " ~ uniformName);
 }
 
 
 void setUniformDouble(string shaderName, string uniformName, GLdouble value) {
     glUniform1d(getUniform(shaderName, uniformName), value);
     
-    new OpenGLErrorLogger()
-        .attachTip("This error comes from the setUniformDouble() method of Shader.\n" ~
-                   "Error setting shader uniform: " ~ uniformName)
-        .execute();
+    OpenGlLogger.execute("This error comes from the setUniformDouble() method of Shader.\n" ~ "Error setting shader uniform: " ~ uniformName);
 }
 
 void setUniformMatrix4(string shaderName, string uniformName, double[] matrix, GLint count = 1) {   
@@ -115,10 +105,7 @@ void setUniformMatrix4(string shaderName, string uniformName, double[] matrix, G
         to!(float[])(matrix).ptr// Pointer
     );
 
-    new OpenGLErrorLogger()
-        .attachTip("This error comes from the setUniformMatrix4() method of Shader.\n" ~
-                   "Error setting shader uniform: " ~ uniformName)
-        .execute();
+    OpenGlLogger.execute("This error comes from the setUniformMatrix4() method of Shader.\n" ~ "Error setting shader uniform: " ~ uniformName);
 }
 
 uint getUniform(string shaderName, string uniformName) {
