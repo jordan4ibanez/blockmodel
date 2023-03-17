@@ -18,7 +18,7 @@ class OpenGLErrorLogger {
     private string helperTip = null;
 
     this() {
-        
+        this.getAndClearOpenGLErrors();
     }
 
 
@@ -70,7 +70,7 @@ class OpenGLErrorLogger {
 
 }
 
-/// This is an implicitly named variable to clear out the context of opengl
+/// This is an implicitly named function to clear out the context of opengl
 void clearOpenGLErrors() {
     // You can see this can just be instantiated without anything because it automatically performs it's task
     new OpenGLErrorLogger();
