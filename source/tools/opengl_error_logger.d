@@ -101,8 +101,6 @@ This is very useful for OpenGL context creation.
 */
 private void getAndClearOpenGLErrors(){
 
-    writeln("getting and clearing");
-
     error = glGetError();
 
     // Clear OpenGL errors
