@@ -53,6 +53,7 @@ void initialize() {
 // Returns success state 
 private bool initializeGLFWComponents() {
 
+    //! This needs to be returnedSupport!
     GLFWSupport returnedError;
     
     version(Windows) {
@@ -63,6 +64,7 @@ private bool initializeGLFWComponents() {
     }
 
     if(returnedError != glfwSupport) {
+        
         writeln("ERROR IN GLFW!");
         writeln("---------- DIRECT DEBUG ERROR ---------------");
         // Log the direct error info
