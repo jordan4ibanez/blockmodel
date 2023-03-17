@@ -83,6 +83,8 @@ private void initializeGLFWComponents() {
 
 private nothrow static
 extern(C) void myframeBufferSizeCallback(GLFWwindow* theWindow, int x, int y) {
+    windowSize.x = x;
+    windowSize.y = y;
     glViewport(0,0,x,y);
 }
 
