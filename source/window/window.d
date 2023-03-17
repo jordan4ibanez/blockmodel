@@ -67,14 +67,14 @@ private void initializeGLFWComponents() {
     if(returnedSupport != glfwSupport) {
         if (returnedSupport == GLFWSupport.noLibrary) {
             new GLFWErrorLogger()
-                .attachTip("The GLFW shared library failed to load!\n" ~ "Is GLFW installed correctly?\n")
+                .attachTip("The GLFW shared library failed to load!\n" ~ "Is GLFW installed correctly?")
                 .execute();
         } else if (returnedSupport == GLFWSupport.badLibrary) {
             new GLFWErrorLogger()
                 .attachTip("One or more symbols failed to load.\n" ~
                            "The likely cause is that the shared library is for a lower\n" ~
                            "version than bindbc-glfw was configured to load!\n" ~
-                           "The required version is GLFW 3.3\n")
+                           "The required version is GLFW 3.3")
                 .execute();
         }
     }
