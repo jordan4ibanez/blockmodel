@@ -301,6 +301,7 @@ private bool initializeOpenGL() {
     Compare the return value of loadGL with the global `glSupport` constant to determine if the version of GLFW
     configured at compile time is the version that was loaded.
     */
+    //! This needs to be changed to returnedSupport!
     GLSupport ret = loadOpenGL();
 
     writeln(ret);
