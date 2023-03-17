@@ -14,8 +14,7 @@ class OpenGLErrorLogger {
     GLenum error;
 
     private string helperTip = null;
-    private string openGlErrorType = null;
-    private string openGlErrorMessage = null;
+    
 
     this() {
         this.getAndClearOpenGLErrors();
@@ -27,22 +26,6 @@ class OpenGLErrorLogger {
     /// Allows inserting helpful tips into the error message
     OpenGLErrorLogger attachTip(string helperTip) {
         this.helperTip = helperTip;
-
-        return this;
-    }
-
-    /// Attaches the OpenGL error type
-    OpenGLErrorLogger attachType(const(char)* openGlErrorType) {
-
-        this.openGlErrorType = to!string(openGlErrorType);
-
-        return this;
-    }
-
-    /// Attaches the OpenGL error message
-    OpenGLErrorLogger attachMessage(const(char)* openGlErrorMessage) {
-
-        this.openGlErrorMessage = to!string(openGlErrorMessage);
 
         return this;
     }
