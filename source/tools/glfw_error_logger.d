@@ -10,8 +10,6 @@ import Loader = bindbc.loader.sharedlib;
 import bindbc.glfw.types;
 
 class GLFWErrorLogger {
-
-    GLFWSupport acquiredSupport;
     
     // This is the actual Exception that will MAYBE be thrown 
     // Starts off as the output in the end of the line in terminal
@@ -49,12 +47,6 @@ class GLFWErrorLogger {
 
     // Automatically throws exception containing error output
     private void execute() {
-
-        // This is a static field in the glfw module
-        // If we have support, yay. We can just pretend this didn't happen
-        if (acquiredSupport == glfwSupport) {
-            return;
-        }
 
         // Iterate the errors into a more usable form
         foreach(info; Loader.errors) {
