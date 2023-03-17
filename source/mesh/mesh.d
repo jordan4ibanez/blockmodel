@@ -268,13 +268,10 @@ class Mesh {
         // Unbind vao
         glBindVertexArray(0);
 
-        
-            
-        GLenum glErrorInfo = getAndClearGLErrors();
-        if (glErrorInfo != GL_NO_ERROR) {
-            writeln("GL ERROR: ", glErrorInfo);
-            writeln("ERROR IN A MESH CONSTRUCTOR");
-        }
+        new OpenGLErrorLogger()
+            .attachTip("This error comes from the finalize() method of Mesh.\n" ~
+                       "ERROR CREATING MESH!")
+            .execute();
 
         if (debugEnabled) {
             writeln("Mesh ", this.vao, " has been successfully created");
