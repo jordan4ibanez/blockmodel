@@ -334,8 +334,9 @@ private bool initializeOpenGL() {
         return false;
     }
 
+    // Something went horrifically wrong
     if (!isOpenGLLoaded()) {
-        writeln("GL FAILED TO LOAD!!");
+        throw new Exception("OpenGL FAILED TO LOAD!");
         return false;
     }
 
