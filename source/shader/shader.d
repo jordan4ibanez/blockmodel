@@ -76,13 +76,11 @@ void createUniform(string shaderName, string uniformName) {
     if (location < 0) {
         throw new Exception("OpenGL uniform is out of bounds!");
     }
-    GLenum glErrorInfo = getAndClearGLErrors();
-    if (glErrorInfo != GL_NO_ERROR) {
-        writeln("GL ERROR: ", glErrorInfo);
-        writeln("ERROR CREATING UNIFORM: ", uniformName);
-        // More needed crashes!
-        throw new Exception("Failed to create shader uniform!");
-    }
+
+    new OpenGLErrorLogger()
+        .attachTip("This error comes from the createUniform() method of Shader.\n" ~
+                   "ERROR CREATING UNIFORM!")
+        .execute();
 
     uniforms[genUniformName(shaderName, uniformName)] = location;
 }
@@ -91,26 +89,21 @@ void createUniform(string shaderName, string uniformName) {
 void setUniformInt(string shaderName, string uniformName, GLuint value) {
     glUniform1i(getUniform(shaderName, uniformName), value);
     
-    GLenum glErrorInfo = getAndClearGLErrors();
 
-    if (glErrorInfo != GL_NO_ERROR) {
-        writeln("GL ERROR: ", glErrorInfo);
-        // This absolutely needs to crash, there's no way
-        // the game can continue without shaders
-        throw new Exception("Error setting shader uniform: " ~ uniformName);
-    }
+    new OpenGLErrorLogger()
+        .attachTip("This error comes from the setUniformInt() method of Shader.\n" ~
+                   "Error setting shader uniform: " ~ uniformName)
+        .execute();
 }
 
 
 void setUniformDouble(string shaderName, string uniformName, GLdouble value) {
     glUniform1d(getUniform(shaderName, uniformName), value);
     
-    GLenum glErrorInfo = getAndClearGLErrors();
-    if (glErrorInfo != GL_NO_ERROR) {
-        writeln("GL ERROR: ", glErrorInfo);
-        // This needs to crash too! Game needs shaders!
-        throw new Exception("Error setting shader uniform: " ~ uniformName);
-    }
+    new OpenGLErrorLogger()
+        .attachTip("This error comes from the setUniformDouble() method of Shader.\n" ~
+                   "Error setting shader uniform: " ~ uniformName)
+        .execute();
 }
 
 void setUniformMatrix4(string shaderName, string uniformName, double[] matrix, GLint count = 1) {   
@@ -121,13 +114,11 @@ void setUniformMatrix4(string shaderName, string uniformName, double[] matrix, G
         GL_FALSE,// Transpose
         to!(float[])(matrix).ptr// Pointer
     );
-    
-    GLenum glErrorInfo = getAndClearGLErrors();
-    if (glErrorInfo != GL_NO_ERROR) {
-        writeln("GL ERROR: ", glErrorInfo);
-        // This needs to crash too! Game needs shaders!
-        throw new Exception("Error setting shader uniform: " ~ uniformName);
-    }
+
+    new OpenGLErrorLogger()
+        .attachTip("This error comes from the setUniformMatrix4() method of Shader.\n" ~
+                   "Error setting shader uniform: " ~ uniformName)
+        .execute();
 }
 
 uint getUniform(string shaderName, string uniformName) {
