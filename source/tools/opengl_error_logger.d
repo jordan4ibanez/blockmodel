@@ -68,6 +68,11 @@ class OpenGLErrorLogger {
     */
     void execute() {
 
+        // No error :)
+        if (error == GL_NO_ERROR) {
+            return;
+        }
+
         // Accumulate it into a nice error log tailored EXACTLY to D's exception style
 
         line();
