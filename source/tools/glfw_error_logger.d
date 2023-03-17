@@ -31,13 +31,13 @@ class GLFWErrorLogger {
     }
 
     /// Attaches the GLFW error type
-    private void attachType(const(char)* openGlErrorType) {
-        this.glfwErrorMessageTypes ~= to!string(openGlErrorType);
+    private void attachType(const(char)* glfwErrorType) {
+        this.glfwErrorMessageTypes ~= to!string(glfwErrorType);
     }
 
     /// Attaches the GLFW error message
-    private void attachMessage(const(char)* openGlErrorMessage) {
-        this.glfwErrorMessages ~= to!string(openGlErrorMessage);
+    private void attachMessage(const(char)* glfwErrorMessage) {
+        this.glfwErrorMessages ~= to!string(glfwErrorMessage);
     }
 
     // Literally just inserts line seperators into the string accumulator
@@ -78,5 +78,4 @@ class GLFWErrorLogger {
         // Prints it out as a nice helpful message
         throw new Exception(accumulator);
     }
-    
 }
