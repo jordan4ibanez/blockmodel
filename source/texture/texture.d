@@ -55,13 +55,10 @@ GLuint addTexture(string fileLocation, bool debugEnabled = false) {
 
     // glGenerateMipmap(GL_TEXTURE_2D);
 
-    GLenum glErrorInfo = getAndClearGLErrors();
-    if (glErrorInfo != GL_NO_ERROR) {
-        writeln("GL ERROR: ", glErrorInfo);
-        writeln("ERROR IN TEXTURE");
-
-        throw new Exception("Failed to load texture!");
-    }
+    new OpenGLErrorLogger()
+        .attachTip("This error is from the Texture constructor.\n" ~
+                   "Failed to load texture!")
+        .execute();
 
     if (debugEnabled) {
         writeln(fileLocation, " is stored as ID: ", id);
