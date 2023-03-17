@@ -9,14 +9,15 @@ import doml.vector_2i;
 import doml.vector_2d;
 import doml.vector_3d;
 import delta_time;
-import tools.opengl_error_logger;
+
 
 // This is a special import. We only want to extract the loader from this module.
 import loader = bindbc.loader.sharedlib;
 
 // This is an import that allows us to print debug info.
 import tools.glfw_error_logger;
-// import tools.opengl_error_logger;
+import tools.gl_loader_logger;
+import tools.opengl_error_logger;
 
 // OpenGL fields
 private string glVersion;
@@ -314,18 +315,18 @@ private bool initializeOpenGL() {
 
         if(returnedSupport == GLSupport.noLibrary) {
 
-            new OpenGLErrorLogger()
+            new OpenGLLoaderErrorLogger()
                 .attachTip("This application requires the GLFW library.\n" ~
                            "Is GLFW 3.3 installed?")
                 .execute();
 
         } else if(returnedSupport == GLSupport.badLibrary) {
-            new OpenGLErrorLogger()
+            new OpenGLLoaderErrorLogger()
                 .attachTip("The version of the GLFW library on your system is too low. Please upgrade.")
                 .execute();
 
         } else {
-            new OpenGLErrorLogger()
+            new OpenGLLoaderErrorLogger()
                 .attachTip("Your GPU cannot support the minimum OpenGL Version: 4.1! Released: July 26, 2010.\n" ~
                 "Are your graphics drivers updated?")
                 .execute();
@@ -337,11 +338,10 @@ private bool initializeOpenGL() {
     // Something went horrifically wrong
     if (!isOpenGLLoaded()) {
         throw new Exception("OpenGL FAILED TO LOAD!");
-        return false;
     }
 
     // Wipe the error buffer completely
-    getAndClearGLErrors();
+    new OpenGLErrorLogger();
     
     // Vector2i windowSize = Window.getSize();
 
@@ -372,12 +372,9 @@ private bool initializeOpenGL() {
     glDepthFunc(GL_LESS);
 
 
-    GLenum glErrorInfo = getAndClearGLErrors();
-    if (glErrorInfo != GL_NO_ERROR) {
-        writeln("GL ERROR: ", glErrorInfo);
-        writeln("ERROR IN GL INIT");
-        return false;
-    }
+    new OpenGLErrorLogger()
+        .attachTip("This error exists in the initialization stage. Something went very wrong!")
+        .execute();
 
     return true;
 }
