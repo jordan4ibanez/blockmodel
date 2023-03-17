@@ -345,13 +345,11 @@ class Mesh {
         glDeleteVertexArrays(1, &this.vao);
         assert(glIsVertexArray(this.vao) == GL_FALSE);
 
-        
 
-        GLenum glErrorInfo = getAndClearGLErrors();
-        if (glErrorInfo != GL_NO_ERROR) {
-            writeln("GL ERROR: ", glErrorInfo);
-            writeln("ERROR IN A MESH DESTRUCTOR");
-        }
+        new OpenGLErrorLogger()
+            .attachTip("This error comes from the cleanup() method of Mesh.\n" ~
+                       "ERROR DESTROYING MESH!")
+            .execute();
 
         if (debugEnabled) {
             writeln("Mesh ", this.vao, " has been successfully deleted from gpu memory");
@@ -384,12 +382,12 @@ class Mesh {
             glDrawElements(GL_TRIANGLES, this.indexCount, GL_UNSIGNED_INT, cast(const(void)*)0);
         }
         
-        GLenum glErrorInfo = getAndClearGLErrors();
-        if (glErrorInfo != GL_NO_ERROR) {
-            
-            writeln("GL ERROR: ", glErrorInfo);
-            writeln("ERROR IN A MESH RENDER");
-        }
+        //! So this would be extremely heavy, create a new object for every draw call
+        new OpenGLErrorLogger()
+            .attachTip("This error comes from the rebnder() method of Mesh.\n" ~
+                       "ERROR RENDERING MESH!")
+            .execute();
+        
         if (debugEnabled) {
             writeln("Mesh ", this.vao, " has rendered successfully ");
         }
