@@ -354,11 +354,11 @@ class Mesh {
     void render(string shaderName) {
 
         if (!finalized) {
-            throw new Exception("You MUST call finalize() for a mesh!");
+            throw new Exception("Mesh: You MUST call finalize() for a mesh!");
         }
 
         if (textureId == invalid) {
-            throw new Exception("Attempted to render a mesh with an invalid texture!");
+            throw new Exception("Mesh: Attempted to render a mesh with an invalid texture!");
         }
 
         Shader.setUniformInt(shaderName, "textureSampler", 0);
