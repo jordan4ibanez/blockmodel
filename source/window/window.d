@@ -17,7 +17,8 @@ import loader = bindbc.loader.sharedlib;
 // This is an import that allows us to print debug info.
 import tools.glfw_error_logger;
 import tools.gl_loader_logger;
-import tools.opengl_error_logger;
+
+import OpenGlLogger = tools.opengl_error_logger;
 
 // OpenGL fields
 private string glVersion;
@@ -329,7 +330,7 @@ private void initializeOpenGL() {
     }
 
     // Wipe the error buffer completely
-    new OpenGLErrorLogger();
+    OpenGlLogger.clearOpenGLErrors();
     
     // Vector2i windowSize = Window.getSize();
 
@@ -360,9 +361,7 @@ private void initializeOpenGL() {
     glDepthFunc(GL_LESS);
 
 
-    new OpenGLErrorLogger()
-        .attachTip("This error exists in the initialization stage. Something went very wrong!")
-        .execute();
+    OpenGlLogger.execute("This error exists in the initialization stage. Something went very wrong!");
 }
 
 string getInitialOpenGLVersion() {
