@@ -42,12 +42,8 @@ private int FPS = 0;
 
 
 void initialize() {
-    if (!initializeGLFW()) {
-        throw new Exception("GLFW failed");
-    }
-    if (!initializeOpenGL()) {
-        throw new Exception("OpenGL failed");
-    }
+    initializeGLFW();
+    initializeOpenGL();
 }
 
 //* ======== GLFW Tools ========
@@ -87,14 +83,14 @@ extern(C) void myframeBufferSizeCallback(GLFWwindow* theWindow, int x, int y) {
 }
 
 // Window talks directly to GLFW
-private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
+private void initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
 
     // Something fails to load
     initializeGLFWComponents();
 
     // Something scary fails to load
     if (!glfwInit()) {
-        return false;
+        throw new Exception("GLFW FAILED TO LOAD!");
     }
 
     // Minimum version is 4.1 (July 26, 2010)
@@ -122,10 +118,7 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
 
     // Something even scarier fails to load
     if (!window || window == null) {
-        writeln("WINDOW FAILED TO OPEN!\n",
-        "ABORTING!");
-        glfwTerminate();
-        return false;
+        throw new Exception("WINDOW FAILED TO OPEN!");
     }
 
     // In the future, get array of monitor pointers with: GLFWmonitor** monitors = glfwGetMonitors(&count);
@@ -161,10 +154,7 @@ private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
     // We must set it again, even though it is automated in fullscreen/halfsize
     glfwSwapInterval(vsync);
 
-    glfwGetWindowSize(window,&windowSize.x, &windowSize.y);    
-
-    // No error :)
-    return true;
+    glfwGetWindowSize(window,&windowSize.x, &windowSize.y);
 }
 
 private void updateVideoMode() {
@@ -297,7 +287,7 @@ bool isFullScreen() {
 //* ======= OpenGL Tools =======
 
 /// Returns success
-private bool initializeOpenGL() {
+private void initializeOpenGL() {
     /**
     Compare the return value of loadGL with the global `glSupport` constant to determine if the version of GLFW
     configured at compile time is the version that was loaded.
@@ -331,8 +321,6 @@ private bool initializeOpenGL() {
                 "Are your graphics drivers updated?")
                 .execute();
         }
- 
-        return false;
     }
 
     // Something went horrifically wrong
@@ -375,8 +363,6 @@ private bool initializeOpenGL() {
     new OpenGLErrorLogger()
         .attachTip("This error exists in the initialization stage. Something went very wrong!")
         .execute();
-
-    return true;
 }
 
 string getInitialOpenGLVersion() {
