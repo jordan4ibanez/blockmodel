@@ -26,8 +26,8 @@ private string helperTip = null;
 
 //** ----- BEGIN LOGGER TOOLS -----
 
-/// Allows inserting helpful tips into the error message
-void attachTip(string newHelperTip) {
+/// Allows inserting helpful tips into the error message - defaults to a null pointer
+private void attachTip(string newHelperTip = null) {
     helperTip = newHelperTip;
 }
 
@@ -62,7 +62,10 @@ private void line() {
 Put this at the end of the chain or else it does nothing.
 Having this as a separate function is useful for auto clearing on OpenGL context creation.
 */
-void execute() {
+void execute(string newHelperTip) {
+    
+    // Shifts the context of the helper tip to current
+    attachTip(newHelperTip);
 
     getAndClearOpenGLErrors();
 
