@@ -154,8 +154,6 @@ void main()
     Window.setVsync(0);
 
     while (!Window.shouldClose()) {
-        // Calculating the delta goes first, we want this to be as accurate as possible.
-        calculateDelta();
         // Poll events is hugging the entry point to the scope
         // because it needs to take all GLFW input before anything
         // is calculated. This increases responsiveness.

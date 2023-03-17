@@ -204,13 +204,10 @@ private void setHalfSizeInternal() {
         windowPositionY,
         windowSizeX,
         windowSizeY,
-        videoMode.refreshRate // Windows cares about this for some reason
+        videoMode.refreshRate
     );
 
     glfwSwapInterval(vsync);
-
-    // centerMouse();
-    // stopMouseJolt();
 
     fullscreen = false;
 }
@@ -266,6 +263,7 @@ double getAspectRatio() {
 }
 
 void pollEvents() {
+    calculateDelta();
     glfwPollEvents();
     // This causes an issue with low FPS getting the wrong FPS
     // Perhaps make an internal engine ticker that is created as an object or struct
