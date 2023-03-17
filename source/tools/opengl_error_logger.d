@@ -12,10 +12,10 @@ import bindbc.opengl.gl;
 /// This is a wrapper class to emulate Vulkan style error toolchains
 class OpenGLErrorLogger {
 
+    // This is just a fancy uint
     GLenum error;
 
     private string helperTip = null;
-    
 
     this() {
         
