@@ -15,7 +15,7 @@ import delta_time;
 import std.typecons;
 
 //! Development import REMOVE LATER
-import Font = gui.razor_font;
+import Font = razor_font;
 
 void main()
 {
@@ -54,8 +54,7 @@ void main()
             tempObject.cleanUp();
         }
     );
-
-    Font.createFont("fonts/test_font", "cool", true);
+    
     Font.createFont("fonts/totally_original", "mc", true);
 
 
@@ -226,73 +225,51 @@ void main()
             debug2d.render("2d");
         }
 
-        if (true) {
-            // Now render this font
+        // if (true) {
+        //     // Now render this font
             
-            Camera.clearDepthBuffer();
+        //     Camera.clearDepthBuffer();
 
-            Shader.startProgram("2d");
+        //     Shader.startProgram("2d");
 
-            Font.setCanvasSize(Window.getWidth, Window.getHeight);
+        //     Font.setCanvasSize(Window.getWidth, Window.getHeight);
 
-            Shader.setUniformMatrix4("2d", "cameraMatrix", Camera.updateGuiMatrix());
-            Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)) );
+        //     Shader.setUniformMatrix4("2d", "cameraMatrix", Camera.updateGuiMatrix());
+        //     Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)) );
 
-            Font.selectFont("mc");
+        //     Font.selectFont("mc");
 
-            // Scoped to show individual calls into api
-            {
-                Font.renderToCanvas(0,0, 32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-            }
-            {
-                int fontSize = 70;
-                string textString = "I'm on the bottom right!";
+        //     // Scoped to show individual calls into api
+        //     {
+        //         Font.renderToCanvas(0,0, 32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        //     }
+        //     {
+        //         int fontSize = 70;
+        //         string textString = "I'm on the bottom right!";
 
-                Font.RazorTextSize textSize = Font.getTextSize(fontSize, textString);
-                // Now we're going to move this to the bottom right of the "canvas"
-                double posX = Window.getWidth - textSize.width;
-                double posY = Window.getHeight - textSize.height;
+        //         Font.RazorTextSize textSize = Font.getTextSize(fontSize, textString);
+        //         // Now we're going to move this to the bottom right of the "canvas"
+        //         double posX = Window.getWidth - textSize.width;
+        //         double posY = Window.getHeight - textSize.height;
 
-                Font.renderToCanvas(posX, posY, fontSize, textString);
-            }
-            {
-                int fontSize = 32;
-                string textString = "The text below is rendered at the window center-point!";
+        //         Font.renderToCanvas(posX, posY, fontSize, textString);
+        //     }
+        //     {
+        //         int fontSize = 32;
+        //         string textString = "The text below is rendered at the window center-point!";
 
-                Font.RazorTextSize textSize = Font.getTextSize(fontSize, textString);
-                // Now we're going to move this to the bottom right of the "canvas"
+        //         Font.RazorTextSize textSize = Font.getTextSize(fontSize, textString);
+        //         // Now we're going to move this to the bottom right of the "canvas"
 
-                double posX = (Window.getWidth / 2.0) - (textSize.width / 2.0);
-                double posY = (Window.getHeight / 2.0) - (textSize.height / 2.0) - 50;
+        //         double posX = (Window.getWidth / 2.0) - (textSize.width / 2.0);
+        //         double posY = (Window.getHeight / 2.0) - (textSize.height / 2.0) - 50;
 
-                Font.renderToCanvas(posX, posY, fontSize, textString);
+        //         Font.renderToCanvas(posX, posY, fontSize, textString);
 
-                Font.render();
-            }
-
-
-            if (true) {
-                Font.selectFont("cool");
-
-                Font.renderToCanvas(Window.getWidth / 2, Window.getHeight / 2, 54, "my test font is awful");
-
-                Font.renderToCanvas(0, Window.getHeight - 54, 54, "test");
-
-                Font.RazorFontData data2 = Font.flush();
-
-                Mesh myCoolText2 = new Mesh()
-                    .addVertices2d(data2.vertexPositions)
-                    .addIndices(data2.indices)
-                    .addTextureCoordinates(data2.textureCoordinates)
-                    .setTexture(Texture.getTexture("fonts/test_font.png"))
-                    .finalize();
-
-                myCoolText2.render("2d");
-
-                myCoolText2.cleanUp();
-                
-            }
-        }
+        //         Font.render();
+        //     }
+            
+        // }
 
         Window.swapBuffers();
     }
