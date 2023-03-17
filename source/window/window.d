@@ -52,19 +52,21 @@ void initialize() {
 
 // Returns success state 
 private bool initializeGLFWComponents() {
-
-    //! This needs to be returnedSupport!
-    GLFWSupport returnedError;
+    
+    GLFWSupport returnedSupport;
     
     version(Windows) {
-        returnedError = loadGLFW("libs/glfw3.dll");
+        returnedSupport = loadGLFW("libs/glfw3.dll");
     } else {
         // Linux, FreeBSD, OpenBSD, Mac OS, haiku, etc
-        returnedError = loadGLFW();
+        returnedSupport = loadGLFW();
     }
 
-    if(returnedError != glfwSupport) {
-        
+    // This class automates our error reporting
+
+
+    if(returnedSupport != glfwSupport) {
+
         writeln("ERROR IN GLFW!");
         writeln("---------- DIRECT DEBUG ERROR ---------------");
         // Log the direct error info
@@ -74,7 +76,7 @@ private bool initializeGLFWComponents() {
         writeln("---------------------------------------------");
         writeln("------------ FUZZY SUGGESTION ---------------");
         // Log fuzzy error info with suggestion
-        if(returnedError == GLFWSupport.noLibrary) {
+        if(returnedSupport == GLFWSupport.noLibrary) {
             writeln("The GLFW shared library failed to load!\n",
             "Is GLFW installed correctly?\n\n",
             "ABORTING!");
