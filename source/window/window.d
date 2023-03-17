@@ -15,7 +15,8 @@ import tools.opengl_error_logger;
 import loader = bindbc.loader.sharedlib;
 
 // This is an import that allows us to print debug info.
-import tools.opengl_error_logger;
+import tools.glfw_error_logger;
+// import tools.opengl_error_logger;
 
 // OpenGL fields
 private string glVersion;
@@ -51,7 +52,7 @@ void initialize() {
 //* ======== GLFW Tools ========
 
 // Returns success state 
-private bool initializeGLFWComponents() {
+private void initializeGLFWComponents() {
     
     GLFWSupport returnedSupport;
     
@@ -62,36 +63,21 @@ private bool initializeGLFWComponents() {
         returnedSupport = loadGLFW();
     }
 
-    // This class automates our error reporting
-
-
+    // We're using a custom class to automate debugging
     if(returnedSupport != glfwSupport) {
-
-        writeln("ERROR IN GLFW!");
-        writeln("---------- DIRECT DEBUG ERROR ---------------");
-        // Log the direct error info
-        foreach(info; loader.errors) {
-            logCError(info.error, info.message);
+        if (returnedSupport == GLFWSupport.noLibrary) {
+            new GLFWErrorLogger()
+                .attachTip("The GLFW shared library failed to load!\n" ~ "Is GLFW installed correctly?\n")
+                .execute();
+        } else if (returnedSupport == GLFWSupport.badLibrary) {
+            new GLFWErrorLogger()
+                .attachTip("One or more symbols failed to load.\n" ~
+                           "The likely cause is that the shared library is for a lower\n" ~
+                           "version than bindbc-glfw was configured to load!\n" ~
+                           "The required version is GLFW 3.3\n")
+                .execute();
         }
-        writeln("---------------------------------------------");
-        writeln("------------ FUZZY SUGGESTION ---------------");
-        // Log fuzzy error info with suggestion
-        if(returnedSupport == GLFWSupport.noLibrary) {
-            writeln("The GLFW shared library failed to load!\n",
-            "Is GLFW installed correctly?\n\n",
-            "ABORTING!");
-        }
-        else if(GLFWSupport.badLibrary) {
-            writeln("One or more symbols failed to load.\n",
-            "The likely cause is that the shared library is for a lower\n",
-            "version than bindbc-glfw was configured to load (via GLFW_31, GLFW_32 etc.\n\n",
-            "ABORTING!");
-        }
-        writeln("-------------------------");
-        return false;
     }
-
-    return true;
 }
 
 private nothrow static
@@ -103,9 +89,7 @@ extern(C) void myframeBufferSizeCallback(GLFWwindow* theWindow, int x, int y) {
 private bool initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
 
     // Something fails to load
-    if (!initializeGLFWComponents()) {
-        return false;
-    }
+    initializeGLFWComponents();
 
     // Something scary fails to load
     if (!glfwInit()) {
