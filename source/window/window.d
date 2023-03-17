@@ -76,7 +76,7 @@ private void initializeGLFWComponents() {
                 "The required version is GLFW 3.3"
             );
         }
-        
+
         logger.execute();
     }
 }
@@ -307,24 +307,17 @@ private void initializeOpenGL() {
     // Minimum version is GL 4.1 (July 26, 2010)
     if(returnedSupport < GLSupport.gl41) {
 
+        OpenGLLoaderErrorLogger logger = new OpenGLLoaderErrorLogger();
+        
         if(returnedSupport == GLSupport.noLibrary) {
-
-            new OpenGLLoaderErrorLogger()
-                .attachTip("This application requires the GLFW library.\n" ~
-                           "Is GLFW 3.3 installed?")
-                .execute();
-
+            logger.attachTip("This application requires the GLFW library.\n" ~ "Is GLFW 3.3 installed?");
         } else if(returnedSupport == GLSupport.badLibrary) {
-            new OpenGLLoaderErrorLogger()
-                .attachTip("The version of the GLFW library on your system is too low. Please upgrade.")
-                .execute();
-
+            logger.attachTip("The version of the GLFW library on your system is too low. Please upgrade.");
         } else {
-            new OpenGLLoaderErrorLogger()
-                .attachTip("Your GPU cannot support the minimum OpenGL Version: 4.1! Released: July 26, 2010.\n" ~
-                "Are your graphics drivers updated?")
-                .execute();
+            logger.attachTip("Your GPU cannot support the minimum OpenGL Version: 4.1! Released: July 26, 2010.\n" ~ "Are your graphics drivers updated?");
         }
+
+        logger.execute();
     }
 
     // Something went horrifically wrong
