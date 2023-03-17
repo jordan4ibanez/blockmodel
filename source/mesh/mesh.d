@@ -8,7 +8,7 @@ import doml.vector_3d;
 import doml.vector_4d;
 import doml.vector_4i;
 
-import tools.opengl_error_logger;
+import OpenGlLogger = tools.opengl_error_logger;
 
 /// An OpenGL mesh. Utilizes builder pattern.
 class Mesh {
@@ -268,10 +268,7 @@ class Mesh {
         // Unbind vao
         glBindVertexArray(0);
 
-        new OpenGLErrorLogger()
-            .attachTip("This error comes from the finalize() method of Mesh.\n" ~
-                       "ERROR CREATING MESH!")
-            .execute();
+        OpenGlLogger.execute("This error comes from the finalize() method of Mesh.\n" ~ "ERROR CREATING MESH!");
 
         if (debugEnabled) {
             writeln("Mesh ", this.vao, " has been successfully created");
@@ -346,10 +343,7 @@ class Mesh {
         assert(glIsVertexArray(this.vao) == GL_FALSE);
 
 
-        new OpenGLErrorLogger()
-            .attachTip("This error comes from the cleanup() method of Mesh.\n" ~
-                       "ERROR DESTROYING MESH!")
-            .execute();
+        OpenGlLogger.execute("This error comes from the cleanup() method of Mesh.\n" ~ "ERROR DESTROYING MESH!");
 
         if (debugEnabled) {
             writeln("Mesh ", this.vao, " has been successfully deleted from gpu memory");
@@ -383,10 +377,7 @@ class Mesh {
         }
         
         //! So this would be extremely heavy, create a new object for every draw call
-        new OpenGLErrorLogger()
-            .attachTip("This error comes from the rebnder() method of Mesh.\n" ~
-                       "ERROR RENDERING MESH!")
-            .execute();
+        OpenGlLogger.execute("This error comes from the rebnder() method of Mesh.\n" ~ "ERROR RENDERING MESH!");
         
         if (debugEnabled) {
             writeln("Mesh ", this.vao, " has rendered successfully ");
