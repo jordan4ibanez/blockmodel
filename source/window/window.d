@@ -63,18 +63,21 @@ private void initializeGLFWComponents() {
 
     // We're using a custom class to automate debugging
     if(returnedSupport != glfwSupport) {
+
+        GLFWErrorLogger logger = new GLFWErrorLogger();
+
         if (returnedSupport == GLFWSupport.noLibrary) {
-            new GLFWErrorLogger()
-                .attachTip("The GLFW shared library failed to load!\n" ~ "Is GLFW installed correctly?")
-                .execute();
+            logger.attachTip("The GLFW shared library failed to load!\n" ~ "Is GLFW installed correctly?");
         } else if (returnedSupport == GLFWSupport.badLibrary) {
-            new GLFWErrorLogger()
-                .attachTip("One or more symbols failed to load.\n" ~
-                           "The likely cause is that the shared library is for a lower\n" ~
-                           "version than bindbc-glfw was configured to load!\n" ~
-                           "The required version is GLFW 3.3")
-                .execute();
+            logger.attachTip(
+                "One or more symbols failed to load.\n" ~
+                "The likely cause is that the shared library is for a lower\n" ~
+                "version than bindbc-glfw was configured to load!\n" ~
+                "The required version is GLFW 3.3"
+            );
         }
+        
+        logger.execute();
     }
 }
 
