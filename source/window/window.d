@@ -197,8 +197,6 @@ private void setHalfSizeInternal() {
     fullscreen = false;
 }
 
-
-
 void setMousePosition(double x, double y) {
     glfwSetCursorPos(window, x, y);
 }
