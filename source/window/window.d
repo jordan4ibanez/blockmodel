@@ -301,26 +301,25 @@ private bool initializeOpenGL() {
     Compare the return value of loadGL with the global `glSupport` constant to determine if the version of GLFW
     configured at compile time is the version that was loaded.
     */
-    //! This needs to be changed to returnedSupport!
-    GLSupport ret = loadOpenGL();
+    GLSupport returnedSupport = loadOpenGL();
 
-    writeln(ret);
+    writeln(returnedSupport);
 
-    glVersion = translateGLVersionName(ret);
+    glVersion = translateGLVersionName(returnedSupport);
 
     writeln("The current supported context is: ", glVersion);
 
     // Minimum version is GL 4.1 (July 26, 2010)
-    if(ret < GLSupport.gl41) {
+    if(returnedSupport < GLSupport.gl41) {
 
-        if(ret == GLSupport.noLibrary) {
+        if(returnedSupport == GLSupport.noLibrary) {
 
             new OpenGLErrorLogger()
                 .attachTip("This application requires the GLFW library.\n" ~
                            "Is GLFW 3.3 installed?")
                 .execute();
 
-        } else if(ret == GLSupport.badLibrary) {
+        } else if(returnedSupport == GLSupport.badLibrary) {
             new OpenGLErrorLogger()
                 .attachTip("The version of the GLFW library on your system is too low. Please upgrade.")
                 .execute();
