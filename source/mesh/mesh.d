@@ -268,7 +268,8 @@ class Mesh {
         // Unbind vao
         glBindVertexArray(0);
 
-
+        
+            
         GLenum glErrorInfo = getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {
             writeln("GL ERROR: ", glErrorInfo);
