@@ -4,7 +4,8 @@ import std.stdio;
 import bindbc.opengl;
 import color;
 import png;
-import tools.gl_error;
+
+import tools.opengl_error_logger;
 
 /**
     Texture works as a singleton container.

@@ -7,7 +7,8 @@ import doml.vector_2d;
 import doml.vector_3d;
 import doml.vector_4d;
 import doml.vector_4i;
-import tools.gl_error;
+
+import tools.opengl_error_logger;
 
 /// An OpenGL mesh. Utilizes builder pattern.
 class Mesh {
@@ -266,6 +267,7 @@ class Mesh {
         
         // Unbind vao
         glBindVertexArray(0);
+
 
         GLenum glErrorInfo = getAndClearGLErrors();
         if (glErrorInfo != GL_NO_ERROR) {

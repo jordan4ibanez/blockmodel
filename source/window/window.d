@@ -9,13 +9,13 @@ import doml.vector_2i;
 import doml.vector_2d;
 import doml.vector_3d;
 import delta_time;
-import tools.gl_error;
+import tools.opengl_error_logger;
 
 // This is a special import. We only want to extract the loader from this module.
 import loader = bindbc.loader.sharedlib;
 
 // This is an import that allows us to print debug info.
-import tools.log;
+import tools.opengl_error_logger;
 
 // OpenGL fields
 private string glVersion;

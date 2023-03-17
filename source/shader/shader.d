@@ -2,10 +2,12 @@ module shader.shader;
 
 import std.stdio;
 import std.file;
-import bindbc.opengl;
-import tools.gl_error;
 import std.string;
 import std.conv;
+
+import bindbc.opengl;
+
+import tools.opengl_error_logger;
 
 /// These work as a synced list
 private GLuint[string] vertexShaders;
