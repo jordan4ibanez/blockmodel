@@ -312,32 +312,26 @@ private bool initializeOpenGL() {
 
     // Minimum version is GL 4.1 (July 26, 2010)
     if(ret < GLSupport.gl41) {
-        writeln("ERROR IN OpenGL");
-        // Log the error info
-        foreach(info; loader.errors) {
-            /*
-            A hypothetical logging function. Note that `info.error` and `info.message` are `const(char)*`, not
-            `string`.
-            */
-            logCError(info.error, info.message);
-        }
 
-        // Optionally construct a user-friendly error message for the user
-        string msg;
         if(ret == GLSupport.noLibrary) {
-            msg = "This application requires the GLFW library.";
+
+            new OpenGLErrorLogger()
+                .attachTip("This application requires the GLFW library.\n" ~
+                           "Is GLFW 3.3 installed?")
+                .execute();
+
+        } else if(ret == GLSupport.badLibrary) {
+            new OpenGLErrorLogger()
+                .attachTip("The version of the GLFW library on your system is too low. Please upgrade.")
+                .execute();
+
+        } else {
+            new OpenGLErrorLogger()
+                .attachTip("Your GPU cannot support the minimum OpenGL Version: 4.1! Released: July 26, 2010.\n" ~
+                "Are your graphics drivers updated?")
+                .execute();
         }
-        else if(ret == GLSupport.badLibrary) {
-            msg = "The version of the GLFW library on your system is too low. Please upgrade.";
-        }
-        // GLSupport.noContext
-        else {
-            msg = "Your GPU cannot support the minimum OpenGL Version: 4.1! Released: July 26, 2010.\n" ~
-                "Are your graphics drivers updated?";
-        }
-        // A hypothetical message box function
-        writeln(msg);
-        writeln("ABORTING");
+ 
         return false;
     }
 
