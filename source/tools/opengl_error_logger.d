@@ -4,6 +4,7 @@ import std.stdio;
 import std.conv: to;
 
 import bindbc.opengl;
+import bindbc.opengl.gl;
 
 
 // Utilizes builder pattern
@@ -17,7 +18,7 @@ class OpenGLErrorLogger {
     
 
     this() {
-        this.getAndClearOpenGLErrors();
+        
     }
 
 
