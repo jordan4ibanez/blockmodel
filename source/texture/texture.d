@@ -5,7 +5,7 @@ import bindbc.opengl;
 import color;
 import png;
 
-import tools.opengl_error_logger;
+import OpenGlLogger = tools.opengl_error_logger;
 
 /**
     Texture works as a singleton container.
@@ -55,10 +55,7 @@ GLuint addTexture(string fileLocation, bool debugEnabled = false) {
 
     // glGenerateMipmap(GL_TEXTURE_2D);
 
-    new OpenGLErrorLogger()
-        .attachTip("This error is from the Texture constructor.\n" ~
-                   "Failed to load texture!")
-        .execute();
+    OpenGlLogger.execute("This error is from the Texture constructor.\n" ~ "Failed to load texture!");
 
     if (debugEnabled) {
         writeln(fileLocation, " is stored as ID: ", id);
