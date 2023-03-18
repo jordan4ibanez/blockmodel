@@ -15,6 +15,7 @@ import delta_time;
 import std.typecons;
 
 import gui.gui;
+import Grid = gui.grid;
 
 //! Development import REMOVE LATER
 import Font = razor_font;
@@ -71,79 +72,81 @@ void main()
     Shader.createUniform("model", "textureSampler");
     Shader.createUniform("model", "boneTRS");
 
+    Grid.initialize();
 
-    BlockModel model = new BlockModel("models/minetest_sam.json");
 
-    Mesh debugMesh = new Mesh()
-        .addVertices3d(model.getVertexPositions)
-        .addIndices(model.getIndices)
-        .addTextureCoordinates(model.getTextureCoordinates)
-        .addBones(model.getBones)
-        .setTexture(Texture.getTexture("textures/debug_character.png"))
-        .finalize();
+    // BlockModel model = new BlockModel("models/minetest_sam.json");
+
+    // Mesh debugMesh = new Mesh()
+    //     .addVertices3d(model.getVertexPositions)
+    //     .addIndices(model.getIndices)
+    //     .addTextureCoordinates(model.getTextureCoordinates)
+    //     .addBones(model.getBones)
+    //     .setTexture(Texture.getTexture("textures/debug_character.png"))
+    //     .finalize();
     
 
-    // Controls regular rendering
+    // // Controls regular rendering
     Shader.create("regular", "shaders/regular_vertex.vs", "shaders/regular_fragment.fs");
     Shader.createUniform("regular", "cameraMatrix");
     Shader.createUniform("regular", "objectMatrix");
     Shader.createUniform("regular", "textureSampler");
 
-    Mesh xyzCompass = new Mesh()
-        .addVertices3d([
-            0,0,0,
-            1,0,0,
+    // Mesh xyzCompass = new Mesh()
+    //     .addVertices3d([
+    //         0,0,0,
+    //         1,0,0,
 
-            0,0,0,
-            0,1,0,
+    //         0,0,0,
+    //         0,1,0,
 
-            0,0,0,
-            0,0,-1
-        ])
-        .addIndices([
-            0,1,
-            2,3,
-            4,5
-        ])
-        .addTextureCoordinates([
-            0,0,
-            1.0/3.0,0,
+    //         0,0,0,
+    //         0,0,-1
+    //     ])
+    //     .addIndices([
+    //         0,1,
+    //         2,3,
+    //         4,5
+    //     ])
+    //     .addTextureCoordinates([
+    //         0,0,
+    //         1.0/3.0,0,
 
-            1.0/3.0,0,
-            2.0/3.0,0,
+    //         1.0/3.0,0,
+    //         2.0/3.0,0,
 
-            2.0/3.0,0,
-            1,0
-        ])
-        .setTexture(Texture.getTexture("textures/xyz_compass.png"))
-        .setLineMode(true)
-        .finalize();
+    //         2.0/3.0,0,
+    //         1,0
+    //     ])
+    //     .setTexture(Texture.getTexture("textures/xyz_compass.png"))
+    //     .setLineMode(true)
+    //     .finalize();
     
     Shader.create("2d", "shaders/2d_vertex.vs", "shaders/2d_fragment.fs");
     Shader.createUniform("2d", "cameraMatrix");
     Shader.createUniform("2d", "objectMatrix");
     Shader.createUniform("2d", "textureSampler");
 
-    // Debug scale thing
-    double d = 100.0;
-    Mesh debug2d = new Mesh()
-        .addVertices2d([
-            0,0,
-            0,d,
-            d,d,
-            d,0
-        ])
-        .addIndices([
-            0,1,2,2,3,0
-        ])
-        .addTextureCoordinates([
-            0,0,
-            0,1,
-            1,1,
-            1,0
-        ])
-        .setTexture(Texture.getTexture("textures/debug.png"))
-        .finalize();
+    // // Debug scale thing
+    // double d = 100.0;
+    // Mesh debug2d = new Mesh()
+    //     .addVertices2d([
+    //         0,0,
+    //         0,d,
+    //         d,d,
+    //         d,0
+    //     ])
+    //     .addIndices([
+    //         0,1,2,2,3,0
+    //     ])
+    //     .addTextureCoordinates([
+    //         0,0,
+    //         0,1,
+    //         1,1,
+    //         1,0
+    //     ])
+    //     .setTexture(Texture.getTexture("textures/debug.png"))
+    //     .finalize();
 
     double fancyRotation = 0;
 
@@ -193,6 +196,8 @@ void main()
         })
         .setPostion(Vector2d(0,-48 * 3))
     );
+
+
     
 
 
@@ -214,6 +219,18 @@ void main()
 
         Window.clear(0.8);
 
+
+        Grid.render(fancyRotation);
+
+
+
+
+
+
+
+
+        //** Everything in GUI must happen after 3d
+
         Camera.clearDepthBuffer();
         Camera.setRotation(Vector3d(0,0,0));
 
@@ -230,14 +247,15 @@ void main()
     }
 
     gui.destroy();
+    Grid.cleanUp();
 
     Shader.deleteShader("regular");
     Shader.deleteShader("model");
     Shader.deleteShader("2d");
     
-    debugMesh.cleanUp();
-    xyzCompass.cleanUp();
-    debug2d.cleanUp();
+    // debugMesh.cleanUp();
+    // xyzCompass.cleanUp();
+    // debug2d.cleanUp();
 
     Texture.cleanUp();
 
