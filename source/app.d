@@ -189,6 +189,8 @@ void main()
         // is calculated. This increases responsiveness.
         Window.pollEvents();
 
+        gui.collisionDetect();
+
 
         fancyRotation += getDelta * 100.0;
         if (fancyRotation >= 360.0) {
