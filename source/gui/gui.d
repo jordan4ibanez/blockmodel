@@ -16,10 +16,11 @@ enum WINDOW_POSITION {
     CENTER_LEFT,
     CENTER_CENTER,
     CENTER_RIGHT,
-    
+
     BOTTOM_LEFT,
     BOTTOM_CENTER,
     BOTTOM_RIGHT
+
 }
 
 class GUI {
