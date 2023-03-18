@@ -157,13 +157,23 @@ void main()
 
     Font.selectFont("mc");
 
-    // gui.addText("cool",
-    //     new Text("cool").setPosition(Vector2d(0,0)).setSize(20).setWindowPosition(TOP_LEFT).setPosition(Vector2d(-10,-10))
-    // );
+    gui.addText("cool",
+        new Text("cool").setPosition(Vector2d(0,0)).setSize(24).setWindowPosition(TOP_LEFT)
+    );
     
     gui.addButton("pushit", new Button(
-            new Text("this is a bunch of text!").setSize(20)
-        )
+            new Text("this is a bunch of text!").setSize(24)
+        ).setWindowPosition(CENTER_CENTER)
+    );
+
+    gui.addButton("pushit2", new Button(
+            new Text("THIS BUTTON IS HUGE!!").setSize(48)
+        ).setWindowPosition(TOP_CENTER)
+    );
+
+    gui.addButton("pushit3", new Button(
+            new Text("push me, I dare you").setSize(24)
+        ).setWindowPosition(TOP_RIGHT)
     );
 
 
@@ -184,7 +194,7 @@ void main()
 
         Window.setTitle(Window.getTitle ~ " | FPS: " ~ to!string(Window.getFPS) ~ " | Rotation: " ~ to!string(fancyRotation), false);
 
-        Window.clear(0.9);
+        Window.clear(0.8);
 
         Camera.clearDepthBuffer();
         Camera.setRotation(Vector3d(0,0,0));

@@ -8,6 +8,8 @@ import doml.vector_4d;
 import Font = razor_font;
 import Texture = texture.texture;
 import Window = window.window;
+import Shader = shader.shader;
+import Camera = camera.camera;
 
 import mesh.mesh;
 
@@ -106,6 +108,49 @@ Vector2d grabFinalPosition(Text text) {
     return realPosition;
 }
 
+Vector2d grabButtonFix(Button button) {
+
+    WINDOW_POSITION windowPosition = button.windowPosition;
+
+    Vector2d outputtingPosition;
+
+    double buttonWidth = button.size.x;
+    double buttonHeight = button.size.y;
+
+
+    final switch (cast(int)(windowPosition.x * 10)) {
+        case (0): {
+            outputtingPosition.x = buttonWidth;
+            break;
+        }
+        case (5): {
+            outputtingPosition.x = -buttonWidth / 2.0;
+            break;
+        }
+        case (10): {
+            outputtingPosition.x = -buttonWidth;
+            break;
+        }
+    }
+
+    final switch (cast(int)(windowPosition.y * 10)) {
+        case (0): {
+            outputtingPosition.y = 0;
+            break;
+        }
+        case (5): {
+            outputtingPosition.y = -buttonHeight / 2.0;
+            break;
+        }
+        case (10): {
+            outputtingPosition.y = -buttonHeight;
+            break;
+        }
+    }
+
+    return outputtingPosition;
+}
+
 class GUI {
 
     private Button[string] buttonObjects;
@@ -123,18 +168,49 @@ class GUI {
 
         Font.switchColors(1,0,0,1);
 
+        Shader.setUniformMatrix4("2d", "cameraMatrix", Camera.updateGuiMatrix());
+
         foreach (Button button; buttonObjects) {
+            
+
+            Vector2d windowPosition = grabWindowPosition(button.windowPosition);
+
+            windowPosition.x -= Window.getWidth() / 2.0;
+            windowPosition.y -= Window.getHeight() / 2.0;
+
+            Vector2d buttonFix = grabButtonFix(button);
+
+            windowPosition.x += buttonFix.x;
+            windowPosition.y += buttonFix.y;
+
+            Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)));
+            
+            Font.renderToCanvas(
+                windowPosition.x + (Window.getWidth() / 2.0) + button.padding,
+                windowPosition.y + (Window.getHeight() / 2.0) + button.padding,
+                button.text.size,
+                button.text.textData
+            );
+            Font.render();
+
+            Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(
+                    windowPosition
+                )
+            );
+
             button.mesh.render("2d");
         }
 
-        // foreach (Text text; textObjects) {
+        Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)));
 
-        //     Vector2d finalPosition = grabFinalPosition(text);
+        foreach (Text text; textObjects) {
 
-        //     Font.renderToCanvas(finalPosition.x, finalPosition.y, text.size, text.textData);
-        // }
+            Vector2d finalPosition = grabFinalPosition(text);
 
-        // Font.render();
+            Font.renderToCanvas(finalPosition.x, finalPosition.y, text.size, text.textData);
+        }
+
+        Font.render();
     }
 
     void destroy() {
@@ -154,6 +230,8 @@ class Button {
     // Offset from real window position in pixels
     Vector2d position;
 
+    Vector2d size;
+
     double padding = 0.0;
     
     private Text text;
@@ -169,7 +247,7 @@ class Button {
         // pixels
         padding = 10;
 
-        Vector2d size = Vector2d(
+        size = Vector2d(
             textSize.width + (padding * 2),
             textSize.height + (padding * 2)
         );
@@ -197,6 +275,11 @@ class Button {
 
     Button setPostion(Vector2d position) {
         this.position = position;
+        return this;
+    }
+
+    Button setWindowPosition(WINDOW_POSITION windowPosition) {
+        this.windowPosition = windowPosition;
         return this;
     }
     
