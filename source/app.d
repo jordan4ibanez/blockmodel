@@ -170,12 +170,30 @@ void main()
     );
 
     gui.addButton("removeBlock", new Button(
-            new Text("removeBlock").setSize(24)
+            new Text("Remove Block").setSize(24)
         ).setWindowPosition(TOP_RIGHT)
         .setFunction((){
-            writeln("adding block");
+            writeln("Removing block");
         })
-        .setPostion(Vector2d(-100,-100))
+        .setPostion(Vector2d(0,-48))
+    );
+
+    gui.addButton("setKeyFrame", new Button(
+            new Text("Set Keyframe").setSize(24)
+        ).setWindowPosition(TOP_RIGHT)
+        .setFunction((){
+            writeln("Setting keyframe");
+        })
+        .setPostion(Vector2d(0,-48 * 2))
+    );
+
+    gui.addButton("export", new Button(
+            new Text("Export").setSize(24)
+        ).setWindowPosition(TOP_RIGHT)
+        .setFunction((){
+            writeln("Exporting");
+        })
+        .setPostion(Vector2d(0,-48 * 3))
     );
     
 
