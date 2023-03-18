@@ -148,9 +148,7 @@ void main()
     double fancyRotation = 0;
 
     Window.setVsync(0);
-
-
-    //! GUI TESTING
+    
 
 
     GUI gui = new GUI();
@@ -196,9 +194,6 @@ void main()
         .setPostion(Vector2d(0,-48 * 3))
     );
     
-
-
-    //! END GUI TESTING
 
 
     while (!Window.shouldClose()) {
