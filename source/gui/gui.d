@@ -183,6 +183,9 @@ class GUI {
             windowPosition.x += buttonFix.x;
             windowPosition.y += buttonFix.y;
 
+            windowPosition.x += button.position.x;
+            windowPosition.y -= button.position.y;
+
             Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)));
             
             Font.renderToCanvas(
@@ -236,6 +239,10 @@ class GUI {
             windowPosition.x += buttonFix.x;
             windowPosition.y += buttonFix.y;
 
+            windowPosition.x += button.position.x;
+            windowPosition.y -= button.position.y;
+
+            // Check if collided
             if (mousePosition.x >= windowPosition.x && mousePosition.x <= windowPosition.x + button.size.x &&
                 mousePosition.y >= windowPosition.y && mousePosition.y <= windowPosition.y + button.size.y) {
 

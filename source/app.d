@@ -157,27 +157,27 @@ void main()
 
     Font.selectFont("mc");
 
-    gui.addText("cool",
-        new Text("cool").setPosition(Vector2d(0,0)).setSize(24).setWindowPosition(TOP_LEFT)
+    gui.addText("title",
+        new Text("BlockModel Editor 0.0.0").setPosition(Vector2d(0,0)).setSize(24).setWindowPosition(TOP_LEFT)
     );
     
-    gui.addButton("pushit", new Button(
-            new Text("If you push me, I say hi!").setSize(24)
-        ).setWindowPosition(CENTER_CENTER)
+    gui.addButton("addBlock", new Button(
+            new Text("Add Block").setSize(24)
+        ).setWindowPosition(TOP_RIGHT)
         .setFunction((){
-            writeln("hi there");
+            writeln("adding block");
         })
     );
 
-    gui.addButton("pushit2", new Button(
-            new Text("THIS BUTTON IS HUGE!!").setSize(48)
-        ).setWindowPosition(TOP_CENTER)
-    );
-
-    gui.addButton("pushit3", new Button(
-            new Text("push me, I dare you").setSize(24)
+    gui.addButton("removeBlock", new Button(
+            new Text("removeBlock").setSize(24)
         ).setWindowPosition(TOP_RIGHT)
+        .setFunction((){
+            writeln("adding block");
+        })
+        .setPostion(Vector2d(-100,-100))
     );
+    
 
 
     //! END GUI TESTING
