@@ -95,7 +95,6 @@ class Mesh {
 
     // The actual mechanism for addVertices
     private Mesh verticesFunc(const double[] vertices, GLuint size) {
-
         // Don't bother if not divisible by or less than size
         if (vertices.length % size != 0 || vertices.length < size) {
             throw new Exception("Vertices must contain XYZ components for ALL vertex positions!");
@@ -376,8 +375,7 @@ class Mesh {
             glDrawElements(GL_TRIANGLES, this.indexCount, GL_UNSIGNED_INT, cast(const(void)*)0);
         }
         
-        //! So this would be extremely heavy, create a new object for every draw call
-        OpenGlLogger.execute("This error comes from the rebnder() method of Mesh.\n" ~ "ERROR RENDERING MESH!");
+        OpenGlLogger.execute("This error comes from the render() method of Mesh.\n" ~ "ERROR RENDERING MESH!");
         
         if (debugEnabled) {
             writeln("Mesh ", this.vao, " has rendered successfully ");
