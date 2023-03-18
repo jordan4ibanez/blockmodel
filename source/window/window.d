@@ -201,6 +201,12 @@ void setMousePosition(double x, double y) {
     glfwSetCursorPos(window, x, y);
 }
 
+Vector2d getMousePosition() {
+    Vector2d currentPos;
+    glfwGetCursorPos(window, &currentPos.x, &currentPos.y);
+    return currentPos;
+}
+
 Vector2d centerMouse() {
     double x = windowSize.x / 2.0;
     double y = windowSize.y / 2.0;
