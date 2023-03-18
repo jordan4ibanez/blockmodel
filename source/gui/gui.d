@@ -23,7 +23,7 @@ enum WINDOW_POSITION : Vector2d {
 
     BOTTOM_LEFT   = Vector2d( 0.0, 1.0 ),
     BOTTOM_CENTER = Vector2d( 0.5, 1.0 ),
-    BOTTOM_RIGHT   = Vector2d( 1.0, 1.0 )
+    BOTTOM_RIGHT  = Vector2d( 1.0, 1.0 )
 
 }
 
