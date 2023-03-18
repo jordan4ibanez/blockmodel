@@ -148,20 +148,31 @@ class GUI {
 
 class Button {
 
+    // Real window position
     WINDOW_POSITION windowPosition = DEFAULT;
 
-    Vector2d size;
+    // Offset from real window position in pixels
+    Vector2d position;
+
+    double padding = 0.0;
     
     private Text text;
 
     Mesh mesh;
 
     this(Text text) {
-        this.text = text;
-    }
 
-    Button setSize(Vector2d size) {
-        this.size = size;
+        this.text = text;
+
+        Font.RazorTextSize textSize = Font.getTextSize(text.size, text.textData);
+
+        // pixels
+        padding = 10;
+
+        Vector2d size = Vector2d(
+            textSize.width + (padding * 2),
+            textSize.height + (padding * 2)
+        );
 
         this.mesh = new Mesh()
             .addVertices2d([
@@ -180,11 +191,14 @@ class Button {
                 0,1,2,2,3,0
             ])
             // This is hardcoded for now
-            .setTexture(Texture.getTexture("textures/debug.png"))
+            .setTexture(Texture.getTexture("textures/button.png"))
             .finalize();
-        return this;
     }
 
+    Button setPostion(Vector2d position) {
+        this.position = position;
+        return this;
+    }
     
 }
 

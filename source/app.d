@@ -29,6 +29,7 @@ void main()
     Texture.addTexture("textures/xyz_compass.png");
     Texture.addTexture("textures/debug_character.png");
     Texture.addTexture("textures/debug.png");
+    Texture.addTexture("textures/button.png");
 
 
     Font.setRenderTargetAPICallString(
@@ -161,8 +162,8 @@ void main()
     // );
     
     gui.addButton("pushit", new Button(
-            new Text("hi").setSize(20)
-        ).setSize(Vector2d(100,100))
+            new Text("this is a bunch of text!").setSize(20)
+        )
     );
 
 
