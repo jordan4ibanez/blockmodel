@@ -3,6 +3,7 @@ module gui.gui;
 import std.stdio;
 import bindbc.opengl;
 import doml.vector_2d;
+import doml.vector_4d;
 
 import Font = razor_font;
 
@@ -67,6 +68,8 @@ class Text {
 
     Vector2d position;
 
+    Vector4d color = Vector4d(0,0,0,1);
+
     private string textData;
 
     this(string textData) {
@@ -80,6 +83,11 @@ class Text {
 
     Text setSize(double size) {
         this.size = size;
+        return this;
+    }
+
+    Text setColor(double r, double b, double g, double a) {
+        this.color = Vector4d(r,g,b,a);
         return this;
     }
     
