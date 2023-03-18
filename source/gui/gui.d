@@ -23,9 +23,22 @@ enum WINDOW_POSITION : Vector2d {
 
     BOTTOM_LEFT   = Vector2d( 0.0, 1.0 ),
     BOTTOM_CENTER = Vector2d( 0.5, 1.0 ),
-    BOTTOM_RIGH   = Vector2d( 1.0, 1.0 )
+    BOTTOM_RIGHT   = Vector2d( 1.0, 1.0 )
 
 }
+
+// Export as public enums so you don't have to type out WINDOW_POSITION every time
+enum TOP_LEFT      = WINDOW_POSITION.TOP_LEFT;
+enum TOP_CENTER    = WINDOW_POSITION.TOP_CENTER;
+enum TOP_RIGHT     = WINDOW_POSITION.TOP_RIGHT;
+
+enum CENTER_LEFT   = WINDOW_POSITION.CENTER_LEFT;
+enum CENTER_CENTER = WINDOW_POSITION.CENTER_CENTER;
+enum CENTER_RIGHT  = WINDOW_POSITION.CENTER_RIGHT;
+
+enum BOTTOM_LEFT   = WINDOW_POSITION.BOTTOM_LEFT;
+enum BOTTOM_CENTER = WINDOW_POSITION.BOTTOM_CENTER;
+enum BOTTOM_RIGHT  = WINDOW_POSITION.BOTTOM_RIGHT;
 
 // Default the position to top left
 private immutable WINDOW_POSITION DEFAULT = WINDOW_POSITION.TOP_LEFT;
@@ -51,7 +64,7 @@ private Vector2d grabRealPosition(Text text) {
     // So if you're in the center, you're in the direct center.
     // If you're on the right, you're exactly on the right, etc.
 
-    final switch (cast(int)text.windowPosition.x * 10) {
+    final switch (cast(int)(text.windowPosition.x * 10)) {
         case (0): {
             outputtingPosition.x = windowPosition.x;
             break;
@@ -66,7 +79,7 @@ private Vector2d grabRealPosition(Text text) {
         }
     }
 
-    final switch (cast(int)text.windowPosition.y * 10) {
+    final switch (cast(int)(text.windowPosition.y * 10)) {
         case (0): {
             outputtingPosition.y = windowPosition.y;
             break;
@@ -100,7 +113,10 @@ class GUI {
         foreach (Text text; textObjects) {
 
             writeln(text.position, " ", text.size, " ", text.textData);
-            Font.renderToCanvas(text.position.x, text.position.y, text.size, text.textData);
+
+            Vector2d realPosition = grabRealPosition(text);
+
+            Font.renderToCanvas(realPosition.x, realPosition.y, text.size, text.textData);
         }
 
         Font.render();
