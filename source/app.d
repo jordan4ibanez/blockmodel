@@ -231,7 +231,7 @@ void main()
 
         Window.clear(0.8);
 
-        SwingArm.setRotation(10, fancyRotation);
+        SwingArm.setRotation(0, fancyRotation);
 
         SwingArm.applyToCamera();
         
