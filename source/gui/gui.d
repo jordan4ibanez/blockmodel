@@ -28,16 +28,60 @@ enum WINDOW_POSITION : Vector2d {
 }
 
 // Default the position to top left
-immutable WINDOW_POSITION DEFAULT = WINDOW_POSITION.TOP_LEFT;
+private immutable WINDOW_POSITION DEFAULT = WINDOW_POSITION.TOP_LEFT;
 
 /// This auto converts the enumerator into a direct position on screen
-Vector2d grabWindowPosition(WINDOW_POSITION inputPosition) {
+private Vector2d grabWindowPosition(WINDOW_POSITION inputPosition) {
     Vector2d windowSize = Window.getSize();
     
     return Vector2d(
         inputPosition.x * windowSize.x,
         inputPosition.y * windowSize.y
     );
+}
+
+// This auto converts the text into position utilizing it's offset size when rendered
+private Vector2d grabRealPosition(Text text) {
+    Vector2d windowPosition = grabWindowPosition(text.windowPosition);
+    Font.RazorTextSize textSize = Font.getTextSize(text.size, text.textData);
+
+    Vector2d outputtingPosition;
+
+    // This automatically centers the text as much as possible.
+    // So if you're in the center, you're in the direct center.
+    // If you're on the right, you're exactly on the right, etc.
+
+    final switch (cast(int)text.windowPosition.x * 10) {
+        case (0): {
+            outputtingPosition.x = windowPosition.x;
+            break;
+        }
+        case (5): {
+            outputtingPosition.x = windowPosition.x - (textSize.width / 2.0);
+            break;
+        }
+        case (10): {
+            outputtingPosition.x = windowPosition.x - textSize.width;
+            break;
+        }
+    }
+
+    final switch (cast(int)text.windowPosition.y * 10) {
+        case (0): {
+            outputtingPosition.y = windowPosition.y;
+            break;
+        }
+        case (5): {
+            outputtingPosition.y = windowPosition.y - (textSize.height / 2.0);
+            break;
+        }
+        case (10): {
+            outputtingPosition.y = windowPosition.y - textSize.height;
+            break;
+        }
+    }
+
+    return outputtingPosition;
 }
 
 class GUI {
