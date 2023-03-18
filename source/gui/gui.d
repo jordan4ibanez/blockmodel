@@ -222,24 +222,29 @@ class GUI {
         }
 
         Vector2d mousePosition = Window.getMousePosition();
+        
 
-        writeln(mousePosition);
-
-        foreach (Button button; buttonObjects) {
+        foreach (string name, Button button; buttonObjects) {
             
 
             // We're getting the top left of the button
 
             Vector2d windowPosition = grabWindowPosition(button.windowPosition);
 
-            windowPosition.x -= Window.getWidth() / 2.0;
-            windowPosition.y -= Window.getHeight() / 2.0;
-
             Vector2d buttonFix = grabButtonFix(button);
 
             windowPosition.x += buttonFix.x;
             windowPosition.y += buttonFix.y;
 
+            if (mousePosition.x >= windowPosition.x && mousePosition.x <= windowPosition.x + button.size.x &&
+                mousePosition.y >= windowPosition.y && mousePosition.y <= windowPosition.y + button.size.y) {
+
+
+                if (button.buttonFunction !is null) {
+                    button.buttonFunction();
+                }
+                return;
+            }
 
             
         }
