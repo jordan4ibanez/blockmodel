@@ -1,7 +1,6 @@
 import std.stdio;
 import std.conv;
 import bindbc.opengl;
-import Camera = camera.camera;
 import Shader = shader.shader;
 import Texture = texture.texture;
 import Window = window.window;
@@ -13,6 +12,9 @@ import blockmodel.blockmodel;
 import Math = doml.math;
 import delta_time;
 import std.typecons;
+
+import Camera = camera.camera;
+import SwingArm = camera.swing_arm;
 
 import gui.gui;
 import Grid = gui.grid;
@@ -227,6 +229,9 @@ void main()
         Window.setTitle(Window.getTitle ~ " | FPS: " ~ to!string(Window.getFPS) ~ " | Rotation: " ~ to!string(fancyRotation), false);
 
         Window.clear(0.8);
+
+        SwingArm.applyToCamera();
+        
 
 
         Grid.render();
