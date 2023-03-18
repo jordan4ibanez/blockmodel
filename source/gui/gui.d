@@ -115,22 +115,26 @@ class GUI {
         this.textObjects[name] = text;
     }
 
+    void addButton(string name, Button button) {
+        this.buttonObjects[name] = button;
+    }
+
     void render() {
 
         Font.switchColors(1,0,0,1);
 
         foreach (Button button; buttonObjects) {
-            
+            button.mesh.render("2d");
         }
 
-        foreach (Text text; textObjects) {
+        // foreach (Text text; textObjects) {
 
-            Vector2d finalPosition = grabFinalPosition(text);
+        //     Vector2d finalPosition = grabFinalPosition(text);
 
-            Font.renderToCanvas(finalPosition.x, finalPosition.y, text.size, text.textData);
-        }
+        //     Font.renderToCanvas(finalPosition.x, finalPosition.y, text.size, text.textData);
+        // }
 
-        Font.render();
+        // Font.render();
     }
 
     void destroy() {
@@ -170,10 +174,13 @@ class Button {
                 0.0, 0.0,
                 0.0, 1.0,
                 1.0, 1.0,
-                1,0, 0.0
+                1.0, 0.0
+            ])
+            .addIndices([
+                0,1,2,2,3,0
             ])
             // This is hardcoded for now
-            .setTexture(Texture.getTexture("textures/button.png"))
+            .setTexture(Texture.getTexture("textures/debug.png"))
             .finalize();
         return this;
     }
