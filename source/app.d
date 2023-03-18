@@ -41,6 +41,10 @@ void main()
     Font.setRenderFunc(
         (Font.RazorFontData fontData) {
 
+            if (fontData.vertexPositions.length == 0) {
+                return;
+            }
+
             string fileLocation = Font.getCurrentFontTextureFileLocation();
 
             Mesh tempObject = new Mesh()
@@ -152,9 +156,10 @@ void main()
 
     Font.selectFont("mc");
 
-    gui.addText("cool",
-        new Text("cool").setPosition(Vector2d(0,0)).setSize(20).setWindowPosition(TOP_LEFT).setPosition(Vector2d(-10,-10))
-    );
+    // gui.addText("cool",
+    //     new Text("cool").setPosition(Vector2d(0,0)).setSize(20).setWindowPosition(TOP_LEFT).setPosition(Vector2d(-10,-10))
+    // );
+    
 
 
     //! END GUI TESTING
