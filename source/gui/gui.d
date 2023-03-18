@@ -9,6 +9,8 @@ import Font = razor_font;
 import Texture = texture.texture;
 import Window = window.window;
 
+import mesh.mesh;
+
 
 // Allows elements to be bolted to a part of the window
 enum WINDOW_POSITION : Vector2d {
@@ -117,6 +119,10 @@ class GUI {
 
         Font.switchColors(1,0,0,1);
 
+        foreach (Button button; buttonObjects) {
+            
+        }
+
         foreach (Text text; textObjects) {
 
             Vector2d finalPosition = grabFinalPosition(text);
@@ -127,6 +133,12 @@ class GUI {
         Font.render();
     }
 
+    void destroy() {
+        foreach (Button button; buttonObjects) {
+            button.mesh.cleanUp();            
+        }
+    }
+
 }
 
 
@@ -134,15 +146,39 @@ class Button {
 
     WINDOW_POSITION windowPosition = DEFAULT;
 
-    private GLuint backgroundTexture;
+    Vector2d size;
+    
     private Text text;
 
-    this(string text, GLuint backgroundTexture) {
+    Mesh mesh;
 
-        this.text = new Text(text);
-        this.backgroundTexture = backgroundTexture;
-
+    this(Text text) {
+        this.text = text;
     }
+
+    Button setSize(Vector2d size) {
+        this.size = size;
+
+        this.mesh = new Mesh()
+            .addVertices2d([
+                0.0,    0.0,
+                0.0,    size.y,
+                size.x, size.y,
+                size.x, 0.0
+            ])
+            .addTextureCoordinates([
+                0.0, 0.0,
+                0.0, 1.0,
+                1.0, 1.0,
+                1,0, 0.0
+            ])
+            // This is hardcoded for now
+            .setTexture(Texture.getTexture("textures/button.png"))
+            .finalize();
+        return this;
+    }
+
+    
 }
 
 class Text {
