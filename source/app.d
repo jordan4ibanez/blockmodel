@@ -153,7 +153,7 @@ void main()
     Font.selectFont("mc");
 
     gui.addText("cool",
-        new Text("cool").setPosition(Vector2d(0,0)).setSize(20).setWindowPosition(CENTER_CENTER)
+        new Text("cool").setPosition(Vector2d(0,0)).setSize(20).setWindowPosition(TOP_LEFT).setPosition(Vector2d(-10,-10))
     );
 
 
