@@ -6,6 +6,22 @@ import doml.vector_2d;
 
 import Font = razor_font;
 
+// Allows elements to be bolted to a part of the window
+enum WINDOW_POSITION {
+
+    TOP_LEFT,
+    TOP_CENTER,
+    TOP_RIGHT,
+
+    CENTER_LEFT,
+    CENTER_CENTER,
+    CENTER_RIGHT,
+    
+    BOTTOM_LEFT,
+    BOTTOM_CENTER,
+    BOTTOM_RIGHT
+}
+
 class GUI {
 
     private Button[string] buttonObjects;
