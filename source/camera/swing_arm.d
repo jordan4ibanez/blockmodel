@@ -13,7 +13,7 @@ private Vector3d rotation;
 private Vector3d position;
 
 void setRotation(double pitch, double yaw) {
-    rotation = Vector3d(yaw, pitch, 0);
+    rotation = Vector3d(Math.toRadians(pitch), Math.toRadians(yaw), 0);
 }
 
 void setPosition(double x, double y, double z) {
@@ -28,19 +28,23 @@ void applyToCamera() {
 
 
     Vector3d direction = Vector3d(
-        Math.cos(rotation.y) * Math.cos(rotation.x),
-        Math.sin(rotation.y) * Math.cos(rotation.x),
-        Math.sin(rotation.x)
-    ).mul(length);
+        Math.cos(rotation.y),
+        0,
+        Math.sin(rotation.y)
+    )
+    .mul(length)
+    .add(position);
     
 
     Camera.setPosition(
         direction
     );
 
+
+    writeln(rotation.y);
     Camera.setRotation(Vector3d(
-        -rotation.x,
-        -rotation.y,
+        Math.toDegrees(rotation.x),
+        Math.toDegrees(rotation.y) - 90,
         0
         )
     );
