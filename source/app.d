@@ -209,6 +209,7 @@ void main()
     );
 
 
+    SwingArm.setPosition(0,1,0);
     
 
 
@@ -229,6 +230,8 @@ void main()
         Window.setTitle(Window.getTitle ~ " | FPS: " ~ to!string(Window.getFPS) ~ " | Rotation: " ~ to!string(fancyRotation), false);
 
         Window.clear(0.8);
+
+        SwingArm.setRotation(10, fancyRotation);
 
         SwingArm.applyToCamera();
         
