@@ -160,6 +160,10 @@ void main()
     //     new Text("cool").setPosition(Vector2d(0,0)).setSize(20).setWindowPosition(TOP_LEFT).setPosition(Vector2d(-10,-10))
     // );
     
+    gui.addButton("pushit", new Button(
+            new Text("hi").setSize(20)
+        ).setSize(Vector2d(100,100))
+    );
 
 
     //! END GUI TESTING
@@ -195,6 +199,8 @@ void main()
         
         Window.swapBuffers();
     }
+
+    gui.destroy();
 
     Shader.deleteShader("regular");
     Shader.deleteShader("model");
