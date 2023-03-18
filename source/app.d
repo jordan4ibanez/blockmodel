@@ -188,13 +188,22 @@ void main()
         .setPostion(Vector2d(0,-48 * 2))
     );
 
-    gui.addButton("export", new Button(
-            new Text("Export").setSize(24)
+    gui.addButton("removeKeyFrame", new Button(
+            new Text("Delete Keyframe").setSize(24)
         ).setWindowPosition(TOP_RIGHT)
         .setFunction((){
-            writeln("Exporting");
+            writeln("Deleting keyframe");
         })
         .setPostion(Vector2d(0,-48 * 3))
+    );
+
+    gui.addButton("export", new Button(
+            new Text("Export Model").setSize(24)
+        ).setWindowPosition(TOP_RIGHT)
+        .setFunction((){
+            writeln("Exporting Model");
+        })
+        .setPostion(Vector2d(0,-48 * 4))
     );
 
 
@@ -220,7 +229,7 @@ void main()
         Window.clear(0.8);
 
 
-        Grid.render(fancyRotation);
+        Grid.render();
 
 
 

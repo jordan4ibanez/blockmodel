@@ -13,6 +13,7 @@ Mesh gridMesh;
 
 //50 on X, 50 on Z
 private immutable int lines = 50;
+private immutable double lineLength = 20;
 
 void initialize() {
 
@@ -24,10 +25,10 @@ void initialize() {
 
         double pos = cast(double)i - cast(double) lines / 2.0;
         vertices ~= [
-            -100, 0, pos,
-             100, 0, pos,
-             pos, 0,-100,
-             pos, 0, 100
+            -lineLength, 0, pos,
+             lineLength, 0, pos,
+             pos,        0,-lineLength,
+             pos,        0, lineLength
         ];
 
         const int currentIndex = i * 4;
@@ -58,7 +59,7 @@ void initialize() {
 }
 
 
-void render(double fancyRotation) {
+void render() {
     Camera.clearDepthBuffer();
     Camera.setRotation(Vector3d(0,0,0));
 
@@ -68,8 +69,8 @@ void render(double fancyRotation) {
 
     Shader.setUniformMatrix4("regular", "objectMatrix",
         Camera.setObjectMatrix(
-            Vector3d(0,-1,-4), // Translation
-            Vector3d(0,fancyRotation,0), // Rotation
+            Vector3d(0,0,0), // Translation
+            Vector3d(0,0,0), // Rotation
             Vector3d(1), // Scale
         )
     );
