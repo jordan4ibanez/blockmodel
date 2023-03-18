@@ -33,6 +33,9 @@ private GLFWmonitor* monitor = null;
 private GLFWvidmode videoMode;
 private bool fullscreen = false;
 
+private bool mouseButtonPressed = false;
+private bool mouseButtonWasPressed = false;
+
 // 0 none, 1 normal vsync, 2 double buffered
 private int vsync = 1;
 
@@ -80,6 +83,15 @@ private void initializeGLFWComponents() {
         logger.execute();
     }
 }
+
+// private nothrow static
+// extern(C) void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+//     mouseButtonWasPressed = mouseButtonPressed;
+//     mouseButtonPressed = button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS;
+//     try{
+//         writeln("was mouse button pressed?", mouseButtonPressed);
+//     } catch(Exception e) {}
+// }
 
 private nothrow static
 extern(C) void myframeBufferSizeCallback(GLFWwindow* theWindow, int x, int y) {
@@ -151,8 +163,9 @@ private void initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
 
     // glfwSetCursorPosCallback(window, &externalcursorPositionCallback);
 
-
     // glfwSetWindowRefreshCallback(window, &myRefreshCallback);
+
+    // glfwSetMouseButtonCallback(window, &mouseButtonCallback);
     
     glfwMakeContextCurrent(window);
 
@@ -161,6 +174,15 @@ private void initializeGLFW(int windowSizeX = -1, int windowSizeY = -1) {
     glfwSwapInterval(vsync);
 
     glfwGetWindowSize(window,&windowSize.x, &windowSize.y);
+}
+
+private void pollMouse() {
+
+    mouseButtonWasPressed = mouseButtonPressed;
+
+    int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+
+    mouseButtonPressed = state == 1;
 }
 
 private void updateVideoMode() {
@@ -206,6 +228,7 @@ Vector2d getMousePosition() {
     glfwGetCursorPos(window, &currentPos.x, &currentPos.y);
     return currentPos;
 }
+
 
 Vector2d centerMouse() {
     double x = windowSize.x / 2.0;
@@ -254,6 +277,7 @@ double getAspectRatio() {
 void pollEvents() {
     calculateDelta();
     glfwPollEvents();
+    pollMouse();
     // This causes an issue with low FPS getting the wrong FPS
     // Perhaps make an internal engine ticker that is created as an object or struct
     // Store it on heap, then calculate from there, specific to this
@@ -289,6 +313,14 @@ void close() {
 
 bool isFullScreen() {
     return fullscreen;
+}
+
+bool mouseButtonClicked() {
+    return mouseButtonPressed && !mouseButtonWasPressed;
+}
+
+bool mouseButtonHeld() {
+    return mouseButtonPressed;
 }
 
 //! ====== End GLFW Tools ======
