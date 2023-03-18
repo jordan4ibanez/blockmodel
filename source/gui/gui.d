@@ -217,6 +217,9 @@ class GUI {
 
 
 
+        if (!Window.mouseButtonClicked()) {
+            return;
+        }
 
         Vector2d mousePosition = Window.getMousePosition();
 
