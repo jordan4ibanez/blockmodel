@@ -13,7 +13,7 @@ Mesh gridMesh;
 
 //50 on X, 50 on Z
 private immutable int lines = 50;
-private immutable double lineLength = 20;
+private immutable double lineLength = lines / 2.0;
 
 void initialize() {
 
