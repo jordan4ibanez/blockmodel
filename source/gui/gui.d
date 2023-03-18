@@ -97,6 +97,13 @@ private Vector2d grabRealPosition(Text text) {
     return outputtingPosition;
 }
 
+Vector2d grabFinalPosition(Text text) {
+    Vector2d realPosition = grabRealPosition(text);
+    realPosition.x += text.position.x;
+    realPosition.y += text.position.y;
+    return realPosition;
+}
+
 class GUI {
 
     private Button[string] buttonObjects;
@@ -112,11 +119,9 @@ class GUI {
 
         foreach (Text text; textObjects) {
 
-            writeln(text.position, " ", text.size, " ", text.textData);
+            Vector2d finalPosition = grabFinalPosition(text);
 
-            Vector2d realPosition = grabRealPosition(text);
-
-            Font.renderToCanvas(realPosition.x, realPosition.y, text.size, text.textData);
+            Font.renderToCanvas(finalPosition.x, finalPosition.y, text.size, text.textData);
         }
 
         Font.render();
