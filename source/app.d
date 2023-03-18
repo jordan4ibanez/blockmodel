@@ -179,63 +179,15 @@ void main()
         Camera.clearDepthBuffer();
         Camera.setRotation(Vector3d(0,0,0));
 
+        Shader.startProgram("2d");
+
         Shader.setUniformMatrix4("2d", "cameraMatrix", Camera.updateGuiMatrix());
         Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)) );
-
-        Shader.startProgram("2d");
 
         Font.setCanvasSize(Window.getWidth(), Window.getHeight());
 
         gui.render();
-
         
-
-        // if (true) {
-        //     // Now render this font
-            
-        //     Camera.clearDepthBuffer();
-
-        //     Shader.startProgram("2d");
-
-        //     Font.setCanvasSize(Window.getWidth, Window.getHeight);
-
-        //     Shader.setUniformMatrix4("2d", "cameraMatrix", Camera.updateGuiMatrix());
-        //     Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)) );
-
-        //     Font.selectFont("mc");
-
-        //     // Scoped to show individual calls into api
-        //     {
-        //         Font.renderToCanvas(0,0, 32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-        //     }
-        //     {
-        //         int fontSize = 70;
-        //         string textString = "I'm on the bottom right!";
-
-        //         Font.RazorTextSize textSize = Font.getTextSize(fontSize, textString);
-        //         // Now we're going to move this to the bottom right of the "canvas"
-        //         double posX = Window.getWidth - textSize.width;
-        //         double posY = Window.getHeight - textSize.height;
-
-        //         Font.renderToCanvas(posX, posY, fontSize, textString);
-        //     }
-        //     {
-        //         int fontSize = 32;
-        //         string textString = "The text below is rendered at the window center-point!";
-
-        //         Font.RazorTextSize textSize = Font.getTextSize(fontSize, textString);
-        //         // Now we're going to move this to the bottom right of the "canvas"
-
-        //         double posX = (Window.getWidth / 2.0) - (textSize.width / 2.0);
-        //         double posY = (Window.getHeight / 2.0) - (textSize.height / 2.0) - 50;
-
-        //         Font.renderToCanvas(posX, posY, fontSize, textString);
-
-        //         Font.render();
-        //     }
-            
-        // }
-
         Window.swapBuffers();
     }
 
