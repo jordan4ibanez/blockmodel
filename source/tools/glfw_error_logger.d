@@ -42,7 +42,7 @@ class GLFWErrorLogger {
 
     // Literally just inserts line seperators into the string accumulator
     private void line() {
-        this.accumulator ~= "========================================";
+        this.accumulator ~= "========================================\n";
     }
 
     // Automatically throws exception containing error output

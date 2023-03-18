@@ -54,7 +54,7 @@ private string grabReadableErrorInfo() {
 
 // Literally just inserts line seperators into the string accumulator
 private void line() {
-    accumulator ~= "========================================";
+    accumulator ~= "========================================\n";
 }
 
 
