@@ -162,8 +162,11 @@ void main()
     );
     
     gui.addButton("pushit", new Button(
-            new Text("this is a bunch of text!").setSize(24)
+            new Text("If you push me, I say hi!").setSize(24)
         ).setWindowPosition(CENTER_CENTER)
+        .setFunction((){
+            writeln("hi there");
+        })
     );
 
     gui.addButton("pushit2", new Button(
