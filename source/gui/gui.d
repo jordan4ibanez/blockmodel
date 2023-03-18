@@ -213,6 +213,36 @@ class GUI {
         Font.render();
     }
 
+    void collisionDetect() {
+
+
+
+
+        Vector2d mousePosition = Window.getMousePosition();
+
+        writeln(mousePosition);
+
+        foreach (Button button; buttonObjects) {
+            
+
+            // We're getting the top left of the button
+
+            Vector2d windowPosition = grabWindowPosition(button.windowPosition);
+
+            windowPosition.x -= Window.getWidth() / 2.0;
+            windowPosition.y -= Window.getHeight() / 2.0;
+
+            Vector2d buttonFix = grabButtonFix(button);
+
+            windowPosition.x += buttonFix.x;
+            windowPosition.y += buttonFix.y;
+
+
+            
+        }
+
+    }
+
     void destroy() {
         foreach (Button button; buttonObjects) {
             button.mesh.cleanUp();            
