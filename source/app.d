@@ -209,7 +209,9 @@ void main()
     );
 
 
-    SwingArm.setPosition(0,1,0);
+    SwingArm.setPosition(0,0,0);
+
+    SwingArm.setLength(3);
     
 
 
@@ -222,16 +224,16 @@ void main()
         gui.collisionDetect();
 
 
-        fancyRotation += getDelta * 100.0;
-        if (fancyRotation >= 360.0) {
-            fancyRotation -= 360.0;
+        fancyRotation += getDelta * 1.0;
+        if (fancyRotation >= Math.PI) {
+            fancyRotation -= Math.PI2;
         }
 
         Window.setTitle(Window.getTitle ~ " | FPS: " ~ to!string(Window.getFPS) ~ " | Rotation: " ~ to!string(fancyRotation), false);
 
         Window.clear(0.8);
 
-        SwingArm.setRotation(0, fancyRotation);
+        SwingArm.setRotation( Math.toRadians((Math.cos(fancyRotation)) * 55), fancyRotation);
 
         SwingArm.applyToCamera();
         
