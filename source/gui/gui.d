@@ -238,6 +238,9 @@ class Button {
 
     Mesh mesh;
 
+    // What this button does when pushed
+    void delegate() buttonFunction;
+
     this(Text text) {
 
         this.text = text;
@@ -280,6 +283,11 @@ class Button {
 
     Button setWindowPosition(WINDOW_POSITION windowPosition) {
         this.windowPosition = windowPosition;
+        return this;
+    }
+
+    Button setFunction(void delegate() buttonFunction) {
+        this.buttonFunction = buttonFunction;
         return this;
     }
     
