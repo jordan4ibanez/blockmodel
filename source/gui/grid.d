@@ -61,7 +61,6 @@ void initialize() {
 
 void render() {
     Camera.clearDepthBuffer();
-    Camera.setRotation(Vector3d(0,0,0));
 
     Shader.startProgram("regular");
 
