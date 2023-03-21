@@ -7,7 +7,7 @@ import png;
 
 import OpenGlLogger = tools.opengl_error_logger;
 
-import doml.vector_2i;
+import doml.vector_2d;
 
 /**
     Texture works as a singleton container.
@@ -20,7 +20,7 @@ private immutable GLuint invalid = GLuint.max;
 // Stores all textures as simple GLuint pointers. Accessed by file location.
 private GLuint[string] storage;
 // Stores all texture sized as vector2i. Accessed by file location.
-private Vector2i[string] sizes;
+private Vector2d[string] sizes;
 
 /// Add a texture into the container.
 GLuint addTexture(string fileLocation, bool debugEnabled = false) {
@@ -68,7 +68,7 @@ GLuint addTexture(string fileLocation, bool debugEnabled = false) {
     // Finally cache the GL pointer ID as a GLuint
     storage[fileLocation] = id;
 
-    sizes[fileLocation] = Vector2i(width, height);
+    sizes[fileLocation] = Vector2d(width, height);
     
     // Then return ID to make this even more flexible
     return id;
@@ -83,7 +83,7 @@ GLuint getTexture(string fileLocation) {
 }
 
 /// Get the literal size of the texture in pixels. Useful for creating cool things!
-Vector2i getTextureSize(string fileLocation) {
+Vector2d getTextureSize(string fileLocation) {
     if (fileLocation !in sizes) {
         throw new Exception("Texture: Tried to get an invalid texture size!");
     }
