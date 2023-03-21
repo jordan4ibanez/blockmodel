@@ -296,15 +296,31 @@ class Button {
 
     private void setButtonTexture() {
 
+        // This is hardcoded, for now
+        
+
         Font.RazorTextSize textSize = Font.getTextSize(text.size, text.textData);
 
-        // pixels
+        // Pixel padding between the edge of the button texture, and the text texture
         padding = 10;
+
+        // The guide edges for buttons, keeps texture edges from stretching
+        immutable double pixelEdge = 2;
 
         size = Vector2d(
             textSize.width + (padding * 2),
             textSize.height + (padding * 2)
         );
+
+        // Accumulates the mesh data for the button
+        double[] vertices;
+        double[] textureCoords;
+        int[] indices;
+
+        // Top left corner of the button
+        
+
+
 
         this.mesh = new Mesh()
             .addVertices2d([
