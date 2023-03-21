@@ -322,13 +322,34 @@ class Button {
 
         //! This is written so sloppily because I've never done this before. Need to actually get an implementation before I neaten/optimize it!
 
-        // Top left corner of the button
-        indices ~= [
-            0,0,
-            0,
+        // We're going to use the height to create the consistent layout
+
+        double onePixelMesh = size.y / textureSize.y;
+
+        // writeln(size.y, " ", textureSize.y, " one pixel: ", onePixel);
+        
+        vertices ~= [
+
+            // Top left corner of the button
+            0,            0,
+            0,            onePixelMesh,
+            onePixelMesh, onePixelMesh,
+            onePixelMesh, 0
+            
+
 
         ];
+
+        textureCoords ~= [
+            0.0,                 0.0,
+            0.0,                 1.0 / textureSize.y,
+            1.0 / textureSize.y, 1.0 / textureSize.y,
+            1.0 / textureSize.y, 0.0
+        ];
         
+        indices ~= [
+            0,1,2,2,3,0
+        ];
 
         /**
 
