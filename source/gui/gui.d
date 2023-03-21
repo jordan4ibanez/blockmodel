@@ -344,6 +344,12 @@ class Button {
             size.x - centerBorder, centerBorder,
             size.x - centerBorder, 0,
 
+            // Top right of the button
+            size.x - centerBorder, 0,
+            size.x - centerBorder, centerBorder,
+            size.x,                centerBorder,
+            size.x,                0,
+
         ];
 
         textureCoords ~= [
@@ -359,11 +365,21 @@ class Button {
             (textureSize.x - pixelEdge) / textureSize.x, pixelEdge / textureSize.y,
             (textureSize.x - pixelEdge) / textureSize.x, 0.0,
 
+            // Top right
+
+            (textureSize.x - pixelEdge) / textureSize.x, 0.0,
+            (textureSize.x - pixelEdge) / textureSize.x, pixelEdge / textureSize.y,
+            1.0,                                         pixelEdge / textureSize.y,
+            1.0,                                         0.0
+
+            
+
         ];
         
         indices ~= [
             0,1,2,2,3,0,
             4,5,6,6,7,4,
+            8,9,10,10,11,8
         ];
 
         /**
