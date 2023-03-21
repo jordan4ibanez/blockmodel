@@ -74,6 +74,7 @@ GLuint addTexture(string fileLocation, bool debugEnabled = false) {
     return id;
 }
 
+/// Get the OpenGL ID of the texture. Useful for automating things!
 GLuint getTexture(string fileLocation) {
     if (fileLocation !in storage) {
         throw new Exception("Texture: Tried to get an invalid texture ID!");
@@ -81,6 +82,7 @@ GLuint getTexture(string fileLocation) {
     return storage[fileLocation];
 }
 
+/// Get the literal size of the texture in pixels. Useful for creating cool things!
 Vector2i getTextureSize(string fileLocation) {
     if (fileLocation !in sizes) {
         throw new Exception("Texture: Tried to get an invalid texture size!");
@@ -88,6 +90,7 @@ Vector2i getTextureSize(string fileLocation) {
     return sizes[fileLocation];
 }
 
+/// Destroy all textures loaded into OpenGL memory
 void cleanUp() {
     foreach (string key, GLuint value; storage) {
         glDeleteTextures(1, &value);
