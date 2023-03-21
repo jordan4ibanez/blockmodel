@@ -366,9 +366,13 @@ class Button {
             size.x - centerBorder, centerBorder,
             size.x - centerBorder, size.y - centerBorder,
             size.x,                size.y - centerBorder,
-            size.x,                centerBorder
+            size.x,                centerBorder,
 
-
+            // Bottom left
+            0,            size.y - centerBorder,
+            0,            size.y,
+            centerBorder, size.y,
+            centerBorder, size.y - centerBorder,
 
         ];
 
@@ -409,6 +413,12 @@ class Button {
             1.0,                                         (textureSize.y - pixelEdge) / textureSize.y,
             1.0,                                         pixelEdge / textureSize.y,
 
+            // Bottom left
+            0.0,                       (textureSize.y - pixelEdge) / textureSize.y,
+            0.0,                       1.0,
+            pixelEdge / textureSize.x, 1.0,
+            pixelEdge / textureSize.x, (textureSize.y - pixelEdge) / textureSize.y,
+
 
 
         ];
@@ -425,7 +435,9 @@ class Button {
             // Center center
             16,17,18,18,19,16,
             // Center right
-            20,21,22,22,23,20
+            20,21,22,22,23,20,
+            // Bottom left
+            24,25,26,26,27,24
         ];
 
         /**
