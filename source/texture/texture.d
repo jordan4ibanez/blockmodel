@@ -45,6 +45,11 @@ GLuint addTexture(string fileLocation, bool debugEnabled = false) {
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tempData.ptr);
 
+    // If this gets called, the driver is probably borked
+    if (glIsTexture(id) == GL_FALSE) {
+        throw new Exception("Texture: OpenGL FAILED to upload " ~ fileLocation ~ " into GPU memory!");
+    }
+
     // Enable texture clamping to edge
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
