@@ -318,26 +318,38 @@ class Button {
         int[] indices;
 
         // Top left corner of the button
-        
+
+        /**
+
+        Vertices as a whole
+        [
+            0.0,    0.0,
+            0.0,    size.y,
+            size.x, size.y,
+            size.x, 0.0
+        ]
+
+        Texture coordinates a whole
+        [
+            0.0, 0.0,
+            0.0, 1.0,
+            1.0, 1.0,
+            1.0, 0.0
+        ]
+        Indices as a whole
+        [
+            0,1,2,2,3,0
+        ]
+
+        */
+
 
 
 
         this.mesh = new Mesh()
-            .addVertices2d([
-                0.0,    0.0,
-                0.0,    size.y,
-                size.x, size.y,
-                size.x, 0.0
-            ])
-            .addTextureCoordinates([
-                0.0, 0.0,
-                0.0, 1.0,
-                1.0, 1.0,
-                1.0, 0.0
-            ])
-            .addIndices([
-                0,1,2,2,3,0
-            ])
+            .addVertices2d(vertices)
+            .addTextureCoordinates(textureCoords)
+            .addIndices(indices)
             // This is hardcoded for now
             .setTexture(Texture.getTexture("textures/button.png"))
             .finalize();
