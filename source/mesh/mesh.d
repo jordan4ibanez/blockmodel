@@ -296,7 +296,9 @@ class Mesh {
         if (this.pbo != invalid) {
             glDisableVertexAttribArray(0);
             glDeleteBuffers(1, &this.pbo);
-            assert (glIsBuffer(this.pbo) == GL_FALSE);
+            if (glIsBuffer(this.pbo) != GL_FALSE){
+                throw new Exception("Mesh: Position buffer memory leak!");
+            }
 
             // writeln("deleted VERTEX POSITIONS");
         }
@@ -305,7 +307,9 @@ class Mesh {
         if (this.tbo != invalid) {
             glDisableVertexAttribArray(1);
             glDeleteBuffers(1, &this.tbo);
-            assert (glIsBuffer(this.tbo) == GL_FALSE);
+            if (glIsBuffer(this.tbo) != GL_FALSE) {
+                throw new Exception("Mesh: Texture coordinate buffer memory leak!");
+            }
 
             // writeln("deleted TEXTURE COORDINATES");
         }
@@ -314,7 +318,9 @@ class Mesh {
         if (this.bbo != invalid) {
             glDisableVertexAttribArray(2);
             glDeleteBuffers(1, &this.bbo);
-            assert (glIsBuffer(this.bbo) == GL_FALSE);
+            if (glIsBuffer(this.bbo) != GL_FALSE) {
+                throw new Exception("Mesh: Bones buffer memory leak!");
+            }
 
             // writeln("deleted BONES");
         }
@@ -323,7 +329,9 @@ class Mesh {
         if (this.cbo != invalid) {
             glDisableVertexAttribArray(2);
             glDeleteBuffers(1, &this.cbo);
-            assert (glIsBuffer(this.cbo) == GL_FALSE);
+            if (glIsBuffer(this.cbo) != GL_FALSE) {
+                throw new Exception("Mesh: Color buffer memory leak!");
+            }
 
             // writeln("deleted COLORS");
         }
@@ -331,7 +339,9 @@ class Mesh {
         // Delete the indices
         if (this.ibo != invalid) {
             glDeleteBuffers(1, &this.ibo);
-            assert(glIsBuffer(this.ibo) == GL_FALSE);
+            if (glIsBuffer(this.ibo) != GL_FALSE) {
+                throw new Exception("Mesh: Indices buffer memory leak!");
+            }
         }
 
         // Unbind the OpenGL object
@@ -339,7 +349,9 @@ class Mesh {
 
         // Now we can delete the OpenGL Vertex Array Object without any issues
         glDeleteVertexArrays(1, &this.vao);
-        assert(glIsVertexArray(this.vao) == GL_FALSE);
+        if (glIsVertexArray(this.vao) != GL_FALSE) {
+            throw new Exception("Mesh: Vertex Array Object memory leak!");
+        }
 
 
         OpenGlLogger.execute("This error comes from the cleanup() method of Mesh.\n" ~ "ERROR DESTROYING MESH!");
