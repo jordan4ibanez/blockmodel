@@ -306,7 +306,9 @@ class Button {
 
         // The guide edges for buttons, keeps texture edges from stretching
         // So think of this of like: How many pixels does your button texture use before getting to the text part.
-        immutable double pixelEdge = 1;
+        immutable double pixelEdge = 1.0;
+        // Border scalar just makes the button border more pronounced/visible
+        immutable double borderScalar = 3.0;
 
         size = Vector2d(
             textSize.width + (padding * 2),
@@ -324,7 +326,7 @@ class Button {
 
         // We're going to use the height to create the consistent layout
 
-        double onePixelMesh = size.y / textureSize.y;
+        double centerBorder = (size.y / textureSize.y) * pixelEdge * borderScalar;
 
         // writeln(size.y, " ", textureSize.y, " one pixel: ", onePixel);
         
@@ -332,23 +334,36 @@ class Button {
 
             // Top left corner of the button
             0,            0,
-            0,            onePixelMesh,
-            onePixelMesh, onePixelMesh,
-            onePixelMesh, 0
-            
+            0,            centerBorder,
+            centerBorder, centerBorder,
+            centerBorder, 0,
 
+            // Top center of the button
+            centerBorder,          0,
+            centerBorder,          centerBorder,
+            size.x - centerBorder, centerBorder,
+            size.x - centerBorder, 0,
 
         ];
 
         textureCoords ~= [
-            0.0,                 0.0,
-            0.0,                 1.0 / textureSize.y,
-            1.0 / textureSize.y, 1.0 / textureSize.y,
-            1.0 / textureSize.y, 0.0
+            // Top left
+            0.0,                       0.0,
+            0.0,                       pixelEdge / textureSize.y,
+            pixelEdge / textureSize.x, pixelEdge / textureSize.y,
+            pixelEdge / textureSize.x, 0.0,
+
+            // Top center
+            pixelEdge / textureSize.x,                   0.0,
+            pixelEdge / textureSize.x,                   pixelEdge / textureSize.y,
+            (textureSize.x - pixelEdge) / textureSize.x, pixelEdge / textureSize.y,
+            (textureSize.x - pixelEdge) / textureSize.x, 0.0,
+
         ];
         
         indices ~= [
-            0,1,2,2,3,0
+            0,1,2,2,3,0,
+            4,5,6,6,7,4,
         ];
 
         /**
