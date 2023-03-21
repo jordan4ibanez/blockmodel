@@ -305,19 +305,30 @@ class Button {
         padding = 10;
 
         // The guide edges for buttons, keeps texture edges from stretching
-        immutable double pixelEdge = 2;
+        // So think of this of like: How many pixels does your button texture use before getting to the text part.
+        immutable double pixelEdge = 1;
 
         size = Vector2d(
             textSize.width + (padding * 2),
             textSize.height + (padding * 2)
         );
 
+        Vector2d textureSize = Texture.getTextureSize("textures/button.png");
+
         // Accumulates the mesh data for the button
         double[] vertices;
         double[] textureCoords;
         int[] indices;
 
+        //! This is written so sloppily because I've never done this before. Need to actually get an implementation before I neaten/optimize it!
+
         // Top left corner of the button
+        indices ~= [
+            0,0,
+            0,
+
+        ];
+        
 
         /**
 
