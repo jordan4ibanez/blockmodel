@@ -332,23 +332,36 @@ class Button {
         
         vertices ~= [
 
-            // Top left corner of the button
+            // Top left
             0,            0,
             0,            centerBorder,
             centerBorder, centerBorder,
             centerBorder, 0,
 
-            // Top center of the button
+            // Top center
             centerBorder,          0,
             centerBorder,          centerBorder,
             size.x - centerBorder, centerBorder,
             size.x - centerBorder, 0,
 
-            // Top right of the button
+            // Top right
             size.x - centerBorder, 0,
             size.x - centerBorder, centerBorder,
             size.x,                centerBorder,
             size.x,                0,
+
+            // Center left
+            0,            centerBorder,
+            0,            size.y - centerBorder,
+            centerBorder, size.y - centerBorder,
+            centerBorder, centerBorder,
+
+            // Center center
+            centerBorder,          centerBorder,
+            centerBorder,          size.y - centerBorder,
+            size.x - centerBorder, size.y - centerBorder,
+            size.x - centerBorder, centerBorder
+
 
         ];
 
@@ -366,20 +379,37 @@ class Button {
             (textureSize.x - pixelEdge) / textureSize.x, 0.0,
 
             // Top right
-
             (textureSize.x - pixelEdge) / textureSize.x, 0.0,
             (textureSize.x - pixelEdge) / textureSize.x, pixelEdge / textureSize.y,
             1.0,                                         pixelEdge / textureSize.y,
-            1.0,                                         0.0
+            1.0,                                         0.0,
 
-            
+            // Center left
+            0.0,                       pixelEdge / textureSize.y,
+            0.0,                       (textureSize.y - pixelEdge) / textureSize.y,
+            pixelEdge / textureSize.x, (textureSize.y - pixelEdge) / textureSize.y,
+            pixelEdge / textureSize.x, pixelEdge / textureSize.y,
+
+            // Center center
+            pixelEdge / textureSize.x,                   pixelEdge / textureSize.y,
+            pixelEdge / textureSize.x,                   (textureSize.y - pixelEdge) / textureSize.y,
+            (textureSize.x - pixelEdge) / textureSize.x, (textureSize.y - pixelEdge) / textureSize.y,
+            (textureSize.x - pixelEdge) / textureSize.x, pixelEdge / textureSize.y,
+
 
         ];
         
         indices ~= [
+            // Top left
             0,1,2,2,3,0,
+            // Top center
             4,5,6,6,7,4,
-            8,9,10,10,11,8
+            // Top right
+            8,9,10,10,11,8,
+            // Center left
+            12,13,14,14,15,12,
+            // Center center
+            16,17,18,18,19,16,
         ];
 
         /**
