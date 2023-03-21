@@ -290,6 +290,12 @@ class Button {
 
         this.text = text;
 
+        
+        this.setButtonTexture();
+    }
+
+    private void setButtonTexture() {
+
         Font.RazorTextSize textSize = Font.getTextSize(text.size, text.textData);
 
         // pixels
@@ -319,6 +325,7 @@ class Button {
             // This is hardcoded for now
             .setTexture(Texture.getTexture("textures/button.png"))
             .finalize();
+
     }
 
     Button setPostion(Vector2d position) {
