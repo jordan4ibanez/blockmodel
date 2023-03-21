@@ -231,7 +231,7 @@ void main()
 
         Window.setTitle(Window.getTitle ~ " | FPS: " ~ to!string(Window.getFPS) ~ " | Rotation: " ~ to!string(fancyRotation), false);
 
-        Window.clear(0.8);
+        Window.clear(1.0);
         
         SwingArm.setRotation( Math.toRadians((Math.cos(fancyRotation)) * 90) , fancyRotation);
 
