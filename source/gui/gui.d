@@ -308,7 +308,7 @@ class Button {
         // So think of this of like: How many pixels does your button texture use before getting to the text part.
         immutable double pixelEdge = 1.0;
         // Border scalar just makes the button border more pronounced/visible
-        immutable double borderScalar = 3.0;
+        immutable double borderScalar = 2.0;
 
         size = Vector2d(
             textSize.width + (padding * 2),
