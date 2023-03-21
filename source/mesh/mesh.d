@@ -1,6 +1,7 @@
 module mesh.mesh;
 
 import std.stdio;
+import std.conv: to;
 import bindbc.opengl;
 import Shader = shader.shader;
 import doml.vector_2d;
@@ -69,6 +70,11 @@ class Mesh {
 
     /// Adds vertex position data in Vector3 format within a linear double[].
     Mesh addVertices3d(const double[] vertices) {
+
+        if (vertices.length < 3 || vertices.length % 3 != 0) {
+            throw new Exception("Mesh: Attempted to push incorrect 3D vertex array into OpenGL! Pushed length: " ~ to!string(vertices.length));
+        }
+
         if (is2d) {
             throw new Exception("Cannot add 3d vertex positions to a 2d model!");
         } else if (is3d) {
@@ -81,6 +87,11 @@ class Mesh {
 
     /// Adds vertex position data in Vector2 format within a linear double[].
     Mesh addVertices2d(const double[] vertices) {
+
+        if (vertices.length < 2 || vertices.length % 2 != 0) {
+            throw new Exception("Mesh: Attempted to push incorrect 2D vertex array into OpenGL! Pushed length: " ~ to!string(vertices.length));
+        }
+
         if (is3d) {
             throw new Exception("Cannot add 2d vertex positions to a 3d model!");
         } else if (is2d) {
