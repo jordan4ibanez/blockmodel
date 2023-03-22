@@ -359,58 +359,58 @@ class Button {
         vertices ~= [
 
             // Top left
-            horizontalVertex[0],            0,
-            horizontalVertex[0],            centerBorder,
+            horizontalVertex[0], 0,
+            horizontalVertex[0], centerBorder,
             horizontalVertex[1], centerBorder,
             horizontalVertex[1], 0,
 
             // Top center
-            horizontalVertex[1],          0,
-            horizontalVertex[1],          centerBorder,
+            horizontalVertex[1], 0,
+            horizontalVertex[1], centerBorder,
             horizontalVertex[2], centerBorder,
             horizontalVertex[2], 0,
 
             // Top right
             horizontalVertex[2], 0,
             horizontalVertex[2], centerBorder,
-            horizontalVertex[3],                centerBorder,
-            horizontalVertex[3],                0,
+            horizontalVertex[3], centerBorder,
+            horizontalVertex[3], 0,
 
             // Center left
-            horizontalVertex[0],            centerBorder,
-            horizontalVertex[0],            size.y - centerBorder,
+            horizontalVertex[0], centerBorder,
+            horizontalVertex[0], size.y - centerBorder,
             horizontalVertex[1], size.y - centerBorder,
             horizontalVertex[1], centerBorder,
 
             // Center center
-            horizontalVertex[1],          centerBorder,
-            horizontalVertex[1],          size.y - centerBorder,
+            horizontalVertex[1], centerBorder,
+            horizontalVertex[1], size.y - centerBorder,
             horizontalVertex[2], size.y - centerBorder,
             horizontalVertex[2], centerBorder,
 
             // Center right
             horizontalVertex[2], centerBorder,
             horizontalVertex[2], size.y - centerBorder,
-            horizontalVertex[3],                size.y - centerBorder,
-            horizontalVertex[3],                centerBorder,
+            horizontalVertex[3], size.y - centerBorder,
+            horizontalVertex[3], centerBorder,
 
             // Bottom left
-            horizontalVertex[0],            size.y - centerBorder,
-            horizontalVertex[0],            size.y,
+            horizontalVertex[0], size.y - centerBorder,
+            horizontalVertex[0], size.y,
             horizontalVertex[1], size.y,
             horizontalVertex[1], size.y - centerBorder,
 
             // Bottom center
-            horizontalVertex[1],          size.y - centerBorder,
-            horizontalVertex[1],          size.y,
+            horizontalVertex[1], size.y - centerBorder,
+            horizontalVertex[1], size.y,
             horizontalVertex[2], size.y,
             horizontalVertex[2], size.y - centerBorder,
 
             // Bottom right
             horizontalVertex[2], size.y - centerBorder,
             horizontalVertex[2], size.y,
-            horizontalVertex[3],                size.y,
-            horizontalVertex[3],                size.y - centerBorder,
+            horizontalVertex[3], size.y,
+            horizontalVertex[3], size.y - centerBorder,
         ];
 
         textureCoords ~= [
