@@ -335,8 +335,8 @@ class Button {
         | |                                   | |
         */
 
-        //                           0  1             2                      3
-        double[] horizontalVertex = [0, centerBorder, size.x - centerBorder, size.x];
+        //                                 0  1             2                      3
+        const double[] horizontalVertex = [0, centerBorder, size.x - centerBorder, size.x];
 
         /**
         This is each point on the vertical 1d array of button background.
@@ -353,64 +353,64 @@ class Button {
 
         */
 
-        //                         0  1             2                      3
-        double[] verticalVertex = [0, centerBorder, size.y - centerBorder, size.y];
+        //                               0  1             2                      3
+        const double[] verticalVertex = [0, centerBorder, size.y - centerBorder, size.y];
         
         vertices ~= [
 
             // Top left
-            horizontalVertex[0], 0,
-            horizontalVertex[0], centerBorder,
-            horizontalVertex[1], centerBorder,
-            horizontalVertex[1], 0,
+            horizontalVertex[0], verticalVertex[0],
+            horizontalVertex[0], verticalVertex[1],
+            horizontalVertex[1], verticalVertex[1],
+            horizontalVertex[1], verticalVertex[0],
 
             // Top center
-            horizontalVertex[1], 0,
-            horizontalVertex[1], centerBorder,
-            horizontalVertex[2], centerBorder,
-            horizontalVertex[2], 0,
+            horizontalVertex[1], verticalVertex[0],
+            horizontalVertex[1], verticalVertex[1],
+            horizontalVertex[2], verticalVertex[1],
+            horizontalVertex[2], verticalVertex[0],
 
             // Top right
-            horizontalVertex[2], 0,
-            horizontalVertex[2], centerBorder,
-            horizontalVertex[3], centerBorder,
-            horizontalVertex[3], 0,
+            horizontalVertex[2], verticalVertex[0],
+            horizontalVertex[2], verticalVertex[1],
+            horizontalVertex[3], verticalVertex[1],
+            horizontalVertex[3], verticalVertex[0],
 
             // Center left
-            horizontalVertex[0], centerBorder,
-            horizontalVertex[0], size.y - centerBorder,
-            horizontalVertex[1], size.y - centerBorder,
-            horizontalVertex[1], centerBorder,
+            horizontalVertex[0], verticalVertex[1],
+            horizontalVertex[0], verticalVertex[2],
+            horizontalVertex[1], verticalVertex[2],
+            horizontalVertex[1], verticalVertex[1],
 
             // Center center
-            horizontalVertex[1], centerBorder,
-            horizontalVertex[1], size.y - centerBorder,
-            horizontalVertex[2], size.y - centerBorder,
-            horizontalVertex[2], centerBorder,
+            horizontalVertex[1], verticalVertex[1],
+            horizontalVertex[1], verticalVertex[2],
+            horizontalVertex[2], verticalVertex[2],
+            horizontalVertex[2], verticalVertex[1],
 
             // Center right
-            horizontalVertex[2], centerBorder,
-            horizontalVertex[2], size.y - centerBorder,
-            horizontalVertex[3], size.y - centerBorder,
-            horizontalVertex[3], centerBorder,
+            horizontalVertex[2], verticalVertex[1],
+            horizontalVertex[2], verticalVertex[2],
+            horizontalVertex[3], verticalVertex[2],
+            horizontalVertex[3], verticalVertex[1],
 
             // Bottom left
-            horizontalVertex[0], size.y - centerBorder,
-            horizontalVertex[0], size.y,
-            horizontalVertex[1], size.y,
-            horizontalVertex[1], size.y - centerBorder,
+            horizontalVertex[0], verticalVertex[2],
+            horizontalVertex[0], verticalVertex[3],
+            horizontalVertex[1], verticalVertex[3],
+            horizontalVertex[1], verticalVertex[2],
 
             // Bottom center
-            horizontalVertex[1], size.y - centerBorder,
-            horizontalVertex[1], size.y,
-            horizontalVertex[2], size.y,
-            horizontalVertex[2], size.y - centerBorder,
+            horizontalVertex[1], verticalVertex[2],
+            horizontalVertex[1], verticalVertex[3],
+            horizontalVertex[2], verticalVertex[3],
+            horizontalVertex[2], verticalVertex[2],
 
             // Bottom right
-            horizontalVertex[2], size.y - centerBorder,
-            horizontalVertex[2], size.y,
-            horizontalVertex[3], size.y,
-            horizontalVertex[3], size.y - centerBorder,
+            horizontalVertex[2], verticalVertex[2],
+            horizontalVertex[2], verticalVertex[3],
+            horizontalVertex[3], verticalVertex[3],
+            horizontalVertex[3], verticalVertex[2],
         ];
 
         textureCoords ~= [
