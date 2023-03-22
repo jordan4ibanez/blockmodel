@@ -336,8 +336,8 @@ class Button {
 
         */
 
-        //                                 0  1             2                      3
-        const double[] horizontalVertex = [0, centerBorder, size.x - centerBorder, size.x];
+        //                                  0  1             2                      3
+        const double[4] horizontalVertex = [0, centerBorder, size.x - centerBorder, size.x];
 
         /**
         This is each point on the vertical 1d array of button background.
@@ -354,8 +354,8 @@ class Button {
 
         */
 
-        //                               0  1             2                      3
-        const double[] verticalVertex = [0, centerBorder, size.y - centerBorder, size.y];
+        //                                0  1             2                      3
+        const double[4] verticalVertex = [0, centerBorder, size.y - centerBorder, size.y];
         
         vertices ~= [
 
@@ -419,12 +419,12 @@ class Button {
         instead of generating the vertices.
         */
 
-        //                                  0    1                          2                                            3
-        const double[] horizontalTexture = [0.0, pixelEdge / textureSize.x, (textureSize.x - pixelEdge) / textureSize.x, 1.0];
+        //                                   0    1                          2                                            3
+        const double[4] horizontalTexture = [0.0, pixelEdge / textureSize.x, (textureSize.x - pixelEdge) / textureSize.x, 1.0];
         
 
-        //                                0    1                          2                                            3
-        const double[] verticalTexture = [0.0, pixelEdge / textureSize.y, (textureSize.y - pixelEdge) / textureSize.y, 1.0];
+        //                                 0    1                          2                                            3
+        const double[4] verticalTexture = [0.0, pixelEdge / textureSize.y, (textureSize.y - pixelEdge) / textureSize.y, 1.0];
         textureCoords ~= [
             // Top left
             horizontalTexture[0], verticalTexture[0],
