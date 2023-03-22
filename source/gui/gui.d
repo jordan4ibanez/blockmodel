@@ -502,33 +502,6 @@ class Button {
             32,33,34,34,35,32
         ];
 
-        /**
-
-        Vertices as a whole
-        [
-            0.0,    0.0,
-            0.0,    size.y,
-            size.x, size.y,
-            size.x, 0.0
-        ]
-
-        Texture coordinates a whole
-        [
-            0.0, 0.0,
-            0.0, 1.0,
-            1.0, 1.0,
-            1.0, 0.0
-        ]
-        Indices as a whole
-        [
-            0,1,2,2,3,0
-        ]
-
-        */
-
-
-
-
         this.mesh = new Mesh()
             .addVertices2d(vertices)
             .addTextureCoordinates(textureCoords)
