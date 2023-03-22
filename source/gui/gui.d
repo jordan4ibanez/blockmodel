@@ -334,6 +334,8 @@ class Button {
         |  ___________________________________  |
         | |                                   | |
         */
+
+        //                           0  1             2                      3
         double[] horizontalVertex = [0, centerBorder, size.x - centerBorder, size.x];
 
         /**
@@ -348,65 +350,67 @@ class Button {
         2 |   |_____
           |
         3 |_________
+
         */
-        
-        double[] verticalVertex = [0, centerBorder, size.y - centerBorder, size.y,];
+
+        //                         0  1             2                      3
+        double[] verticalVertex = [0, centerBorder, size.y - centerBorder, size.y];
         
         vertices ~= [
 
             // Top left
-            0,            0,
-            0,            centerBorder,
-            centerBorder, centerBorder,
-            centerBorder, 0,
+            horizontalVertex[0],            0,
+            horizontalVertex[0],            centerBorder,
+            horizontalVertex[1], centerBorder,
+            horizontalVertex[1], 0,
 
             // Top center
-            centerBorder,          0,
-            centerBorder,          centerBorder,
-            size.x - centerBorder, centerBorder,
-            size.x - centerBorder, 0,
+            horizontalVertex[1],          0,
+            horizontalVertex[1],          centerBorder,
+            horizontalVertex[2], centerBorder,
+            horizontalVertex[2], 0,
 
             // Top right
-            size.x - centerBorder, 0,
-            size.x - centerBorder, centerBorder,
-            size.x,                centerBorder,
-            size.x,                0,
+            horizontalVertex[2], 0,
+            horizontalVertex[2], centerBorder,
+            horizontalVertex[3],                centerBorder,
+            horizontalVertex[3],                0,
 
             // Center left
-            0,            centerBorder,
-            0,            size.y - centerBorder,
-            centerBorder, size.y - centerBorder,
-            centerBorder, centerBorder,
+            horizontalVertex[0],            centerBorder,
+            horizontalVertex[0],            size.y - centerBorder,
+            horizontalVertex[1], size.y - centerBorder,
+            horizontalVertex[1], centerBorder,
 
             // Center center
-            centerBorder,          centerBorder,
-            centerBorder,          size.y - centerBorder,
-            size.x - centerBorder, size.y - centerBorder,
-            size.x - centerBorder, centerBorder,
+            horizontalVertex[1],          centerBorder,
+            horizontalVertex[1],          size.y - centerBorder,
+            horizontalVertex[2], size.y - centerBorder,
+            horizontalVertex[2], centerBorder,
 
             // Center right
-            size.x - centerBorder, centerBorder,
-            size.x - centerBorder, size.y - centerBorder,
-            size.x,                size.y - centerBorder,
-            size.x,                centerBorder,
+            horizontalVertex[2], centerBorder,
+            horizontalVertex[2], size.y - centerBorder,
+            horizontalVertex[3],                size.y - centerBorder,
+            horizontalVertex[3],                centerBorder,
 
             // Bottom left
-            0,            size.y - centerBorder,
-            0,            size.y,
-            centerBorder, size.y,
-            centerBorder, size.y - centerBorder,
+            horizontalVertex[0],            size.y - centerBorder,
+            horizontalVertex[0],            size.y,
+            horizontalVertex[1], size.y,
+            horizontalVertex[1], size.y - centerBorder,
 
             // Bottom center
-            centerBorder,          size.y - centerBorder,
-            centerBorder,          size.y,
-            size.x - centerBorder, size.y,
-            size.x - centerBorder, size.y - centerBorder,
+            horizontalVertex[1],          size.y - centerBorder,
+            horizontalVertex[1],          size.y,
+            horizontalVertex[2], size.y,
+            horizontalVertex[2], size.y - centerBorder,
 
             // Bottom right
-            size.x - centerBorder, size.y - centerBorder,
-            size.x - centerBorder, size.y,
-            size.x,                size.y,
-            size.x,                size.y - centerBorder,
+            horizontalVertex[2], size.y - centerBorder,
+            horizontalVertex[2], size.y,
+            horizontalVertex[3],                size.y,
+            horizontalVertex[3],                size.y - centerBorder,
         ];
 
         textureCoords ~= [
