@@ -421,62 +421,64 @@ class Button {
 
         //                                  0    1                          2                                            3
         const double[] horizontalTexture = [0.0, pixelEdge / textureSize.x, (textureSize.x - pixelEdge) / textureSize.x, 1.0];
+        
 
-        const double[] verticalTexture = [];
+        //                                0    1                          2                                            3
+        const double[] verticalTexture = [0.0, pixelEdge / textureSize.y, (textureSize.y - pixelEdge) / textureSize.y, 1.0];
         textureCoords ~= [
             // Top left
-            horizontalTexture[0], 0.0,
-            horizontalTexture[0], pixelEdge / textureSize.y,
-            horizontalTexture[1], pixelEdge / textureSize.y,
-            horizontalTexture[1], 0.0,
+            horizontalTexture[0], verticalTexture[0],
+            horizontalTexture[0], verticalTexture[1],
+            horizontalTexture[1], verticalTexture[1],
+            horizontalTexture[1], verticalTexture[0],
 
             // Top center
-            horizontalTexture[1], 0.0,
-            horizontalTexture[1], pixelEdge / textureSize.y,
-            horizontalTexture[2], pixelEdge / textureSize.y,
-            horizontalTexture[2], 0.0,
+            horizontalTexture[1], verticalTexture[0],
+            horizontalTexture[1], verticalTexture[1],
+            horizontalTexture[2], verticalTexture[1],
+            horizontalTexture[2], verticalTexture[0],
 
             // Top right
-            horizontalTexture[2], 0.0,
-            horizontalTexture[2], pixelEdge / textureSize.y,
-            horizontalTexture[3], pixelEdge / textureSize.y,
-            horizontalTexture[3], 0.0,
+            horizontalTexture[2], verticalTexture[0],
+            horizontalTexture[2], verticalTexture[1],
+            horizontalTexture[3], verticalTexture[1],
+            horizontalTexture[3], verticalTexture[0],
 
             // Center left
-            horizontalTexture[0], pixelEdge / textureSize.y,
-            horizontalTexture[0], (textureSize.y - pixelEdge) / textureSize.y,
-            horizontalTexture[1], (textureSize.y - pixelEdge) / textureSize.y,
-            horizontalTexture[1], pixelEdge / textureSize.y,
+            horizontalTexture[0], verticalTexture[1],
+            horizontalTexture[0], verticalTexture[2],
+            horizontalTexture[1], verticalTexture[2],
+            horizontalTexture[1], verticalTexture[1],
 
             // Center center
-            horizontalTexture[1], pixelEdge / textureSize.y,
-            horizontalTexture[1], (textureSize.y - pixelEdge) / textureSize.y,
-            horizontalTexture[2], (textureSize.y - pixelEdge) / textureSize.y,
-            horizontalTexture[2], pixelEdge / textureSize.y,
+            horizontalTexture[1], verticalTexture[1],
+            horizontalTexture[1], verticalTexture[2],
+            horizontalTexture[2], verticalTexture[2],
+            horizontalTexture[2], verticalTexture[1],
 
             // Center right
-            horizontalTexture[2], pixelEdge / textureSize.y,
-            horizontalTexture[2], (textureSize.y - pixelEdge) / textureSize.y,
-            horizontalTexture[3], (textureSize.y - pixelEdge) / textureSize.y,
-            horizontalTexture[3], pixelEdge / textureSize.y,
+            horizontalTexture[2], verticalTexture[1],
+            horizontalTexture[2], verticalTexture[2],
+            horizontalTexture[3], verticalTexture[2],
+            horizontalTexture[3], verticalTexture[1],
 
             // Bottom left
-            horizontalTexture[0],                       (textureSize.y - pixelEdge) / textureSize.y,
-            horizontalTexture[0],                       1.0,
-            horizontalTexture[1], 1.0,
-            horizontalTexture[1], (textureSize.y - pixelEdge) / textureSize.y,
+            horizontalTexture[0], verticalTexture[2],
+            horizontalTexture[0], verticalTexture[3],
+            horizontalTexture[1], verticalTexture[3],
+            horizontalTexture[1], verticalTexture[2],
 
             // Bottom center
-            horizontalTexture[1],                   (textureSize.y - pixelEdge) / textureSize.y,
-            horizontalTexture[1],                   1.0,
-            horizontalTexture[2], 1.0,
-            horizontalTexture[2], (textureSize.y - pixelEdge) / textureSize.y,
+            horizontalTexture[1], verticalTexture[2],
+            horizontalTexture[1], verticalTexture[3],
+            horizontalTexture[2], verticalTexture[3],
+            horizontalTexture[2], verticalTexture[2],
 
             // Bottom right
-            horizontalTexture[2], (textureSize.y - pixelEdge) / textureSize.y,
-            horizontalTexture[2], 1.0,
-            horizontalTexture[3],                                         1.0,
-            horizontalTexture[3],                                         (textureSize.y - pixelEdge) / textureSize.y,
+            horizontalTexture[2], verticalTexture[2],
+            horizontalTexture[2], verticalTexture[3],
+            horizontalTexture[3], verticalTexture[3],
+            horizontalTexture[3], verticalTexture[2],
         ];
         
         indices ~= [
