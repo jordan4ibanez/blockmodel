@@ -322,13 +322,35 @@ class Button {
         double[] textureCoords;
         int[] indices;
 
-        //! This is written so sloppily because I've never done this before. Need to actually get an implementation before I neaten/optimize it!
-
         // We're going to use the height to create the consistent layout
 
         double centerBorder = (size.y / textureSize.y) * pixelEdge * borderScalar;
 
-        // writeln(size.y, " ", textureSize.y, " one pixel: ", onePixel);
+        /**
+        This is each point on the horizontal 1d array of the button background.
+        
+        0  1                                 2  3
+         _______________________________________
+        |  ___________________________________  |
+        | |                                   | |
+        */
+        double[] horizontalVertex = [0, centerBorder, size.x - centerBorder, size.x];
+
+        /**
+        This is each point on the vertical 1d array of button background.
+
+        0  ________
+          | 
+        1 |    ____
+          |   |
+          |   |
+          |   |
+        2 |   |_____
+          |
+        3 |_________
+        */
+        
+        double[] verticalVertex = [0, centerBorder, size.y - centerBorder, size.y,];
         
         vertices ~= [
 
