@@ -267,9 +267,26 @@ class GUI {
 
 }
 
+/// This is a hackjob class that utilizes basic stuff to display rows & columns
 class SpreadSheet {
 
-    private Button[] buttons;
+    // Real window position
+    WINDOW_POSITION windowPosition = DEFAULT;
+
+    private Button[][] buttons;
+    
+    Vector2d size;
+    
+    SpreadSheet setSize(double width, double height) {
+        this.size = Vector2d(width, height);
+        return this;
+    }
+
+
+    
+
+
+
 
 }
 
