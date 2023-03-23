@@ -170,13 +170,15 @@ class GUI {
 
         Shader.setUniformMatrix4("2d", "cameraMatrix", Camera.updateGuiMatrix());
 
-        foreach (Button button; buttonObjects) {
-            
+        foreach (string key, Button button; buttonObjects) {
 
             Vector2d windowPosition = grabWindowPosition(button.windowPosition);
 
-            windowPosition.x -= Window.getWidth() / 2.0;
-            windowPosition.y -= Window.getHeight() / 2.0;
+            //! These are TWO different coordinate systems! This SHOULD NOT be using the render() function!
+
+            if (key == "addBlock") {
+                writeln(windowPosition);
+            }
 
             Vector2d buttonFix = grabButtonFix(button);
 
@@ -189,12 +191,15 @@ class GUI {
             Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)));
             
             Font.renderToCanvas(
-                windowPosition.x + (Window.getWidth() / 2.0) + button.padding,
-                windowPosition.y + (Window.getHeight() / 2.0) + button.padding,
+                windowPosition.x + button.padding,
+                windowPosition.y + button.padding,
                 button.text.size,
                 button.text.textData
             );
             Font.render();
+
+            windowPosition.x -= Window.getWidth() / 2.0;
+            windowPosition.y -= Window.getHeight() / 2.0;
 
             Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(
                     windowPosition
@@ -263,6 +268,12 @@ class GUI {
             button.mesh.cleanUp();            
         }
     }
+
+}
+
+class SpreadSheet {
+
+    private Button[] buttons;
 
 }
 
