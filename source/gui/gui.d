@@ -217,6 +217,10 @@ class GUI {
             Font.renderToCanvas(finalPosition.x, finalPosition.y, text.size, text.textData);
         }
 
+        Font.render();
+
+        
+
         foreach (SpreadSheet spreadSheet; spreadSheetObjects) {
 
             Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)));
@@ -235,8 +239,6 @@ class GUI {
 
             
         }
-
-        Font.render();
     }
 
     void collisionDetect() {
