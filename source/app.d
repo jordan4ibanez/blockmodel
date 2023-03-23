@@ -159,6 +159,10 @@ void main() {
 
     Font.selectFont("mc");
 
+    gui.addSpreadSheet("timeline",
+        new SpreadSheet(400,400)
+    );
+
     gui.addText("title",
         new Text("BlockModel Editor 0.0.0").setPosition(Vector2d(0,0)).setSize(24).setWindowPosition(TOP_LEFT)
     );
