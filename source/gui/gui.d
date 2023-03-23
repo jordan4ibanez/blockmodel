@@ -108,27 +108,25 @@ Vector2d grabFinalPosition(Text text) {
     return realPosition;
 }
 
-Vector2d grabButtonFix(Button button) {
-
-    WINDOW_POSITION windowPosition = button.windowPosition;
+Vector2d grabBorderFix(WINDOW_POSITION windowPosition, Vector2d size) {
 
     Vector2d outputtingPosition;
 
-    double buttonWidth = button.size.x;
-    double buttonHeight = button.size.y;
+    double width = size.x;
+    double height = size.y;
 
 
     final switch (cast(int)(windowPosition.x * 10)) {
         case (0): {
-            outputtingPosition.x = buttonWidth;
+            outputtingPosition.x = width;
             break;
         }
         case (5): {
-            outputtingPosition.x = -buttonWidth / 2.0;
+            outputtingPosition.x = -width / 2.0;
             break;
         }
         case (10): {
-            outputtingPosition.x = -buttonWidth;
+            outputtingPosition.x = -width;
             break;
         }
     }
@@ -139,11 +137,11 @@ Vector2d grabButtonFix(Button button) {
             break;
         }
         case (5): {
-            outputtingPosition.y = -buttonHeight / 2.0;
+            outputtingPosition.y = -height / 2.0;
             break;
         }
         case (10): {
-            outputtingPosition.y = -buttonHeight;
+            outputtingPosition.y = -height;
             break;
         }
     }
@@ -179,7 +177,7 @@ class GUI {
 
             Vector2d windowPosition = grabWindowPosition(button.windowPosition);
 
-            Vector2d buttonFix = grabButtonFix(button);
+            Vector2d buttonFix = grabBorderFix(button.windowPosition, button.size);
 
             windowPosition.x += buttonFix.x;
             windowPosition.y += buttonFix.y;
@@ -219,6 +217,25 @@ class GUI {
             Font.renderToCanvas(finalPosition.x, finalPosition.y, text.size, text.textData);
         }
 
+        foreach (SpreadSheet spreadSheet; spreadSheetObjects) {
+
+            Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)));
+
+            Vector2d windowPosition = grabWindowPosition(spreadSheet.windowPosition);
+
+            Vector2d buttonFix = grabBorderFix(spreadSheet.windowPosition, spreadSheet.size);
+
+            windowPosition.x += buttonFix.x;
+            windowPosition.y += buttonFix.y;
+
+            //! FIXME: Gotta put this bad boi in
+            // windowPosition.x += button.position.x;
+            // windowPosition.y -= button.position.y;
+
+
+            
+        }
+
         Font.render();
     }
 
@@ -240,7 +257,7 @@ class GUI {
 
             Vector2d windowPosition = grabWindowPosition(button.windowPosition);
 
-            Vector2d buttonFix = grabButtonFix(button);
+            Vector2d buttonFix = grabBorderFix(button.windowPosition, button.size);
 
             windowPosition.x += buttonFix.x;
             windowPosition.y += buttonFix.y;
@@ -265,7 +282,7 @@ class GUI {
     }
 
     void destroy() {
-        
+
         foreach (Button button; buttonObjects) {
             button.mesh.cleanUp();            
         }
@@ -306,11 +323,10 @@ class SpreadSheet {
     }
 
     private void generateMesh() {
-        writeln("1");
+        
         if (mesh !is null) {
             this.mesh.cleanUp();
         }
-        writeln("2");
 
         // The guide edges for buttons, keeps texture edges from stretching
         // So think of this of like: How many pixels does your button texture use before getting to the text part.
