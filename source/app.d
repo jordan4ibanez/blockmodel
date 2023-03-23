@@ -22,8 +22,7 @@ import Grid = gui.grid;
 //! Development import REMOVE LATER
 import Font = razor_font;
 
-void main()
-{
+void main() {
     
     // Window controls OpenGL and GLFW
     Window.initialize();
