@@ -265,8 +265,18 @@ class GUI {
     }
 
     void destroy() {
+        
         foreach (Button button; buttonObjects) {
             button.mesh.cleanUp();            
+        }
+
+        foreach (SpreadSheet spreadSheet; spreadSheetObjects) {
+            spreadSheet.mesh.cleanUp();
+            foreach (Button[] buttonArray; spreadSheet.buttons) {
+                foreach (Button button; buttonArray) {
+                    button.mesh.cleanUp();   
+                }
+            }
         }
     }
 
@@ -290,10 +300,17 @@ class SpreadSheet {
         this.generateMesh();
     }
 
+    SpreadSheet setWindowPosition(WINDOW_POSITION windowPosition) {
+        this.windowPosition = windowPosition;
+        return this;
+    }
+
     private void generateMesh() {
-        if (mesh is null) {
+        writeln("1");
+        if (mesh !is null) {
             this.mesh.cleanUp();
         }
+        writeln("2");
 
         // The guide edges for buttons, keeps texture edges from stretching
         // So think of this of like: How many pixels does your button texture use before getting to the text part.
