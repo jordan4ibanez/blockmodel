@@ -174,12 +174,6 @@ class GUI {
 
             Vector2d windowPosition = grabWindowPosition(button.windowPosition);
 
-            //! These are TWO different coordinate systems! This SHOULD NOT be using the render() function!
-
-            if (key == "addBlock") {
-                writeln(windowPosition);
-            }
-
             Vector2d buttonFix = grabButtonFix(button);
 
             windowPosition.x += buttonFix.x;
@@ -197,6 +191,8 @@ class GUI {
                 button.text.textData
             );
             Font.render();
+
+            //* Now shift into other coordinate system
 
             windowPosition.x -= Window.getWidth() / 2.0;
             windowPosition.y -= Window.getHeight() / 2.0;
