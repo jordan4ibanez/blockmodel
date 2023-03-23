@@ -155,6 +155,7 @@ class GUI {
 
     private Button[string] buttonObjects;
     private Text[string] textObjects;
+    private SpreadSheet[string] spreadSheetObjects;
 
     void addText(string name, Text text) {
         this.textObjects[name] = text;
@@ -162,6 +163,10 @@ class GUI {
 
     void addButton(string name, Button button) {
         this.buttonObjects[name] = button;
+    }
+
+    void addSpreadSheet(string name, SpreadSheet spreadSheet) {
+        this.spreadSheetObjects[name] = spreadSheet;
     }
 
     void render() {
