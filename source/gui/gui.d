@@ -236,9 +236,10 @@ class GUI {
 
             // This is a fixed hackjob because this gets REALLY complex
 
-
             // 
 
+
+            // Rendering the window title
             Font.renderToCanvas(
                 windowPosition.x + 10,
                 windowPosition.y + 10,
@@ -252,7 +253,8 @@ class GUI {
 
 
 
-            //* Now shift into other coordinate system
+            //* Now shift into other coordinate system to render the background
+            //! OpenGL's default framebuffer seems to have a one stop shop for whichever pixel is there first, becomes immutable without depth
 
             windowPosition.x -= Window.getWidth() / 2.0;
             windowPosition.y -= Window.getHeight() / 2.0;
