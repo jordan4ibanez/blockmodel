@@ -229,6 +229,16 @@ void main() {
         .setPostion(Vector2d(0,-48 * 4))
     );
 
+    gui.addButton("exit", new Button(
+            new Text("Exit").setSize(24)
+        ).setWindowPosition(TOP_RIGHT)
+        .setFunction((){
+            writeln("Have a good one!");
+            Window.close();
+        })
+        .setPostion(Vector2d(0,-48 * 5))
+    );
+
 
     SwingArm.setPosition(0,0,0);
 
