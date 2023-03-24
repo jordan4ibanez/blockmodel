@@ -223,7 +223,8 @@ class GUI {
 
         foreach (SpreadSheet spreadSheet; spreadSheetObjects) {
 
-            // Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)));
+            //* Shift into font coordinate system
+            Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)));
 
             Vector2d windowPosition = grabWindowPosition(spreadSheet.windowPosition);
 
@@ -231,6 +232,18 @@ class GUI {
 
             windowPosition.x += buttonFix.x;
             windowPosition.y += buttonFix.y;
+
+
+            // This is a fixed hackjob because this gets REALLY complex
+            Font.renderToCanvas(
+                windowPosition.x + 10,
+                windowPosition.y + 10,
+                16,
+                spreadSheet.name
+            );
+
+            Font.render();
+
 
             //* Now shift into other coordinate system
 
@@ -302,7 +315,7 @@ class GUI {
 
         foreach (SpreadSheet spreadSheet; spreadSheetObjects) {
             spreadSheet.mesh.cleanUp();
-            foreach (Button[] buttonArray; spreadSheet.buttons) {
+            foreach (Button[string] buttonArray; spreadSheet.buttons) {
                 foreach (Button button; buttonArray) {
                     button.mesh.cleanUp();   
                 }
@@ -318,6 +331,7 @@ class SpreadSheet {
     // Real window position
     WINDOW_POSITION windowPosition = DEFAULT;
 
+    // This is a fixed top left info thing
     string name;
 
     private Button[string][] buttons;
