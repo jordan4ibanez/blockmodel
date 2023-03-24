@@ -12,6 +12,7 @@ import Shader = shader.shader;
 import Camera = camera.camera;
 
 import mesh.mesh;
+import std.parallelism;
 
 
 // Allows elements to be bolted to a part of the window
@@ -236,7 +237,20 @@ class GUI {
 
             // This is a fixed hackjob because this gets REALLY complex
 
-            // 
+            // Rendering the row's columns
+            //!ROW = Y, COLUMN = X
+            //* Since the title is 16 pixels tall, we'll start at 20
+            double yShift = 20;
+            foreach (string key, Button[] columns; spreadSheet.buttons) {
+
+                writeln(key);
+                
+                foreach (size_t index, Button thisButton; columns) {
+
+
+                }
+                
+            }
 
 
             // Rendering the window title
@@ -350,6 +364,8 @@ class SpreadSheet {
     // Offset from real window position in pixels
     Vector2d position;
 
+    private double buttonHeight = -1;
+
     // The background
     Mesh mesh = null;
     
@@ -377,6 +393,10 @@ class SpreadSheet {
     /// Also, buttons ignore all their positioning and whatnot, they are hardcoded in this
     SpreadSheet addRow(string rowName, Button[] columns) {
         this.buttons[rowName] = columns;
+        // Just assume that the first button is all button sizes
+        if (buttonHeight == -1) {
+            buttonHeight = columns[0].size.y;
+        }
         return this;
     }
 
