@@ -243,7 +243,7 @@ class GUI {
             //* Since the title is 16 pixels tall and offset from the edge, we'll start at 40
             double yShift = 40;
             //* Let's give this a bit of a border edge so it's not pressed right up against it
-            double xShift = 10;
+            double xShift = 20;
 
             // We're working from the top left of the background here
             foreach (int getterIndex; 0..99) {
@@ -303,7 +303,7 @@ class GUI {
                 }
 
                 // Now shift back to left
-                xShift = 10;
+                xShift = 20;
                 // Now shift down, with a pixel space
                 yShift += spreadSheet.buttonHeight;
 

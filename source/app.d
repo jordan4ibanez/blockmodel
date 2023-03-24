@@ -160,17 +160,17 @@ void main() {
     Font.selectFont("mc");
 
     // This is our hackjob timeline creator debug
-    SpreadSheet testSpreadsheet = new SpreadSheet(1250,240)
+    SpreadSheet testSpreadsheet = new SpreadSheet(1030,270)
         .setName("Animation Timeline")
         .setWindowPosition(BOTTOM_CENTER);
-    // 5 nodes
-    foreach (int node; 0..5) {
+    // 6 nodes
+    foreach (int node; 0..6) {
         Button[] timeLinebuttons;
 
         // 30 keyframes
         foreach (int timeLineKey; 0..30) {
             timeLinebuttons ~= new Button(
-                new Text(to!string(timeLineKey)).setSize(16)
+                new Text("_").setSize(16)
             );
         }
 
