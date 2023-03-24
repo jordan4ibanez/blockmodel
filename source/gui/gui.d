@@ -118,7 +118,7 @@ Vector2d grabBorderFix(WINDOW_POSITION windowPosition, Vector2d size) {
 
     final switch (cast(int)(windowPosition.x * 10)) {
         case (0): {
-            outputtingPosition.x = width;
+            outputtingPosition.x = 0;
             break;
         }
         case (5): {
@@ -219,22 +219,39 @@ class GUI {
 
         Font.render();
 
-        
+
 
         foreach (SpreadSheet spreadSheet; spreadSheetObjects) {
 
-            Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)));
+            // Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)));
 
             Vector2d windowPosition = grabWindowPosition(spreadSheet.windowPosition);
+
+
+            writeln("size ", spreadSheet.size);
 
             Vector2d buttonFix = grabBorderFix(spreadSheet.windowPosition, spreadSheet.size);
 
             windowPosition.x += buttonFix.x;
             windowPosition.y += buttonFix.y;
 
+            //* Now shift into other coordinate system
+
+            windowPosition.x -= Window.getWidth() / 2.0;
+            windowPosition.y -= Window.getHeight() / 2.0;
+
+            writeln(windowPosition);
+
             //! FIXME: Gotta put this bad boi in
             // windowPosition.x += button.position.x;
             // windowPosition.y -= button.position.y;
+
+            Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(
+                    windowPosition
+                )
+            );
+
+            spreadSheet.mesh.render("2d");
 
 
             
@@ -334,7 +351,7 @@ class SpreadSheet {
         // So think of this of like: How many pixels does your button texture use before getting to the text part.
         immutable double pixelEdge = 1.0;
         // Border scalar just makes the button border more pronounced/visible
-        immutable double borderScalar = 2.0;
+        immutable double borderScalar = 1.0;
 
         Vector2d textureSize = Texture.getTextureSize("textures/button.png");
 
