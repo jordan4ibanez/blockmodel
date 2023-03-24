@@ -160,7 +160,9 @@ void main() {
     Font.selectFont("mc");
 
     gui.addSpreadSheet("timeline",
-        new SpreadSheet(400,400)
+        new SpreadSheet(1200,200)
+            .setWindowPosition(BOTTOM_CENTER)
+            .setName("Animation Timeline")
     );
 
     gui.addText("title",

@@ -227,9 +227,6 @@ class GUI {
 
             Vector2d windowPosition = grabWindowPosition(spreadSheet.windowPosition);
 
-
-            writeln("size ", spreadSheet.size);
-
             Vector2d buttonFix = grabBorderFix(spreadSheet.windowPosition, spreadSheet.size);
 
             windowPosition.x += buttonFix.x;
@@ -239,12 +236,9 @@ class GUI {
 
             windowPosition.x -= Window.getWidth() / 2.0;
             windowPosition.y -= Window.getHeight() / 2.0;
-
-            writeln(windowPosition);
-
-            //! FIXME: Gotta put this bad boi in
-            // windowPosition.x += button.position.x;
-            // windowPosition.y -= button.position.y;
+            
+            windowPosition.x += spreadSheet.position.x;
+            windowPosition.y -= spreadSheet.position.y;
 
             Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(
                     windowPosition
@@ -324,9 +318,14 @@ class SpreadSheet {
     // Real window position
     WINDOW_POSITION windowPosition = DEFAULT;
 
-    private Button[][] buttons;
+    string name;
+
+    private Button[string][] buttons;
     
     Vector2d size;
+
+    // Offset from real window position in pixels
+    Vector2d position;
 
     // The background
     Mesh mesh = null;
@@ -336,8 +335,18 @@ class SpreadSheet {
         this.generateMesh();
     }
 
+    SpreadSheet setName(string name) {
+        this.name = name;
+        return this;
+    }
+
     SpreadSheet setWindowPosition(WINDOW_POSITION windowPosition) {
         this.windowPosition = windowPosition;
+        return this;
+    }
+    
+    SpreadSheet setPosition(Vector2d position) {
+        this.position = position;
         return this;
     }
 
@@ -351,7 +360,7 @@ class SpreadSheet {
         // So think of this of like: How many pixels does your button texture use before getting to the text part.
         immutable double pixelEdge = 1.0;
         // Border scalar just makes the button border more pronounced/visible
-        immutable double borderScalar = 1.0;
+        immutable double borderScalar = 0.5;
 
         Vector2d textureSize = Texture.getTextureSize("textures/button.png");
 
