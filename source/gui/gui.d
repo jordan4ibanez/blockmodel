@@ -315,7 +315,7 @@ class GUI {
 
         foreach (SpreadSheet spreadSheet; spreadSheetObjects) {
             spreadSheet.mesh.cleanUp();
-            foreach (Button[string] buttonArray; spreadSheet.buttons) {
+            foreach (Button[] buttonArray; spreadSheet.buttons) {
                 foreach (Button button; buttonArray) {
                     button.mesh.cleanUp();   
                 }
@@ -334,7 +334,7 @@ class SpreadSheet {
     // This is a fixed top left info thing
     string name;
 
-    private Button[string][] buttons;
+    private Button[][string] buttons;
     
     Vector2d size;
 
@@ -361,6 +361,12 @@ class SpreadSheet {
     
     SpreadSheet setPosition(Vector2d position) {
         this.position = position;
+        return this;
+    }
+
+    /// You add in a row that contains columns
+    SpreadSheet addRow(string rowName, Button[] columns) {
+        this.buttons[rowName] = columns;
         return this;
     }
 
@@ -600,7 +606,7 @@ class Button {
         this.text = text;
         this.setButtonTexture();
     }
-    
+
     this() {}
 
     Button setText(string text) {
