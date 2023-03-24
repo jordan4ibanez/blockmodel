@@ -76,15 +76,15 @@ void main() {
     Grid.initialize();
 
 
-    // BlockModel model = new BlockModel("models/minetest_sam.json");
+    BlockModel model = new BlockModel("models/minetest_sam.json");
 
-    // Mesh debugMesh = new Mesh()
-    //     .addVertices3d(model.getVertexPositions)
-    //     .addIndices(model.getIndices)
-    //     .addTextureCoordinates(model.getTextureCoordinates)
-    //     .addBones(model.getBones)
-    //     .setTexture(Texture.getTexture("textures/debug_character.png"))
-    //     .finalize();
+    Mesh debugMesh = new Mesh()
+        .addVertices3d(model.getVertexPositions)
+        .addIndices(model.getIndices)
+        .addTextureCoordinates(model.getTextureCoordinates)
+        .addBones(model.getBones)
+        .setTexture(Texture.getTexture("textures/debug_character.png"))
+        .finalize();
     
 
     // // Controls regular rendering
@@ -257,14 +257,11 @@ void main() {
         SwingArm.setRotation( Math.toRadians((Math.cos(fancyRotation)) * 90) , fancyRotation);
 
         SwingArm.applyToCamera();
-        
 
 
         Grid.render();
 
-
-
-
+        
 
 
 
