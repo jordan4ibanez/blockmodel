@@ -604,6 +604,11 @@ class Button {
         this.setButtonTexture();
     }
 
+    Button setText(string text) {
+        this.text.setText(text);
+        return this;
+    }
+
     private void setButtonTexture() {
 
         // This is hardcoded, for now
@@ -876,6 +881,11 @@ class Text {
 
     Text setColor(double r, double b, double g, double a) {
         this.color = Vector4d(r,g,b,a);
+        return this;
+    }
+
+    Text setText(string text) {
+        this.textData = text;
         return this;
     }
     
