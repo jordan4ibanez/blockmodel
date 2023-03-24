@@ -159,44 +159,27 @@ void main() {
 
     Font.selectFont("mc");
 
-    gui.addSpreadSheet("timeline",
-        new SpreadSheet(1200,200)
-            .setWindowPosition(BOTTOM_CENTER)
-            .setName("Animation Timeline")
-            // TODO: Clean this disaster up!
-            .addRow("Node 0",
-                [
-                    new Button(
-                        new Text("1").setSize(16)
-                    ),
-                    new Button(
-                        new Text("2").setSize(16)
-                    ),
-                    new Button(
-                        new Text("3").setSize(16)
-                    ),
-                    new Button(
-                        new Text("4").setSize(16)
-                    )
-                ]
-            )
-            .addRow("Node 1",
-                [
-                    new Button(
-                        new Text("1").setSize(16)
-                    ),
-                    new Button(
-                        new Text("2").setSize(16)
-                    ),
-                    new Button(
-                        new Text("3").setSize(16)
-                    ),
-                    new Button(
-                        new Text("4").setSize(16)
-                    )
-                ]
-            )
-    );
+    // This is our hackjob timeline creator debug
+    SpreadSheet testSpreadsheet = new SpreadSheet(1250,240)
+        .setName("Animation Timeline")
+        .setWindowPosition(BOTTOM_CENTER);
+    // 5 nodes
+    foreach (int node; 0..5) {
+        Button[] timeLinebuttons;
+
+        // 30 keyframes
+        foreach (int timeLineKey; 0..30) {
+            timeLinebuttons ~= new Button(
+                new Text(to!string(timeLineKey)).setSize(16)
+            );
+        }
+
+        testSpreadsheet.addRow("Node " ~ to!string(node),
+            timeLinebuttons
+        );
+    }
+
+    gui.addSpreadSheet("timeline",testSpreadsheet);
 
     gui.addText("title",
         new Text("BlockModel Editor 0.0.0").setPosition(Vector2d(0,0)).setSize(24).setWindowPosition(TOP_LEFT)

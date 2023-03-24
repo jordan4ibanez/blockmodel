@@ -247,7 +247,6 @@ class GUI {
 
             // We're working from the top left of the background here
             foreach (int getterIndex; 0..99) {
-            // foreach (string key, Button[] columns; spreadSheet.buttons) {
 
                 string key = "Node " ~ to!string(getterIndex);
 
