@@ -296,6 +296,12 @@ class GUI {
                     xShift += thisButton.size.x;
 
                 }
+
+                // Now shift back to left
+                xShift = 10;
+                // Now shift down, with a pixel space
+                yShift += spreadSheet.buttonHeight;
+
                 
             }
 
