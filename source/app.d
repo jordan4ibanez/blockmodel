@@ -250,6 +250,8 @@ void main() {
             fancyRotation -= Math.PI2;
         }
 
+        // fancyRotation = Math.PIHalf;
+
         Window.setTitle(Window.getTitle ~ " | FPS: " ~ to!string(Window.getFPS) ~ " | Rotation: " ~ to!string(fancyRotation), false);
 
         Window.clear(1.0);
