@@ -167,16 +167,16 @@ void main() {
             .addRow("test",
                 [
                     new Button(
-                        new Text(" ")
+                        new Text(" ").setSize(16)
                     ),
                     new Button(
-                        new Text(" ")
+                        new Text(" ").setSize(16)
                     ),
                     new Button(
-                        new Text(" ")
+                        new Text(" ").setSize(16)
                     ),
                     new Button(
-                        new Text(" ")
+                        new Text(" ").setSize(16)
                     )
                 ]
             )

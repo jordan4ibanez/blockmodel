@@ -235,6 +235,10 @@ class GUI {
 
 
             // This is a fixed hackjob because this gets REALLY complex
+
+
+            // 
+
             Font.renderToCanvas(
                 windowPosition.x + 10,
                 windowPosition.y + 10,
@@ -243,6 +247,9 @@ class GUI {
             );
 
             Font.render();
+
+
+
 
 
             //* Now shift into other coordinate system
