@@ -1,6 +1,7 @@
 module gui.gui;
 
 import std.stdio;
+import std.conv: to;
 import bindbc.opengl;
 import doml.vector_2d;
 import doml.vector_4d;
@@ -245,12 +246,19 @@ class GUI {
             double xShift = 10;
 
             // We're working from the top left of the background here
-            foreach (string key, Button[] columns; spreadSheet.buttons) {
+            foreach (int getterIndex; 0..99) {
+            // foreach (string key, Button[] columns; spreadSheet.buttons) {
 
-                writeln(key);
+                string key = "Node " ~ to!string(getterIndex);
+
+                // Can't work with something that's not there
+                if (key !in spreadSheet.buttons) {
+                    break;
+                }
+
+                Button[] columns = spreadSheet.buttons[key];
 
                 // Render the row name
-
                 Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0)));
                 Font.renderToCanvas(
                     windowPosition.x + xShift,
@@ -265,7 +273,6 @@ class GUI {
                 // Now we need to shift the row to the right, we're going to HARD code it for this application
                 xShift += 86;
                 
-                
                 foreach (size_t index, Button thisButton; columns) {
 
                     // Shift into text coorindate system
@@ -278,7 +285,6 @@ class GUI {
                     );
 
                     Font.render();
-
 
 
 
@@ -324,7 +330,7 @@ class GUI {
 
 
 
-            //* Now shift into other coordinate system to render the background
+            //* Now shift into button coordinate system to render the background
 
             windowPosition.x -= Window.getWidth() / 2.0;
             windowPosition.y -= Window.getHeight() / 2.0;
