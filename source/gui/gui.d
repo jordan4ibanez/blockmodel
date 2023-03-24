@@ -385,8 +385,60 @@ class GUI {
                 }
                 return;
             }
+        }
 
+        foreach (SpreadSheet spreadSheet; spreadSheetObjects) {
+            Vector2d windowPosition = grabWindowPosition(spreadSheet.windowPosition);
+
+            Vector2d buttonFix = grabBorderFix(spreadSheet.windowPosition, spreadSheet.size);
+
+            windowPosition.x += buttonFix.x;
+            windowPosition.y += buttonFix.y;
             
+            //!ROW = Y, COLUMN = X
+            //* Since the title is 16 pixels tall and offset from the edge, we'll start at 40
+            double yShift = 40;
+            //* Let's give this a bit of a border edge so it's not pressed right up against it
+            double xShift = 20;
+
+            // We're working from the top left of the background here
+            // Echoing what happens in the render() method
+            foreach (int getterIndex; 0..99) {
+
+                string key = "Node " ~ to!string(getterIndex);
+
+                // Can't work with something that's not there
+                if (key !in spreadSheet.buttons) {
+                    break;
+                }
+
+                Button[] columns = spreadSheet.buttons[key];
+                
+                xShift += 86;
+                
+                foreach (size_t index, Button thisButton; columns) {
+
+                    Vector2d buttonPos = Vector2d(
+                        windowPosition.x + xShift,
+                        windowPosition.y + yShift
+                    );
+
+                    if (mousePosition.x >= buttonPos.x && mousePosition.x <= buttonPos.x + thisButton.size.x &&
+                        mousePosition.y >= buttonPos.y && mousePosition.y <= buttonPos.y + thisButton.size.y) {
+                        writeln(key, " ", index);
+                    }
+
+                    xShift += thisButton.size.x;
+
+                }
+
+                // Now shift back to left
+                xShift = 20;
+                // Now shift down, with a pixel space
+                yShift += spreadSheet.buttonHeight;
+
+                
+            }
         }
 
     }
