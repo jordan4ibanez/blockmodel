@@ -26,20 +26,18 @@ void setLength(double newLength) {
 
 void applyToCamera() {
 
-    Vector3d rotationVector;
 
     float xzLen = Math.cos(rotation.x + Math.PI);
-    rotationVector.z = xzLen * Math.cos(rotation.y);
-    rotationVector.y = Math.sin(rotation.x + Math.PI);
-    rotationVector.x = xzLen * Math.sin(-rotation.y);
-    
-    rotationVector.mul(-length);
+
+    Vector3d rotationVector = Vector3d (
+        xzLen * Math.sin(-rotation.y),
+        Math.sin(rotation.x + Math.PI),
+        xzLen * Math.cos(rotation.y)
+    ).mul(-length);
     
 
     Camera.setPosition(
-        Vector3d(
-            rotationVector
-        )
+        rotationVector
     );
     
 
