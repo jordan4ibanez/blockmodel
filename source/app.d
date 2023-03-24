@@ -232,7 +232,7 @@ void main() {
 
     SwingArm.setPosition(0,0,0);
 
-    SwingArm.setLength(3);
+    SwingArm.setLength(15);
     
 
 
@@ -261,7 +261,22 @@ void main() {
 
         Grid.render();
 
-        
+        Shader.startProgram("model");
+
+        Shader.setUniformMatrix4("model", "boneTRS", model.playAnimation(1), model.total_blocks);
+        Shader.setUniformMatrix4("model", "cameraMatrix", Camera.updateCameraMatrix());
+
+        Shader.setUniformMatrix4("model", "objectMatrix",
+            Camera.setObjectMatrix(
+                Vector3d(0,0,0), // Translation
+                Vector3d(0,0,0), // Rotation
+                Vector3d(1), // Scale
+            )
+        );
+
+        debugMesh.render("model");
+
+
 
 
 
@@ -290,7 +305,7 @@ void main() {
     Shader.deleteShader("model");
     Shader.deleteShader("2d");
     
-    // debugMesh.cleanUp();
+    debugMesh.cleanUp();
     // xyzCompass.cleanUp();
     // debug2d.cleanUp();
 
