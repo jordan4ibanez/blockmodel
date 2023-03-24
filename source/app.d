@@ -164,19 +164,19 @@ void main() {
             .setWindowPosition(BOTTOM_CENTER)
             .setName("Animation Timeline")
             // TODO: Clean this disaster up!
-            .addRow("test",
+            .addRow("Node 99",
                 [
                     new Button(
-                        new Text(" ").setSize(16)
+                        new Text("1").setSize(16)
                     ),
                     new Button(
-                        new Text(" ").setSize(16)
+                        new Text("2").setSize(16)
                     ),
                     new Button(
-                        new Text(" ").setSize(16)
+                        new Text("3").setSize(16)
                     ),
                     new Button(
-                        new Text(" ").setSize(16)
+                        new Text("4").setSize(16)
                     )
                 ]
             )

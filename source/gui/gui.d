@@ -224,8 +224,8 @@ class GUI {
 
         foreach (SpreadSheet spreadSheet; spreadSheetObjects) {
 
-            //* Shift into font coordinate system
-            Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)));
+            
+            //! OpenGL's default framebuffer seems to have a one stop shop for whichever pixel is there first, becomes immutable without depth
 
             Vector2d windowPosition = grabWindowPosition(spreadSheet.windowPosition);
 
@@ -239,18 +239,69 @@ class GUI {
 
             // Rendering the row's columns
             //!ROW = Y, COLUMN = X
-            //* Since the title is 16 pixels tall, we'll start at 20
-            double yShift = 20;
+            //* Since the title is 16 pixels tall and offset from the edge, we'll start at 40
+            double yShift = 40;
+            //* Let's give this a bit of a border edge so it's not pressed right up against it
+            double xShift = 10;
+
+            // We're working from the top left of the background here
             foreach (string key, Button[] columns; spreadSheet.buttons) {
 
                 writeln(key);
+
+                // Render the row name
+
+                Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0)));
+                Font.renderToCanvas(
+                    windowPosition.x + xShift,
+                    // + 8 because it becomes nice and centered
+                    windowPosition.y + yShift  + 8,
+                    16,
+                    key
+                );
+
+                Font.render();
+
+                // Now we need to shift the row to the right, we're going to HARD code it for this application
+                xShift += 86;
+                
                 
                 foreach (size_t index, Button thisButton; columns) {
 
+                    // Shift into text coorindate system
+                    Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0)));
+                    Font.renderToCanvas(
+                        windowPosition.x + xShift + thisButton.padding,
+                        windowPosition.y + yShift + thisButton.padding,
+                        16,
+                        thisButton.text.textData
+                    );
+
+                    Font.render();
+
+
+
+
+                    // Shift into button coordinate system
+                    Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(
+                            Vector2d(
+                                windowPosition.x - (Window.getWidth() / 2.0) + xShift,
+                                windowPosition.y - (Window.getHeight() / 2.0) + yShift
+                            )
+                        )
+                    );
+
+                    thisButton.mesh.render("2d");
+
+                    xShift += thisButton.size.x;
 
                 }
                 
             }
+
+
+            //* Shift into font coordinate system
+            Shader.setUniformMatrix4("2d", "objectMatrix", Camera.setGuiObjectMatrix(Vector2d(0,0)));
 
 
             // Rendering the window title
@@ -268,7 +319,6 @@ class GUI {
 
 
             //* Now shift into other coordinate system to render the background
-            //! OpenGL's default framebuffer seems to have a one stop shop for whichever pixel is there first, becomes immutable without depth
 
             windowPosition.x -= Window.getWidth() / 2.0;
             windowPosition.y -= Window.getHeight() / 2.0;
