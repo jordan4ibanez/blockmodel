@@ -589,7 +589,7 @@ class Button {
 
     double padding = 0.0;
     
-    private Text text;
+    private Text text = null;
 
     Mesh mesh;
 
@@ -597,12 +597,11 @@ class Button {
     void delegate() buttonFunction;
 
     this(Text text) {
-
         this.text = text;
-
-        
         this.setButtonTexture();
     }
+    
+    this() {}
 
     Button setText(string text) {
         this.text.setText(text);
