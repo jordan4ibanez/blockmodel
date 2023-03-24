@@ -364,7 +364,8 @@ class SpreadSheet {
         return this;
     }
 
-    /// You add in a row that contains columns
+    /// You add in a row that contains columns, this is unlimitedly flexible
+    /// Also, buttons ignore all their positioning and whatnot, they are hardcoded in this
     SpreadSheet addRow(string rowName, Button[] columns) {
         this.buttons[rowName] = columns;
         return this;
@@ -606,8 +607,6 @@ class Button {
         this.text = text;
         this.setButtonTexture();
     }
-
-    this() {}
 
     Button setText(string text) {
         this.text.setText(text);

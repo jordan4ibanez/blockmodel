@@ -163,6 +163,23 @@ void main() {
         new SpreadSheet(1200,200)
             .setWindowPosition(BOTTOM_CENTER)
             .setName("Animation Timeline")
+            // TODO: Clean this disaster up!
+            .addRow("test",
+                [
+                    new Button(
+                        new Text(" ")
+                    ),
+                    new Button(
+                        new Text(" ")
+                    ),
+                    new Button(
+                        new Text(" ")
+                    ),
+                    new Button(
+                        new Text(" ")
+                    )
+                ]
+            )
     );
 
     gui.addText("title",
